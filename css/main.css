@@ -61,12 +61,12 @@ body {
 /* ===================
     ALL: Theme
    =================== */
-:root {  /* pseudo-class used for variable definitions */
-    --light-bg-color: goldenrod;     /*  #f16529 */
-    --dark-bg-color: darkgoldenrod;  /*  #e44d26 */
- /* --light-bg-color: forestgreen;
-    --dark-bg-color: darkgreen;
-  */
+:root { /* pseudo-class used for variable definitions */
+    --light-bg-color: goldenrod; /*  #f16529 */
+    --dark-bg-color: darkgoldenrod; /*  #e44d26 */
+    /* --light-bg-color: forestgreen;
+       --dark-bg-color: darkgreen;
+     */
 }
 
 header {
@@ -95,6 +95,7 @@ nav ul {
     padding: 0;
     list-style-type: none;
 }
+
 nav a {
     display: block;
     margin-bottom: 10px;
@@ -105,10 +106,12 @@ nav a {
     color: white;
     background: var(--dark-bg-color);
 }
+
 nav a:hover,
 nav a:visited {
     color: white;
 }
+
 nav a:hover {
     text-decoration: underline;
 }
@@ -116,12 +119,14 @@ nav a:hover {
 header figure {
     display: none;
 }
+
 /* ==============
     MOBILE: Main
    ============== */
 main {
     padding: 30px 0;
 }
+
 footer div.foot-content {
     color: white;
     padding: 20px 0;
@@ -134,17 +139,21 @@ footer div.foot-content {
     font-size: smaller;
     /* margin: 2em auto; */
 }
+
 footer div.foot-content a {
     color: white;
 }
+
 table {
-    border-collapse:collapse;
+    border-collapse: collapse;
     margin: 1em 0;
 }
+
 table, td, th {
     border: 1px solid black;
     padding: 5px;
 }
+
 table th {
     background: aliceblue;
 }
@@ -156,60 +165,72 @@ ul.menu {
     padding: 8px;
     border-radius: 5px;
 }
+
 div.two-col-menu ul.menu {
     display: inline-block;
     vertical-align: top;
     margin: 0;
     margin-left: 3em;
 }
+
 ul.menu li {
     list-style: none;
     height: 1.5em;
     margin: 0.5em auto;
 }
+
 div.two-col-menu ul.menu > li {
     /* height: 1.5em; */
     margin-bottom: 0.5em;
 }
+
 ul.menu li button {
     width: 20em;
 }
+
 div.two-col-menu ul.menu button {
     width: 12em;
 }
 
 form :invalid {
-    box-shadow: none;  /* neutralizing FF */
+    box-shadow: none; /* neutralizing FF */
     outline: dotted red;
 }
-form > div  {
+
+form > div {
     margin-bottom: 0.7em;
 }
-form > div.multi-sel  {
+
+form > div.multi-sel {
     margin-bottom: 3.5em;
 }
+
 form > div > label {
-    display: block;     /* by default, one labeled control per line*/
+    display: block; /* by default, one labeled control per line*/
     position: relative;
     margin: 0 0 5px 0;
     width: 40em;
 }
+
 form > div.field-group > label {
     display: inline-block;
 }
+
 form > div > label > input[type="text"],
-  form > div > label > textarea,
-  form > div > label > input[type="checkbox"],
-  form > div > label > select,
-  form > div > label > div.MultiChoiceWidget,
-  form > div > label > output {
+form > div > label > textarea,
+form > div > label > input[type="checkbox"],
+form > div > label > select,
+form > div > label > div.MultiChoiceWidget,
+form > div > label > output {
     position: absolute;
     left: 11em;
 }
+
 /* the height of multi-line elements must be limited */
 form > div.select-many {
     height: 6em;
 }
+
 form > div.widget {
     height: 11em;
 }
@@ -221,9 +242,11 @@ form > div > button {
 form > fieldset {
     margin-bottom: 1em;
 }
+
 form > fieldset > label {
     margin-right: 1em;
 }
+
 form > fieldset > label > input[type="radio"],
 form > fieldset > label > input[type="checkbox"] {
     margin-right: 0.5em;
@@ -234,31 +257,35 @@ form div.MultiChoiceWidget {
     outline: solid grey 1px;
     padding: 5px;
     max-width: 21em;
-    max-height: 10em;  /* of the widget container */
+    max-height: 10em; /* of the widget container */
 }
+
 form div.MultiChoiceWidget > ul {
     padding-left: 8px;
     margin-top: 0;
-    list-style-type:none;
+    list-style-type: none;
 }
+
 form div.MultiChoiceWidget > ul > li {
     width: 100%;
     clear: right;
 }
+
 form div.MultiChoiceWidget > ul > li > button {
     float: right;
     margin-left: 0.5em;
     font-size: 70%;
     /* vertical-align: middle; */
 }
+
 form div.MultiChoiceWidget > ul > li.removed {
     color: red;
     text-decoration: line-through;
 }
+
 form div.MultiChoiceWidget > ul > li.added {
     color: green;
 }
-
 
 
 /* ==========================================================================
@@ -276,9 +303,11 @@ form div.MultiChoiceWidget > ul > li.added {
         margin: 0 1.7%;
         padding: 25px 2%;
     }
+
     nav li:first-child a {
         margin-left: 0;
     }
+
     nav li:last-child a {
         margin-right: 0;
     }
@@ -286,41 +315,46 @@ form div.MultiChoiceWidget > ul > li.added {
 
 @media only screen and (min-width: 768px) {
 
-/* ====================
-   WIDE: CSS3 Effects
-   ==================== */
-   header {
-       box-shadow: 0 5px 10px #aaa;
-   }
-/* ============
-   WIDE: header
-   ============ */
-   header figure {
-       display: block;
-       float: right;
-   }
+    /* ====================
+       WIDE: CSS3 Effects
+       ==================== */
+    header {
+        box-shadow: 0 5px 10px #aaa;
+    }
+
+    /* ============
+       WIDE: header
+       ============ */
+    header figure {
+        display: block;
+        float: right;
+    }
+
     header figure img {
         width: 70px;
     }
-   header .title {
-       width: 57%;
-       float: left;
-   }
-   nav {
-       float: right;
-       width: 38%;
-   }
-/* ============
-   WIDE: Main
-   ============ */
+
+    header .title {
+        width: 57%;
+        float: left;
+    }
+
+    nav {
+        float: right;
+        width: 38%;
+    }
+
+    /* ============
+       WIDE: Main
+       ============ */
 
 }
 
 @media only screen and (min-width: 1140px) {
 
-/* ===============
-    Maximal Width
-   =============== */
+    /* ===============
+        Maximal Width
+       =============== */
     header figure img {
         width: 100px;
     }
@@ -370,6 +404,7 @@ form div.MultiChoiceWidget > ul > li.added {
     content: " ";
     display: table;
 }
+
 .clearfix:after {
     clear: both;
 }
@@ -387,41 +422,51 @@ form div.MultiChoiceWidget > ul > li.added {
         box-shadow: none !important;
         text-shadow: none !important;
     }
+
     a,
     a:visited {
         text-decoration: underline;
     }
+
     a[href]:after {
         content: " (" attr(href) ")";
     }
+
     abbr[title]:after {
         content: " (" attr(title) ")";
     }
+
     a[href^="#"]:after,
     a[href^="javascript:"]:after {
         content: "";
     }
+
     pre,
     blockquote {
         border: 1px solid #999;
         page-break-inside: avoid;
     }
+
     thead {
         display: table-header-group;
     }
+
     tr,
     img {
         page-break-inside: avoid;
     }
+
     img {
         max-width: 100% !important;
     }
+
     p,
     h2,
     h3 {
         orphans: 3;
         widows: 3;
     }
+
     h2,
     h3 {
         page-break-after: avoid;
