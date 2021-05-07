@@ -5,8 +5,8 @@
 /***************************************************************
  Import classes, datatypes and utility procedures
  ***************************************************************/
-import Author from "../m/Author.mjs";
-import Publisher from "../m/Publisher.mjs";
+import Actor from "../m/Actor.mjs";
+import Director from "../m/Director.mjs";
 import Movie from "../m/Movie.mjs";
 import {fillSelectWithOptions, createListFromMap, createMultipleChoiceWidget}
     from "../../lib/util.mjs";
@@ -14,8 +14,8 @@ import {fillSelectWithOptions, createListFromMap, createMultipleChoiceWidget}
 /***************************************************************
  Load data
  ***************************************************************/
-Author.retrieveAll();
-Publisher.retrieveAll();
+Actor.retrieveAll();
+Director.retrieveAll();
 Movie.retrieveAll();
 
 /***************************************************************
@@ -53,9 +53,9 @@ document.getElementById("retrieveAndListAll")
             row.insertCell().textContent = movie.title;
             row.insertCell().textContent = movie.year;
             row.insertCell().appendChild(authListEl);
-            // if the movie has a publisher, show its name
+            // if the movie has a director, show its name
             row.insertCell().textContent =
-                movie.publisher ? movie.publisher.name : "";
+                movie.director ? movie.director.name : "";
         }
     });
 
@@ -63,15 +63,15 @@ document.getElementById("retrieveAndListAll")
  Use case Create Movie
  **********************************************/
 const createFormEl = document.querySelector("section#Movie-C > form"),
-    selectAuthorsEl = createFormEl.selectAuthors,
+    selectActorsEl = createFormEl.selectActors,
     selectPublisherEl = createFormEl.selectPublisher;
 document.getElementById("create").addEventListener("click", function () {
     document.getElementById("Movie-M").style.display = "none";
     document.getElementById("Movie-C").style.display = "block";
-    // set up a single selection list for selecting a publisher
-    fillSelectWithOptions(selectPublisherEl, Publisher.instances, "name");
+    // set up a single selection list for selecting a director
+    fillSelectWithOptions(selectPublisherEl, Director.instances, "name");
     // set up a multiple selection list for selecting authors
-    fillSelectWithOptions(selectAuthorsEl, Author.instances,
+    fillSelectWithOptions(selectActorsEl, Actor.instances,
         "authorId", {displayProp: "name"});
     createFormEl.reset();
 });
@@ -90,16 +90,16 @@ createFormEl["commit"].addEventListener("click", function () {
         title: createFormEl.title.value,
         year: createFormEl.year.value,
         authorIdRefs: [],
-        publisher_id: createFormEl.selectPublisher.value
+        directorId: createFormEl.selectPublisher.value
     };
     // check all input fields and show error messages
     createFormEl.isbn.setCustomValidity(
         Movie.checkIsbnAsId(slots.isbn).message);
     /* SIMPLIFIED CODE: no before-submit validation of name */
     // get the list of selected authors
-    const selAuthOptions = createFormEl.selectAuthors.selectedOptions;
+    const selAuthOptions = createFormEl.selectActors.selectedOptions;
     // check the mandatory value constraint for authors
-    createFormEl.selectAuthors.setCustomValidity(
+    createFormEl.selectActors.setCustomValidity(
         selAuthOptions.length > 0 ? "" : "No author selected!"
     );
     // save the input data only if all form fields are valid
@@ -132,7 +132,7 @@ document.getElementById("update").addEventListener("click", function () {
 selectUpdateMovieEl.addEventListener("change", function () {
     const formEl = document.querySelector("section#Movie-U > form"),
         saveButton = formEl.commit,
-        selectAuthorsWidget = formEl.querySelector(".MultiChoiceWidget"),
+        selectActorsWidget = formEl.querySelector(".MultiChoiceWidget"),
         selectPublisherEl = formEl.selectPublisher,
         isbn = formEl.selectMovie.value;
     if (isbn) {
@@ -140,32 +140,32 @@ selectUpdateMovieEl.addEventListener("change", function () {
         formEl.isbn.value = movie.isbn;
         formEl.title.value = movie.title;
         formEl.year.value = movie.year;
-        // set up the associated publisher selection list
-        fillSelectWithOptions(selectPublisherEl, Publisher.instances, "name");
+        // set up the associated director selection list
+        fillSelectWithOptions(selectPublisherEl, Director.instances, "name");
         // set up the associated authors selection widget
-        createMultipleChoiceWidget(selectAuthorsWidget, movie.authors,
-            Author.instances, "authorId", "name", 1);  // minCard=1
-        // assign associated publisher as the selected option to select element
-        if (movie.publisher) formEl.selectPublisher.value = movie.publisher.name;
+        createMultipleChoiceWidget(selectActorsWidget, movie.authors,
+            Actor.instances, "authorId", "name", 1);  // minCard=1
+        // assign associated director as the selected option to select element
+        if (movie.director) formEl.selectPublisher.value = movie.director.name;
         saveButton.disabled = false;
     } else {
         formEl.reset();
         formEl.selectPublisher.selectedIndex = 0;
-        selectAuthorsWidget.innerHTML = "";
+        selectActorsWidget.innerHTML = "";
         saveButton.disabled = true;
     }
 });
 // handle Save button click events
 updateFormEl["commit"].addEventListener("click", function () {
     const movieIdRef = selectUpdateMovieEl.value,
-        selectAuthorsWidget = updateFormEl.querySelector(".MultiChoiceWidget"),
-        multiChoiceListEl = selectAuthorsWidget.firstElementChild;
+        selectActorsWidget = updateFormEl.querySelector(".MultiChoiceWidget"),
+        multiChoiceListEl = selectActorsWidget.firstElementChild;
     if (!movieIdRef) return;
     const slots = {
         isbn: updateFormEl.isbn.value,
         title: updateFormEl.title.value,
         year: updateFormEl.year.value,
-        publisher_id: updateFormEl.selectPublisher.value
+        directorId: updateFormEl.selectPublisher.value
     }
     // add event listeners for responsive validation
     /* MISSING CODE */
@@ -192,7 +192,7 @@ updateFormEl["commit"].addEventListener("click", function () {
     Movie.update(slots);
     // update the movie selection list's option element
     selectUpdateMovieEl.options[selectUpdateMovieEl.selectedIndex].text = slots.title;
-    selectAuthorsWidget.innerHTML = "";
+    selectActorsWidget.innerHTML = "";
 });
 
 /**********************************************

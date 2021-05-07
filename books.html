@@ -28,8 +28,8 @@
         </div>
         <nav>
             <ul>
-                <li><a href="authors.html">Authors</a></li>
-                <li><a href="publishers.html">Publishers</a></li>
+                <li><a href="authors.html">Actors</a></li>
+                <li><a href="directors.html">Publishers</a></li>
                 <li><a href="movies.html">Movies</a></li>
             </ul>
         </nav>
@@ -69,8 +69,8 @@
                     <th>ISBN</th>
                     <th>Title</th>
                     <th>Year</th>
-                    <th>Authors</th>
-                    <th>Publisher</th>
+                    <th>Actors</th>
+                    <th>Director</th>
                 </tr>
                 </thead>
                 <tbody></tbody>
@@ -94,11 +94,11 @@
                     <label>Year: <input type="text" name="year"/></label>
                 </div>
                 <div class="select-one">
-                    <label>Publisher: <select name="selectPublisher"></select></label>
+                    <label>Director: <select name="selectPublisher"></select></label>
                 </div>
                 <div class="select-many">
-                    <label>Authors:
-                        <select name="selectAuthors" multiple="multiple"></select>
+                    <label>Actors:
+                        <select name="selectActors" multiple="multiple"></select>
                     </label>
                 </div>
                 <div class="button-group">
@@ -127,11 +127,11 @@
                     <label>Year: <input type="text" name="year"/></label>
                 </div>
                 <div class="select-one">
-                    <label>Publisher: <select name="selectPublisher"></select></label>
+                    <label>Director: <select name="selectPublisher"></select></label>
                 </div>
                 <div class="widget">
-                    <label for="updMovieSelectAuthors">Authors:</label>
-                    <div id="updMovieSelectAuthors" class="MultiChoiceWidget"></div>
+                    <label for="updMovieSelectActors">Actors:</label>
+                    <div id="updMovieSelectActors" class="MultiChoiceWidget"></div>
                 </div>
                 <div class="button-group">
                     <button type="submit" name="commit" disabled="disabled">Save</button>

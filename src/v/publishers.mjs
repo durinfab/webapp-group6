@@ -1,20 +1,20 @@
 /**
- * @fileOverview  View code of UI for managing Publisher data
+ * @fileOverview  View code of UI for managing Director data
  * @author Gerd Wagner
  */
 /***************************************************************
  Import classes, datatypes and utility procedures
  ***************************************************************/
-import Author from "../m/Author.mjs";
-import Publisher from "../m/Publisher.mjs";
+import Actor from "../m/Actor.mjs";
+import Director from "../m/Director.mjs";
 import Movie from "../m/Movie.mjs";
 import {fillSelectWithOptions} from "../../lib/util.mjs";
 
 /***************************************************************
  Load data
  ***************************************************************/
-Author.retrieveAll();
-Publisher.retrieveAll();
+Actor.retrieveAll();
+Director.retrieveAll();
 Movie.retrieveAll();
 
 /***************************************************************
@@ -35,8 +35,8 @@ for (let frm of document.querySelectorAll("section > form")) {
 }
 // save data when leaving the page
 window.addEventListener("beforeunload", function () {
-    Publisher.saveAll();
-    // also save movies because movies may be deleted when an publisher is deleted
+    Director.saveAll();
+    // also save movies because movies may be deleted when an director is deleted
     Movie.saveAll();
 });
 
@@ -46,32 +46,32 @@ window.addEventListener("beforeunload", function () {
 document.getElementById("retrieveAndListAll")
     .addEventListener("click", function () {
         const tableBodyEl = document
-            .querySelector("section#Publisher-R > table > tbody");
+            .querySelector("section#Director-R > table > tbody");
         tableBodyEl.innerHTML = "";
-        for (const key of Object.keys(Publisher.instances)) {
-            const publisher = Publisher.instances[key];
+        for (const key of Object.keys(Director.instances)) {
+            const director = Director.instances[key];
             const row = tableBodyEl.insertRow();
-            row.insertCell().textContent = publisher.name;
-            row.insertCell().textContent = publisher.address;
+            row.insertCell().textContent = director.name;
+            row.insertCell().textContent = director.address;
         }
-        document.getElementById("Publisher-M").style.display = "none";
-        document.getElementById("Publisher-R").style.display = "block";
+        document.getElementById("Director-M").style.display = "none";
+        document.getElementById("Director-R").style.display = "block";
     });
 
 /**********************************************
- Use case Create Publisher
+ Use case Create Director
  **********************************************/
-const createFormEl = document.querySelector("section#Publisher-C > form");
+const createFormEl = document.querySelector("section#Director-C > form");
 document.getElementById("create")
     .addEventListener("click", function () {
-        document.getElementById("Publisher-M").style.display = "none";
-        document.getElementById("Publisher-C").style.display = "block";
+        document.getElementById("Director-M").style.display = "none";
+        document.getElementById("Director-C").style.display = "block";
         createFormEl.reset();
     });
 // set up event handlers for responsive constraint validation
 createFormEl.name.addEventListener("input", function () {
     createFormEl.name.setCustomValidity(
-        Publisher.checkNameAsId(createFormEl.name.value).message);
+        Director.checkNameAsId(createFormEl.name.value).message);
 });
 /* SIMPLIFIED CODE: no responsive validation of address */
 
@@ -82,31 +82,31 @@ createFormEl["commit"].addEventListener("click", function () {
         address: createFormEl.address.value
     };
     // check all input fields and show error messages
-    createFormEl.name.setCustomValidity(Publisher.checkNameAsId(slots.name).message);
+    createFormEl.name.setCustomValidity(Director.checkNameAsId(slots.name).message);
     /* SIMPLIFIED CODE: no before-submit validation of name */
     // save the input data only if all form fields are valid
-    if (createFormEl.checkValidity()) Publisher.add(slots);
+    if (createFormEl.checkValidity()) Director.add(slots);
 });
 
 /**********************************************
- * Use case Update Publisher
+ * Use case Update Director
  **********************************************/
-const updateFormEl = document.querySelector("section#Publisher-U > form");
+const updateFormEl = document.querySelector("section#Director-U > form");
 const selectUpdatePublisherEl = updateFormEl.selectPublisher;
 document.getElementById("update")
     .addEventListener("click", function () {
-        document.getElementById("Publisher-M").style.display = "none";
-        document.getElementById("Publisher-U").style.display = "block";
-        // set up the publisher selection list
-        fillSelectWithOptions(selectUpdatePublisherEl, Publisher.instances,
+        document.getElementById("Director-M").style.display = "none";
+        document.getElementById("Director-U").style.display = "block";
+        // set up the director selection list
+        fillSelectWithOptions(selectUpdatePublisherEl, Director.instances,
             "name");
         updateFormEl.reset();
     });
 selectUpdatePublisherEl.addEventListener("change", handlePublisherSelectChangeEvent);
 // handle Save button click events
 updateFormEl["commit"].addEventListener("click", function () {
-    const publisherIdRef = selectUpdatePublisherEl.value;
-    if (!publisherIdRef) return;
+    const directorIdRef = selectUpdatePublisherEl.value;
+    if (!directorIdRef) return;
     const slots = {
         name: updateFormEl.name.value,
         address: updateFormEl.address.value
@@ -115,21 +115,21 @@ updateFormEl["commit"].addEventListener("click", function () {
     /* SIMPLIFIED CODE: no before-save validation of name */
     // save the input data only if all of the form fields are valid
     if (selectUpdatePublisherEl.checkValidity()) {
-        Publisher.update(slots);
-        // update the publisher selection list's option element
+        Director.update(slots);
+        // update the director selection list's option element
         selectUpdatePublisherEl.options[selectUpdatePublisherEl.selectedIndex].text = slots.name;
     }
 });
 
 /**
- * handle publisher selection events
- * when a publisher is selected, populate the form with the data of the selected publisher
+ * handle director selection events
+ * when a director is selected, populate the form with the data of the selected director
  */
 function handlePublisherSelectChangeEvent() {
     var key = "", publ = null;
     key = updateFormEl.selectPublisher.value;
     if (key) {
-        publ = Publisher.instances[key];
+        publ = Director.instances[key];
         updateFormEl.name.value = publ.name;
         updateFormEl.address.value = publ.address || "";
     } else {
@@ -138,25 +138,25 @@ function handlePublisherSelectChangeEvent() {
 }
 
 /**********************************************
- * Use case Delete Publisher
+ * Use case Delete Director
  **********************************************/
-const deleteFormEl = document.querySelector("section#Publisher-D > form");
+const deleteFormEl = document.querySelector("section#Director-D > form");
 const selectDeletePublisherEl = deleteFormEl.selectPublisher;
 document.getElementById("destroy")
     .addEventListener("click", function () {
-        document.getElementById("Publisher-M").style.display = "none";
-        document.getElementById("Publisher-D").style.display = "block";
-        // set up the publisher selection list
-        fillSelectWithOptions(selectDeletePublisherEl, Publisher.instances,
-            "publisherId", {displayProp: "name"});
+        document.getElementById("Director-M").style.display = "none";
+        document.getElementById("Director-D").style.display = "block";
+        // set up the director selection list
+        fillSelectWithOptions(selectDeletePublisherEl, Director.instances,
+            "directorId", {displayProp: "name"});
         deleteFormEl.reset();
     });
 // handle Delete button click events
 deleteFormEl["commit"].addEventListener("click", function () {
-    const publisherIdRef = selectDeletePublisherEl.value;
-    if (!publisherIdRef) return;
-    if (confirm("Do you really want to delete this publisher?")) {
-        Publisher.destroy(publisherIdRef);
+    const directorIdRef = selectDeletePublisherEl.value;
+    if (!directorIdRef) return;
+    if (confirm("Do you really want to delete this director?")) {
+        Director.destroy(directorIdRef);
         selectDeletePublisherEl.remove(deleteFormEl.selectPublisher.selectedIndex);
     }
 });
@@ -165,12 +165,12 @@ deleteFormEl["commit"].addEventListener("click", function () {
  * Refresh the Manage Publishers Data UI
  **********************************************/
 function refreshManageDataUI() {
-    // show the manage publisher UI and hide the other UIs
-    document.getElementById("Publisher-M").style.display = "block";
-    document.getElementById("Publisher-R").style.display = "none";
-    document.getElementById("Publisher-C").style.display = "none";
-    document.getElementById("Publisher-U").style.display = "none";
-    document.getElementById("Publisher-D").style.display = "none";
+    // show the manage director UI and hide the other UIs
+    document.getElementById("Director-M").style.display = "block";
+    document.getElementById("Director-R").style.display = "none";
+    document.getElementById("Director-C").style.display = "none";
+    document.getElementById("Director-U").style.display = "none";
+    document.getElementById("Director-D").style.display = "none";
 }
 
 // Set up Manage Publishers UI

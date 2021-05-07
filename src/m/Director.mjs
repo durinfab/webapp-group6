@@ -1,5 +1,5 @@
 /**
- * @fileOverview  The model class Publisher with property definitions, (class-level) check methods,
+ * @fileOverview  The model class Director with property definitions, (class-level) check methods,
  *                setter methods, and the special methods saveAll and retrieveAll
  * @author Gerd Wagner
  */
@@ -12,11 +12,11 @@ import {
     from "../../lib/errorTypes.mjs";
 
 /**
- * The class Publisher
+ * The class Director
  * @class
  * @param {object} slots - Object creation slots.
  */
-class Publisher {
+class Director {
     // using a single record parameter with ES6 function parameter destructuring
     constructor({name, address}) {
         // assign properties by invoking implicit setters
@@ -42,32 +42,32 @@ class Publisher {
     }
 
     static checkNameAsId(n) {
-        var validationResult = Publisher.checkName(n);
+        var validationResult = Director.checkName(n);
         if ((validationResult instanceof NoConstraintViolation)) {
             if (!n) {
                 return new MandatoryValueConstraintViolation(
-                    "A publisher name is required!");
-            } else if (Publisher.instances[n]) {
+                    "A director name is required!");
+            } else if (Director.instances[n]) {
                 return new UniquenessConstraintViolation(
-                    "There is already a publisher record with this name!");
+                    "There is already a director record with this name!");
             }
         }
         return validationResult;
     }
 
     static checkNameAsIdRef(n) {
-        var validationResult = Publisher.checkName(n);
+        var validationResult = Director.checkName(n);
         if ((validationResult instanceof NoConstraintViolation) && n) {
-            if (!Publisher.instances[n]) {
+            if (!Director.instances[n]) {
                 validationResult = new ReferentialIntegrityConstraintViolation(
-                    "There is no publisher record with this name!");
+                    "There is no director record with this name!");
             }
         }
         return validationResult;
     }
 
     set name(n) {
-        var constraintViolation = Publisher.checkName(n);
+        var constraintViolation = Director.checkName(n);
         if (constraintViolation instanceof NoConstraintViolation) {
             this._name = n;
         } else {
@@ -79,9 +79,9 @@ class Publisher {
         return this._address;
     }
 
-    //SIMPLIFIED CODE:  Publisher.checkAddress has not been defined
+    //SIMPLIFIED CODE:  Director.checkAddress has not been defined
     set address(a) {
-        //SIMPLIFIED/MISSING CODE:  invoke Publisher.checkAddress
+        //SIMPLIFIED/MISSING CODE:  invoke Director.checkAddress
         this._address = a;
     }
 
@@ -103,104 +103,104 @@ class Publisher {
  *** Class-level ("static") properties **********
  ************************************************/
 // initially an empty collection (in the form of a map)
-Publisher.instances = {};
+Director.instances = {};
 
 /****************************************************
  *** Class-level ("static") methods ******************
  *****************************************************/
 /**
- *  Create a new publisher record/object
+ *  Create a new director record/object
  */
-Publisher.add = function (slots) {
-    var publisher = null;
+Director.add = function (slots) {
+    var director = null;
     try {
-        publisher = new Publisher(slots);
+        director = new Director(slots);
     } catch (e) {
         console.log(`${e.constructor.name}: ${e.message}`);
-        publisher = null;
+        director = null;
     }
-    if (publisher) {
-        Publisher.instances[publisher.name] = publisher;
-        console.log(`${publisher.toString()} created!`);
+    if (director) {
+        Director.instances[director.name] = director;
+        console.log(`${director.toString()} created!`);
     }
 };
 /**
- *  Update an existing Publisher record/object
+ *  Update an existing Director record/object
  */
-Publisher.update = function (slots) {
-    const publisher = Publisher.instances[slots.name],
-        objectBeforeUpdate = cloneObject(publisher);
+Director.update = function (slots) {
+    const director = Director.instances[slots.name],
+        objectBeforeUpdate = cloneObject(director);
     var noConstraintViolated = true,
         ending = "", updatedProperties = [];
     try {
-        if ("address" in slots && publisher.address !== slots.address) {
-            publisher.address = slots.address;
+        if ("address" in slots && director.address !== slots.address) {
+            director.address = slots.address;
             updatedProperties.push("address");
         }
     } catch (e) {
         console.log(`${e.constructor.name}: ${e.message}`);
         noConstraintViolated = false;
         // restore object to its state before updating
-        Publisher.instances[slots.name] = objectBeforeUpdate;
+        Director.instances[slots.name] = objectBeforeUpdate;
     }
     if (noConstraintViolated) {
         if (updatedProperties.length > 0) {
             ending = updatedProperties.length > 1 ? "ies" : "y";
-            console.log(`Propert${ending} ${updatedProperties.toString()} modified for publisher ${publisher.name}`);
+            console.log(`Propert${ending} ${updatedProperties.toString()} modified for director ${director.name}`);
         } else {
-            console.log(`No property value changed for publisher ${publisher.name}!`);
+            console.log(`No property value changed for director ${director.name}!`);
         }
     }
 };
 /**
- *  Delete an existing Publisher record/object
+ *  Delete an existing Director record/object
  */
-Publisher.destroy = function (name) {
-    const publisher = Publisher.instances[name];
-    // delete all references to this publisher in movie objects
+Director.destroy = function (name) {
+    const director = Director.instances[name];
+    // delete all references to this director in movie objects
     for (let key of Object.keys(Movie.instances)) {
         const movie = Movie.instances[key];
-        if (movie.publisher === publisher) {
-            delete movie._publisher;  // delete the slot
+        if (movie.director === director) {
+            delete movie._director;  // delete the slot
             console.log(`Movie ${movie.isbn} updated.`);
         }
     }
-    // delete the publisher record
-    delete Publisher.instances[name];
+    // delete the director record
+    delete Director.instances[name];
     console.log(`Publisher ${name} deleted.`);
 };
 /**
- *  Load all publisher records and convert them to objects
+ *  Load all director records and convert them to objects
  */
-Publisher.retrieveAll = function () {
-    var publishers = {};
-    if (!localStorage["publishers"]) localStorage["publishers"] = "{}";
+Director.retrieveAll = function () {
+    var directors = {};
+    if (!localStorage["directors"]) localStorage["directors"] = "{}";
     try {
-        publishers = JSON.parse(localStorage["publishers"]);
+        directors = JSON.parse(localStorage["directors"]);
     } catch (e) {
         console.log("Error when reading from Local Storage\n" + e);
         return;
     }
-    for (let publName of Object.keys(publishers)) {
+    for (let publName of Object.keys(directors)) {
         try {
-            Publisher.instances[publName] = new Publisher(publishers[publName]);
+            Director.instances[publName] = new Director(directors[publName]);
         } catch (e) {
-            console.log(`${e.constructor.name} while deserializing publisher ${publName}: ${e.message}`);
+            console.log(`${e.constructor.name} while deserializing director ${publName}: ${e.message}`);
         }
     }
-    console.log(`${Object.keys(publishers).length} publisher records loaded.`);
+    console.log(`${Object.keys(directors).length} director records loaded.`);
 };
 /**
- *  Save all publisher objects as rows
+ *  Save all director objects as rows
  */
-Publisher.saveAll = function () {
-    const nmrOfPubl = Object.keys(Publisher.instances).length;
+Director.saveAll = function () {
+    const nmrOfPubl = Object.keys(Director.instances).length;
     try {
-        localStorage["publishers"] = JSON.stringify(Publisher.instances);
-        console.log(`${nmrOfPubl} publisher records saved.`);
+        localStorage["directors"] = JSON.stringify(Director.instances);
+        console.log(`${nmrOfPubl} director records saved.`);
     } catch (e) {
         console.error("Error when writing to Local Storage\n" + e);
     }
 };
 
-export default Publisher;
+export default Director;

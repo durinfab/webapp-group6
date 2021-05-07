@@ -2,8 +2,8 @@
  * @fileOverview  Auxiliary data management procedures
  * @author Gerd Wagner
  */
-import Author from "../m/Author.mjs";
-import Publisher from "../m/Publisher.mjs";
+import Actor from "../m/Actor.mjs";
+import Director from "../m/Director.mjs";
 import Movie from "../m/Movie.mjs";
 
 /*******************************************
@@ -14,34 +14,34 @@ import Movie from "../m/Movie.mjs";
  */
 function generateTestData() {
     try {
-        Author.instances["1"] = new Author({
+        Actor.instances["1"] = new Actor({
             authorId: 1,
             name: "Daniel Dennett"
         });
-        Author.instances["2"] = new Author({
+        Actor.instances["2"] = new Actor({
             authorId: 2,
             name: "Douglas Hofstadter"
         });
-        Author.instances["3"] = new Author({
+        Actor.instances["3"] = new Actor({
             authorId: 3,
             name: "Immanuel Kant"
         });
-        Author.saveAll();
-        Publisher.instances["Bantam Movies"] = new Publisher({
+        Actor.saveAll();
+        Director.instances["Bantam Movies"] = new Director({
             name: "Bantam Movies",
             address: "New York, USA"
         });
-        Publisher.instances["Basic Movies"] = new Publisher({
+        Director.instances["Basic Movies"] = new Director({
             name: "Basic Movies",
             address: "New York, USA"
         });
-        Publisher.saveAll();
+        Director.saveAll();
         Movie.instances["0553345842"] = new Movie({
             isbn: "0553345842",
             title: "The Mind's I",
             year: 1982,
             authorIdRefs: [1, 2],
-            publisher_id: "Bantam Movies"
+            directorId: "Bantam Movies"
         });
         Movie.instances["1463794762"] = new Movie({
             isbn: "1463794762",
@@ -60,7 +60,7 @@ function generateTestData() {
             title: "I Am A Strange Loop",
             year: 2000,
             authorIdRefs: [2],
-            publisher_id: "Basic Movies"
+            directorId: "Basic Movies"
         });
         Movie.saveAll();
     } catch (e) {
@@ -74,10 +74,10 @@ function generateTestData() {
 function clearData() {
     if (confirm("Do you really want to delete the entire database?")) {
         try {
-            Author.instances = {};
+            Actor.instances = {};
             localStorage["authors"] = "{}";
-            Publisher.instances = {};
-            localStorage["publishers"] = "{}";
+            Director.instances = {};
+            localStorage["directors"] = "{}";
             Movie.instances = {};
             localStorage["movies"] = "{}";
             console.log("All data cleared.");
