@@ -20,85 +20,150 @@ import {
 class Movie {
     // using a record parameter with ES6 function parameter destructuring
     constructor({
-                    isbn, title, year, authors, authorIdRefs,
-                    publisher, publisher_id
+                    movieid, title, releaseDate, director,
                 }) {
-        this.isbn = isbn;
+        this.movieid = movieid;
         this.title = title;
-        this.year = year;
+        this.releaseDate = releaseDate;
         // assign object references or ID references (to be converted in setter)
-        this.authors = authors || authorIdRefs;
-        if (publisher || publisher_id) {
-            this.publisher = publisher || publisher_id;
-        }
+        this.director = director || directorIdRefs;
+        this.actors = actors || actors_id;
     }
 
-    get isbn() {
-        return this._isbn;
+    get movieid() {
+        return this._movieid;
+    }
+    get title() {
+        return this._title;
+    }
+    get releaseDate() {
+        return this._releaseDate;
+    }
+    get director() {
+        return this._director;
+    }
+    get actors() {
+         this._actors;
     }
 
-    static checkIsbn(isbn) {
-        if (!isbn) return new NoConstraintViolation();
-        else if (typeof isbn !== "string" || isbn.trim() === "") {
-            return new RangeConstraintViolation(
-                "The ISBN must be a non-empty string!");
-        } else if (!/\b\d{9}(\d|X)\b/.test(isbn)) {
-            return new PatternConstraintViolation("The ISBN must be " +
-                "a 10-digit string or a 9-digit string followed by 'X'!");
+    static validateDate = function (date) {
+        //checks if date is valid. Returns true if the date is valid
+        let stringDate = Movie.dateToString(date);
+        if(date === ""){
+            return new UniquenessConstraintViolation(
+                "ERROR: Release date is not valid. Use this format: dd.mm.yyyy!");
         } else {
-            return new NoConstraintViolation();
-        }
-    }
+            //test invalid date layout
+            let count = (stringDate.match(/\./g) || []).length;
+            const array = Array.from(date);
 
-    static checkIsbnAsId(isbn) {
-        var validationResult = Movie.checkIsbn(isbn);
-        if ((validationResult instanceof NoConstraintViolation)) {
-            if (!isbn) {
-                validationResult = new MandatoryValueConstraintViolation(
-                    "A value for the ISBN must be provided!");
-            } else if (Movie.instances[isbn]) {
-                validationResult = new UniquenessConstraintViolation(
-                    `There is already a movie record with ISBN ${isbn}`);
-            } else {
-                validationResult = new NoConstraintViolation();
+            //check for dots in the date string
+            if(count !== 2 || array[2] !== '.' || array[5] !== '.' || date.length !== 10){
+                return new PatternConstraintViolation(
+                    "ERROR: Release date is not valid. Use this format: dd.mm.yyyy!");
+            }
+
+            //check for valid month and day
+            let day = array[0] + array[1];
+            let month = array[3] + array[4];
+            let year = array[6] + array[7] + array[8] + array[9];
+
+            //check if day is in range
+            if(day > 31 || day < 0 || month > 12 || month < 1){
+                return new PatternConstraintViolation(
+                    "ERROR: Release date is not valid!");
+            }
+
+            //check if date is too old
+            if(year < 1895){
+                return new PatternConstraintViolation('ERROR: Release date is too old!');
+            }
+
+            //check if date is is in the future
+            if(year >= nextYear()){
+                return new PatternConstraintViolation('ERROR: Release date is too new!');
+            }
+
+            //if date is on the edge, check month and day
+            if(parseInt(year) === 1895){
+                if(parseInt(month) < 12){
+                    return new PatternConstraintViolation('ERROR: Release date is too old!');
+                }
+                if(parseInt(day) < 28){
+                    return new PatternConstraintViolation('ERROR: Release date is too old!');
+                }
             }
         }
-        return validationResult;
+        return new NoConstraintViolation();
     }
 
-    set isbn(n) {
-        const validationResult = Movie.checkIsbnAsId(n);
+    //Validate movie id from param and a
+    static validateMovieID = function(movieid) {
+        if(!isIntegerOrIntegerString(movieid)) {
+            return new RangeConstraintViolation(
+                "ERROR: Movie ID " + movieid + " is not a number!");
+        }
+        if(movieid < 0) {
+            return new RangeConstraintViolation(
+                "ERROR: Movie ID is not positive!");
+        }
+        if(isMovieIDEmpty(movieid)){
+            return new MandatoryValueConstraintViolation(
+                "ERROR: A value for the MovieID must be provided!");
+        }
+        if (isMovieIDUsed(movieid)) {
+            return new UniquenessConstraintViolation(
+                "ERROR: There is already a Movie record with this Movie ID!");
+        }
+        return new NoConstraintViolation();
+    }
+
+    //validate Title
+    static validateTitle = function(title) {
+        if(!isNonEmptyString(title)) {
+            return new RangeConstraintViolation(
+                "ERROR: The title must be a non-empty string!");
+        }
+        if(isTitleEmpty(title)){
+            return new MandatoryValueConstraintViolation(
+                "ERROR: A title must be provided!");
+        }
+        if (checkTitleLength(title)) {
+            return new StringLengthConstraintViolation(
+                "ERROR: The given title is too long!");
+        }
+        return new NoConstraintViolation();
+    }
+
+    set movieid( movieid) {
+        const validationResult = Movie.validateMovieID(movieid);
         if (validationResult instanceof NoConstraintViolation) {
-            this._isbn = n;
+            this._movieid = movieid;
         } else {
             throw validationResult;
         }
     }
 
-    get title() {
-        return this._title;
+    set releaseDate( releaseDate) {
+        const validationResult = Movie.validateDate(releaseDate);
+        if (validationResult instanceof NoConstraintViolation) {
+            this._releaseDate = Movie.stringToDate(releaseDate);
+        } else {
+            throw validationResult;
+        }
     }
 
-    set title(t) {
-        //SIMPLIFIED CODE: no validation with Movie.checkTitle
-        this._title = t;
-    }
-
-    get year() {
-        return this._year;
-    }
-
-    set year(y) {
-        //SIMPLIFIED CODE: no validation with Movie.checkYear
-        this._year = parseInt(y);
-    }
-
-    get publisher() {
-        return this._publisher;
+    set title( title) {
+        const validationResult = Movie.validateTitle(title);
+        if (validationResult instanceof NoConstraintViolation) {
+            this._title = title;
+        } else {
+            throw validationResult;
+        }
     }
 
     static checkPublisher(publisher_id) {
-        var validationResult = null;
+        let validationResult;
         if (!publisher_id) {
             validationResult = new NoConstraintViolation();  // optional
         } else {
