@@ -14,55 +14,42 @@ import Movie from "../m/Movie.mjs";
  */
 function generateTestData() {
     try {
-        Actor.instances["1"] = new Actor({
-            authorId: 1,
-            name: "Daniel Dennett"
+        /*~~~Persons~~~*/
+        Persons.instances["1"] = new Actor({authorId: 1, name: "Stephen Frears"});
+        Persons.instances["2"] = new Actor({authorId: 1, name: "George Lucas"});
+        Persons.instances["3"] = new Actor({authorId: 1, name: "Quentin Tarantino"});
+        //Persons.instances["4"] = new Actor({authorId: 1, name: " "});
+        Persons.instances["5"] = new Actor({authorId: 1, name: "Uma Thurman"});
+        Persons.instances["6"] = new Actor({authorId: 1, name: "John Travolta"});
+        Persons.instances["7"] = new Actor({authorId: 1, name: "Ewan McGregor"});
+        Persons.instances["8"] = new Actor({authorId: 1, name: "Natalie Portman"});
+        Persons.instances["9"] = new Actor({authorId: 1, name: "Keanu Reeves"});
+
+        /*~~~Movies~~~*/
+        Movie.instances[1] = new Movie({
+            movieId: 1,
+            title: "Pulp Fiction",
+            releaseDate:"1994-05-12",
+            directorId: 3,
+            actorIdRefs: [3, 5, 6]
         });
-        Actor.instances["2"] = new Actor({
-            authorId: 2,
-            name: "Douglas Hofstadter"
+        Movie.instances[2] = new Movie({
+            movieId: 2,
+            title: "Star Wars",
+            releaseDate:"1977-05-25",
+            directorId: 2,
+            actorIdRefs: [7, 8]
         });
-        Actor.instances["3"] = new Actor({
-            authorId: 3,
-            name: "Immanuel Kant"
-        });
-        Actor.saveAll();
-        Director.instances["Bantam Movies"] = new Director({
-            name: "Bantam Movies",
-            address: "New York, USA"
-        });
-        Director.instances["Basic Movies"] = new Director({
-            name: "Basic Movies",
-            address: "New York, USA"
-        });
-        Director.saveAll();
-        Movie.instances["0553345842"] = new Movie({
-            isbn: "0553345842",
-            title: "The Mind's I",
-            year: 1982,
-            authorIdRefs: [1, 2],
-            directorId: "Bantam Movies"
-        });
-        Movie.instances["1463794762"] = new Movie({
-            isbn: "1463794762",
-            title: "The Critique of Pure Reason",
-            year: 2011,
-            authorIdRefs: [3]
-        });
-        Movie.instances["1928565379"] = new Movie({
-            isbn: "1928565379",
-            title: "The Critique of Practical Reason",
-            year: 2009,
-            authorIdRefs: [3]
-        });
-        Movie.instances["0465030793"] = new Movie({
-            isbn: "0465030793",
-            title: "I Am A Strange Loop",
-            year: 2000,
-            authorIdRefs: [2],
-            directorId: "Basic Movies"
+        Movie.instances[3] = new Movie({
+            movieId: 3,
+            title: "Dangerous Liaisons",
+            releaseDate:"1988-12-16",
+            directorId: 1,
+            actorIdRefs: [9, 5]
+
         });
         Movie.saveAll();
+
     } catch (e) {
         console.log(`${e.constructor.name}: ${e.message}`);
     }

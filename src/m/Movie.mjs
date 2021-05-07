@@ -6,7 +6,7 @@
  */
 import Actor from "./Actor.mjs";
 import Director from "./Director.mjs";
-import {cloneObject} from "../../lib/util.mjs";
+import {cloneObject, isIntegerOrIntegerString} from "../../lib/util.mjs";
 import {
     NoConstraintViolation, MandatoryValueConstraintViolation,
     RangeConstraintViolation, PatternConstraintViolation, UniquenessConstraintViolation
