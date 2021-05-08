@@ -2,10 +2,10 @@
  * @fileOverview  The model class Movie with attribute definitions, (class-level)
  *                check methods, setter methods, and the special methods saveAll
  *                and retrieveAll
- * @author Gerd Wagner
+ * @person Gerd Wagner
  */
-import Actor from "./Actor.mjs";
-import Director from "./Director.mjs";
+import Person from "./Person.mjs";
+// import Director from "./Director.mjs";
 import {cloneObject, isIntegerOrIntegerString} from "../../lib/util.mjs";
 import {
     NoConstraintViolation, MandatoryValueConstraintViolation,
@@ -187,30 +187,30 @@ class Movie {
         }
     }
 
-    get authors() {
-        return this._authors;
+    get persons() {
+        return this._persons;
     }
 
     static checkActor(actorId) {
         var validationResult = null;
         if (!actorId) {
-            // author(s) are optional
+            // person(s) are optional
             validationResult = new NoConstraintViolation();
         } else {
             // invoke foreign key constraint check
-            validationResult = Actor.checkActorIdAsIdRef(actorId);
+            validationResult = Person.checkActorIdAsIdRef(actorId);
         }
         return validationResult;
     }
 
     addActor(a) {
         // a can be an ID reference or an object reference
-        const actorId = (typeof a !== "object") ? parseInt(a) : a.authorId;
+        const actorId = (typeof a !== "object") ? parseInt(a) : a.personId;
         const validationResult = Movie.checkActor(actorId);
         if (actorId && validationResult instanceof NoConstraintViolation) {
-            // add the new author reference
+            // add the new person reference
             const key = String(actorId);
-            this._authors[key] = Actor.instances[key];
+            this._persons[key] = Person.instances[key];
         } else {
             throw validationResult;
         }
@@ -218,18 +218,18 @@ class Movie {
 
     removeActor(a) {
         // a can be an ID reference or an object reference
-        const actorId = (typeof a !== "object") ? parseInt(a) : a.authorId;
+        const actorId = (typeof a !== "object") ? parseInt(a) : a.personId;
         const validationResult = Movie.checkActor(actorId);
         if (validationResult instanceof NoConstraintViolation) {
-            // delete the author reference
-            delete this._authors[String(actorId)];
+            // delete the person reference
+            delete this._persons[String(actorId)];
         } else {
             throw validationResult;
         }
     }
 
-    set authors(a) {
-        this._authors = {};
+    set persons(a) {
+        this._persons = {};
         if (Array.isArray(a)) {  // array of IdRefs
             for (const idRef of a) {
                 this.addActor(idRef);
@@ -245,7 +245,7 @@ class Movie {
     toString() {
         var movieStr = `Movie{ ISBN: ${this.isbn}, title: ${this.title}, year: ${this.year}`;
         if (this.director) movieStr += `, director: ${this.director.name}`;
-        return `${movieStr}, authors: ${Object.keys(this.authors).join(",")} }`;
+        return `${movieStr}, persons: ${Object.keys(this.persons).join(",")} }`;
     }
 
     // Convert object to record with ID references
@@ -259,11 +259,11 @@ class Movie {
                     // convert object reference to ID reference
                     if (this._director) rec.directorId = this._director.name;
                     break;
-                case "_authors":
+                case "_persons":
                     // convert the map of object references to a list of ID references
-                    rec.authorIdRefs = [];
-                    for (const authorIdStr of Object.keys(this.authors)) {
-                        rec.authorIdRefs.push(parseInt(authorIdStr));
+                    rec.personIdRefs = [];
+                    for (const personIdStr of Object.keys(this.persons)) {
+                        rec.personIdRefs.push(parseInt(personIdStr));
                     }
                     break;
                 default:
@@ -307,7 +307,7 @@ Movie.add = function (slots) {
  */
 Movie.update = function ({
                              isbn, title, year,
-                             authorIdRefsToAdd, authorIdRefsToRemove, directorId
+                             personIdRefsToAdd, personIdRefsToRemove, directorId
                          }) {
     const movie = Movie.instances[isbn],
         objectBeforeUpdate = cloneObject(movie);  // save the current state of movie
@@ -321,15 +321,15 @@ Movie.update = function ({
             movie.year = year;
             updatedProperties.push("year");
         }
-        if (authorIdRefsToAdd) {
-            updatedProperties.push("authors(added)");
-            for (let authorIdRef of authorIdRefsToAdd) {
-                movie.addActor(authorIdRef);
+        if (personIdRefsToAdd) {
+            updatedProperties.push("persons(added)");
+            for (let personIdRef of personIdRefsToAdd) {
+                movie.addActor(personIdRef);
             }
         }
-        if (authorIdRefsToRemove) {
-            updatedProperties.push("authors(removed)");
-            for (let actorId of authorIdRefsToRemove) {
+        if (personIdRefsToRemove) {
+            updatedProperties.push("persons(removed)");
+            for (let actorId of personIdRefsToRemove) {
                 movie.removeActor(actorId);
             }
         }

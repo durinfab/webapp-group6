@@ -1,12 +1,12 @@
 /**
  * @fileOverview  View code of UI for managing Movie data
- * @author Gerd Wagner
+ * @person Gerd Wagner
  */
 /***************************************************************
  Import classes, datatypes and utility procedures
  ***************************************************************/
-import Actor from "../m/Actor.mjs";
-import Director from "../m/Director.mjs";
+import Person from "../m/Person.mjs";
+// import Director from "../m/Director.mjs";
 import Movie from "../m/Movie.mjs";
 import {fillSelectWithOptions, createListFromMap, createMultipleChoiceWidget}
     from "../../lib/util.mjs";
@@ -14,7 +14,7 @@ import {fillSelectWithOptions, createListFromMap, createMultipleChoiceWidget}
 /***************************************************************
  Load data
  ***************************************************************/
-Actor.retrieveAll();
+Person.retrieveAll();
 Director.retrieveAll();
 Movie.retrieveAll();
 
@@ -46,8 +46,8 @@ document.getElementById("retrieveAndListAll")
         tableBodyEl.innerHTML = "";  // drop old content
         for (const key of Object.keys(Movie.instances)) {
             const movie = Movie.instances[key];
-            // create list of authors for this movie
-            const authListEl = createListFromMap(movie.authors, "name");
+            // create list of persons for this movie
+            const authListEl = createListFromMap(movie.persons, "name");
             const row = tableBodyEl.insertRow();
             row.insertCell().textContent = movie.isbn;
             row.insertCell().textContent = movie.title;
@@ -70,9 +70,9 @@ document.getElementById("create").addEventListener("click", function () {
     document.getElementById("Movie-C").style.display = "block";
     // set up a single selection list for selecting a director
     fillSelectWithOptions(selectPublisherEl, Director.instances, "name");
-    // set up a multiple selection list for selecting authors
-    fillSelectWithOptions(selectActorsEl, Actor.instances,
-        "authorId", {displayProp: "name"});
+    // set up a multiple selection list for selecting persons
+    fillSelectWithOptions(selectActorsEl, Person.instances,
+        "personId", {displayProp: "name"});
     createFormEl.reset();
 });
 // set up event handlers for responsive constraint validation
@@ -89,24 +89,24 @@ createFormEl["commit"].addEventListener("click", function () {
         isbn: createFormEl.isbn.value,
         title: createFormEl.title.value,
         year: createFormEl.year.value,
-        authorIdRefs: [],
+        personIdRefs: [],
         directorId: createFormEl.selectPublisher.value
     };
     // check all input fields and show error messages
     createFormEl.isbn.setCustomValidity(
         Movie.checkIsbnAsId(slots.isbn).message);
     /* SIMPLIFIED CODE: no before-submit validation of name */
-    // get the list of selected authors
+    // get the list of selected persons
     const selAuthOptions = createFormEl.selectActors.selectedOptions;
-    // check the mandatory value constraint for authors
+    // check the mandatory value constraint for persons
     createFormEl.selectActors.setCustomValidity(
-        selAuthOptions.length > 0 ? "" : "No author selected!"
+        selAuthOptions.length > 0 ? "" : "No person selected!"
     );
     // save the input data only if all form fields are valid
     if (createFormEl.checkValidity()) {
-        // construct a list of author ID references
+        // construct a list of person ID references
         for (const opt of selAuthOptions) {
-            slots.authorIdRefs.push(opt.value);
+            slots.personIdRefs.push(opt.value);
         }
         Movie.add(slots);
     }
@@ -142,9 +142,9 @@ selectUpdateMovieEl.addEventListener("change", function () {
         formEl.year.value = movie.year;
         // set up the associated director selection list
         fillSelectWithOptions(selectPublisherEl, Director.instances, "name");
-        // set up the associated authors selection widget
-        createMultipleChoiceWidget(selectActorsWidget, movie.authors,
-            Actor.instances, "authorId", "name", 1);  // minCard=1
+        // set up the associated persons selection widget
+        createMultipleChoiceWidget(selectActorsWidget, movie.persons,
+            Person.instances, "personId", "name", 1);  // minCard=1
         // assign associated director as the selected option to select element
         if (movie.director) formEl.selectPublisher.value = movie.director.name;
         saveButton.disabled = false;
@@ -171,22 +171,22 @@ updateFormEl["commit"].addEventListener("click", function () {
     /* MISSING CODE */
     // commit the update only if all form field values are valid
     if (updateFormEl.checkValidity()) {
-        // construct authorIdRefs-ToAdd/ToRemove lists from the association list
-        const authorIdRefsToAdd = [], authorIdRefsToRemove = [];
+        // construct personIdRefs-ToAdd/ToRemove lists from the association list
+        const personIdRefsToAdd = [], personIdRefsToRemove = [];
         for (const mcListItemEl of multiChoiceListEl.children) {
             if (mcListItemEl.classList.contains("removed")) {
-                authorIdRefsToRemove.push(mcListItemEl.getAttribute("data-value"));
+                personIdRefsToRemove.push(mcListItemEl.getAttribute("data-value"));
             }
             if (mcListItemEl.classList.contains("added")) {
-                authorIdRefsToAdd.push(mcListItemEl.getAttribute("data-value"));
+                personIdRefsToAdd.push(mcListItemEl.getAttribute("data-value"));
             }
         }
         // if the add/remove list is non-empty create a corresponding slot
-        if (authorIdRefsToRemove.length > 0) {
-            slots.authorIdRefsToRemove = authorIdRefsToRemove;
+        if (personIdRefsToRemove.length > 0) {
+            slots.personIdRefsToRemove = personIdRefsToRemove;
         }
-        if (authorIdRefsToAdd.length > 0) {
-            slots.authorIdRefsToAdd = authorIdRefsToAdd;
+        if (personIdRefsToAdd.length > 0) {
+            slots.personIdRefsToAdd = personIdRefsToAdd;
         }
     }
     Movie.update(slots);
@@ -204,7 +204,7 @@ document.getElementById("destroy")
     .addEventListener("click", function () {
         document.getElementById("Movie-M").style.display = "none";
         document.getElementById("Movie-D").style.display = "block";
-        // set up the author selection list
+        // set up the person selection list
         fillSelectWithOptions(selectDeleteMovieEl, Movie.instances,
             "isbn", {displayProp: "title"});
         deleteFormEl.reset();

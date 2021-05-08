@@ -1,19 +1,19 @@
 /**
- * @fileOverview  View code of UI for managing Actor data
- * @author Gerd Wagner
+ * @fileOverview  View code of UI for managing Person data
+ * @person Gerd Wagner
  */
 /***************************************************************
  Import classes, datatypes and utility procedures
  ***************************************************************/
-import Actor from "../m/Actor.mjs";
-import Director from "../m/Director.mjs";
+import Person from "../m/Person.mjs";
+// import Director from "../m/Director.mjs";
 import Movie from "../m/Movie.mjs";
 import {fillSelectWithOptions} from "../../lib/util.mjs";
 
 /***************************************************************
  Load data
  ***************************************************************/
-Actor.retrieveAll();
+Person.retrieveAll();
 Director.retrieveAll();
 Movie.retrieveAll();
 
@@ -35,8 +35,8 @@ for (let frm of document.querySelectorAll("section > form")) {
 }
 // save data when leaving the page
 window.addEventListener("beforeunload", function () {
-    Actor.saveAll();
-    // also save movies because movies may be deleted when an author is deleted
+    Person.saveAll();
+    // also save movies because movies may be deleted when an person is deleted
     Movie.saveAll();
 });
 
@@ -45,93 +45,93 @@ window.addEventListener("beforeunload", function () {
  **********************************************/
 document.getElementById("retrieveAndListAll")
     .addEventListener("click", function () {
-        const tableBodyEl = document.querySelector("section#Actor-R > table > tbody");
+        const tableBodyEl = document.querySelector("section#Person-R > table > tbody");
         tableBodyEl.innerHTML = "";
-        for (let key of Object.keys(Actor.instances)) {
-            const author = Actor.instances[key];
+        for (let key of Object.keys(Person.instances)) {
+            const person = Person.instances[key];
             const row = tableBodyEl.insertRow();
-            row.insertCell().textContent = author.authorId;
-            row.insertCell().textContent = author.name;
+            row.insertCell().textContent = person.personId;
+            row.insertCell().textContent = person.name;
         }
-        document.getElementById("Actor-M").style.display = "none";
-        document.getElementById("Actor-R").style.display = "block";
+        document.getElementById("Person-M").style.display = "none";
+        document.getElementById("Person-R").style.display = "block";
     });
 
 /**********************************************
- Use case Create Actor
+ Use case Create Person
  **********************************************/
-const createFormEl = document.querySelector("section#Actor-C > form");
+const createFormEl = document.querySelector("section#Person-C > form");
 document.getElementById("create")
     .addEventListener("click", function () {
-        document.getElementById("Actor-M").style.display = "none";
-        document.getElementById("Actor-C").style.display = "block";
+        document.getElementById("Person-M").style.display = "none";
+        document.getElementById("Person-C").style.display = "block";
         createFormEl.reset();
     });
 // set up event handlers for responsive constraint validation
-createFormEl.authorId.addEventListener("input", function () {
-    createFormEl.authorId.setCustomValidity(
-        Actor.checkActorIdAsId(createFormEl.authorId.value).message);
+createFormEl.personId.addEventListener("input", function () {
+    createFormEl.personId.setCustomValidity(
+        Person.checkActorIdAsId(createFormEl.personId.value).message);
 });
 /* SIMPLIFIED CODE: no responsive validation of name */
 
 // handle Save button click events
 createFormEl["commit"].addEventListener("click", function () {
     const slots = {
-        authorId: createFormEl.authorId.value,
+        personId: createFormEl.personId.value,
         name: createFormEl.name.value
     };
     // check all input fields and show error messages
-    createFormEl.authorId.setCustomValidity(
-        Actor.checkActorIdAsId(slots.authorId).message);
+    createFormEl.personId.setCustomValidity(
+        Person.checkActorIdAsId(slots.personId).message);
     /* SIMPLIFIED CODE: no before-submit validation of name */
     // save the input data only if all form fields are valid
-    if (createFormEl.checkValidity()) Actor.add(slots);
+    if (createFormEl.checkValidity()) Person.add(slots);
 });
 
 /**********************************************
- Use case Update Actor
+ Use case Update Person
  **********************************************/
-const updateFormEl = document.querySelector("section#Actor-U > form");
+const updateFormEl = document.querySelector("section#Person-U > form");
 const selectUpdateActorEl = updateFormEl.selectActor;
 document.getElementById("update")
     .addEventListener("click", function () {
-        document.getElementById("Actor-M").style.display = "none";
-        document.getElementById("Actor-U").style.display = "block";
-        // set up the author selection list
-        fillSelectWithOptions(selectUpdateActorEl, Actor.instances,
-            "authorId", {displayProp: "name"});
+        document.getElementById("Person-M").style.display = "none";
+        document.getElementById("Person-U").style.display = "block";
+        // set up the person selection list
+        fillSelectWithOptions(selectUpdateActorEl, Person.instances,
+            "personId", {displayProp: "name"});
         updateFormEl.reset();
     });
 selectUpdateActorEl.addEventListener("change", handleActorSelectChangeEvent);
 
 // handle Save button click events
 updateFormEl["commit"].addEventListener("click", function () {
-    const authorIdRef = selectUpdateActorEl.value;
-    if (!authorIdRef) return;
+    const personIdRef = selectUpdateActorEl.value;
+    if (!personIdRef) return;
     const slots = {
-        authorId: updateFormEl.authorId.value,
+        personId: updateFormEl.personId.value,
         name: updateFormEl.name.value
     }
     // check all property constraints
     /* SIMPLIFIED CODE: no before-save validation of name */
     // save the input data only if all of the form fields are valid
     if (selectUpdateActorEl.checkValidity()) {
-        Actor.update(slots);
-        // update the author selection list's option element
+        Person.update(slots);
+        // update the person selection list's option element
         selectUpdateActorEl.options[selectUpdateActorEl.selectedIndex].text = slots.name;
     }
 });
 
 /**
- * handle author selection events
- * when a author is selected, populate the form with the data of the selected author
+ * handle person selection events
+ * when a person is selected, populate the form with the data of the selected person
  */
 function handleActorSelectChangeEvent() {
     var key = "", auth = null;
     key = updateFormEl.selectActor.value;
     if (key) {
-        auth = Actor.instances[key];
-        updateFormEl.authorId.value = auth.authorId;
+        auth = Person.instances[key];
+        updateFormEl.personId.value = auth.personId;
         updateFormEl.name.value = auth.name;
     } else {
         updateFormEl.reset();
@@ -139,25 +139,25 @@ function handleActorSelectChangeEvent() {
 }
 
 /**********************************************
- Use case Delete Actor
+ Use case Delete Person
  **********************************************/
-const deleteFormEl = document.querySelector("section#Actor-D > form");
+const deleteFormEl = document.querySelector("section#Person-D > form");
 const selectDeleteActorEl = deleteFormEl.selectActor;
 document.getElementById("destroy")
     .addEventListener("click", function () {
-        document.getElementById("Actor-M").style.display = "none";
-        document.getElementById("Actor-D").style.display = "block";
-        // set up the author selection list
-        fillSelectWithOptions(selectDeleteActorEl, Actor.instances,
-            "authorId", {displayProp: "name"});
+        document.getElementById("Person-M").style.display = "none";
+        document.getElementById("Person-D").style.display = "block";
+        // set up the person selection list
+        fillSelectWithOptions(selectDeleteActorEl, Person.instances,
+            "personId", {displayProp: "name"});
         deleteFormEl.reset();
     });
 // handle Delete button click events
 deleteFormEl["commit"].addEventListener("click", function () {
-    const authorIdRef = selectDeleteActorEl.value;
-    if (!authorIdRef) return;
-    if (confirm("Do you really want to delete this author?")) {
-        Actor.destroy(authorIdRef);
+    const personIdRef = selectDeleteActorEl.value;
+    if (!personIdRef) return;
+    if (confirm("Do you really want to delete this person?")) {
+        Person.destroy(personIdRef);
         selectDeleteActorEl.remove(deleteFormEl.selectActor.selectedIndex);
     }
 });
@@ -166,12 +166,12 @@ deleteFormEl["commit"].addEventListener("click", function () {
  * Refresh the Manage Actors Data UI
  **********************************************/
 function refreshManageDataUI() {
-    // show the manage author UI and hide the other UIs
-    document.getElementById("Actor-M").style.display = "block";
-    document.getElementById("Actor-R").style.display = "none";
-    document.getElementById("Actor-C").style.display = "none";
-    document.getElementById("Actor-U").style.display = "none";
-    document.getElementById("Actor-D").style.display = "none";
+    // show the manage person UI and hide the other UIs
+    document.getElementById("Person-M").style.display = "block";
+    document.getElementById("Person-R").style.display = "none";
+    document.getElementById("Person-C").style.display = "none";
+    document.getElementById("Person-U").style.display = "none";
+    document.getElementById("Person-D").style.display = "none";
 }
 
 // Set up Manage Actors UI

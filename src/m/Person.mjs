@@ -1,7 +1,7 @@
 /**
- * @fileOverview  The model class Actor with property definitions, (class-level)
+ * @fileOverview  The model class Person with property definitions, (class-level)
  *                check methods, setter methods, and the special methods saveAll and retrieveAll
- * @author Gerd Wagner
+ * @person Gerd Wagner
  */
 import Movie from "./Movie.mjs";
 import {cloneObject} from "../../lib/util.mjs";
@@ -13,20 +13,20 @@ import {
     from "../../lib/errorTypes.mjs";
 
 /**
- * The class Actor
+ * The class Person
  * @class
  * @param {object} slots - Object creation slots.
  */
-class Actor {
+class Person {
     // using a single record parameter with ES6 function parameter destructuring
-    constructor({authorId, name}) {
+    constructor({personId, name}) {
         // assign properties by invoking implicit setters
-        this.authorId = authorId;  // number (integer)
+        this.personId = personId;  // number (integer)
         this.name = name;  // string
     }
 
-    get authorId() {
-        return this._authorId;
+    get personId() {
+        return this._personId;
     }
 
     static checkActorId(id) {
@@ -35,7 +35,7 @@ class Actor {
         } else {
             id = parseInt(id);  // convert to integer
             if (isNaN(id) || !Number.isInteger(id) || id < 1) {
-                return new RangeConstraintViolation("The author ID must be a positive integer!");
+                return new RangeConstraintViolation("The person ID must be a positive integer!");
             } else {
                 return new NoConstraintViolation();
             }
@@ -43,16 +43,16 @@ class Actor {
     }
 
     static checkActorIdAsId(id) {
-        var constraintViolation = Actor.checkActorId(id);
+        var constraintViolation = Person.checkActorId(id);
         if ((constraintViolation instanceof NoConstraintViolation)) {
             // convert to integer
             id = parseInt(id);
             if (isNaN(id)) {
                 return new MandatoryValueConstraintViolation(
-                    "A positive integer value for the author ID is required!");
-            } else if (Actor.instances[String(id)]) {  // convert to string if number
+                    "A positive integer value for the person ID is required!");
+            } else if (Person.instances[String(id)]) {  // convert to string if number
                 constraintViolation = new UniquenessConstraintViolation(
-                    "There is already a author record with this author ID!");
+                    "There is already a person record with this person ID!");
             } else {
                 constraintViolation = new NoConstraintViolation();
             }
@@ -61,20 +61,20 @@ class Actor {
     }
 
     static checkActorIdAsIdRef(id) {
-        var constraintViolation = Actor.checkActorId(id);
+        var constraintViolation = Person.checkActorId(id);
         if ((constraintViolation instanceof NoConstraintViolation) && id) {
-            if (!Actor.instances[String(id)]) {
+            if (!Person.instances[String(id)]) {
                 constraintViolation = new ReferentialIntegrityConstraintViolation(
-                    "There is no author record with this author ID!");
+                    "There is no person record with this person ID!");
             }
         }
         return constraintViolation;
     }
 
-    set authorId(id) {
-        const constraintViolation = Actor.checkActorIdAsId(id);
+    set personId(id) {
+        const constraintViolation = Person.checkActorIdAsId(id);
         if (constraintViolation instanceof NoConstraintViolation) {
-            this._authorId = parseInt(id);
+            this._personId = parseInt(id);
         } else {
             throw constraintViolation;
         }
@@ -85,7 +85,7 @@ class Actor {
     }
 
     set name(n) {
-        /*SIMPLIFIED CODE: no validation with Actor.checkName */
+        /*SIMPLIFIED CODE: no validation with Person.checkName */
         this._name = n;
     }
 
@@ -103,103 +103,103 @@ class Actor {
  *** Class-level ("static") properties ***************
  *****************************************************/
 // initially an empty collection (in the form of a map)
-Actor.instances = {};
+Person.instances = {};
 
 /**********************************************************
  ***  Class-level ("static") storage management methods ***
  **********************************************************/
 /**
- *  Create a new author record/object
+ *  Create a new person record/object
  */
-Actor.add = function (slots) {
-    var author = null;
+Person.add = function (slots) {
+    var person = null;
     try {
-        author = new Actor(slots);
+        person = new Person(slots);
     } catch (e) {
         console.log(`${e.constructor.name}: ${e.message}`);
-        author = null;
+        person = null;
     }
-    if (author) {
-        Actor.instances[author.authorId] = author;
-        console.log(`Saved: ${author.name}`);
+    if (person) {
+        Person.instances[person.personId] = person;
+        console.log(`Saved: ${person.name}`);
     }
 };
 /**
- *  Update an existing author record/object
+ *  Update an existing person record/object
  */
-Actor.update = function ({authorId, name}) {
-    const author = Actor.instances[String(authorId)],
-        objectBeforeUpdate = cloneObject(author);
+Person.update = function ({personId, name}) {
+    const person = Person.instances[String(personId)],
+        objectBeforeUpdate = cloneObject(person);
     var noConstraintViolated = true, ending = "", updatedProperties = [];
     try {
-        if (name && author.name !== name) {
-            author.name = name;
+        if (name && person.name !== name) {
+            person.name = name;
             updatedProperties.push("name");
         }
     } catch (e) {
         console.log(`${e.constructor.name}: ${e.message}`);
         noConstraintViolated = false;
         // restore object to its state before updating
-        Actor.instances[authorId] = objectBeforeUpdate;
+        Person.instances[personId] = objectBeforeUpdate;
     }
     if (noConstraintViolated) {
         if (updatedProperties.length > 0) {
             ending = updatedProperties.length > 1 ? "ies" : "y";
-            console.log(`Propert${ending} ${updatedProperties.toString()} modified for author ${name}`);
+            console.log(`Propert${ending} ${updatedProperties.toString()} modified for person ${name}`);
         } else {
-            console.log(`No property value changed for author ${name}!`);
+            console.log(`No property value changed for person ${name}!`);
         }
     }
 };
 /**
- *  Delete an author object/record
- *  Since the movie-author association is unidirectional, a linear search on all
- *  movies is required for being able to delete the author from the movies' authors.
+ *  Delete an person object/record
+ *  Since the movie-person association is unidirectional, a linear search on all
+ *  movies is required for being able to delete the person from the movies' persons.
  */
-Actor.destroy = function (authorId) {
-    const author = Actor.instances[authorId];
+Person.destroy = function (personId) {
+    const person = Person.instances[personId];
     // delete all dependent movie records
     for (const isbn of Object.keys(Movie.instances)) {
         const movie = Movie.instances[isbn];
-        if (movie.authors[authorId]) delete movie.authors[authorId];
+        if (movie.persons[personId]) delete movie.persons[personId];
     }
-    // delete the author object
-    delete Actor.instances[authorId];
-    console.log(`Actor ${author.name} deleted.`);
+    // delete the person object
+    delete Person.instances[personId];
+    console.log(`Actor ${person.name} deleted.`);
 };
 /**
- *  Load all author records and convert them to objects
+ *  Load all person records and convert them to objects
  */
-Actor.retrieveAll = function () {
-    var authors = {};
-    if (!localStorage["authors"]) localStorage["authors"] = "{}";
+Person.retrieveAll = function () {
+    var persons = {};
+    if (!localStorage["persons"]) localStorage["persons"] = "{}";
     try {
-        authors = JSON.parse(localStorage["authors"]);
+        persons = JSON.parse(localStorage["persons"]);
     } catch (e) {
         console.log("Error when reading from Local Storage\n" + e);
-        authors = {};
+        persons = {};
     }
-    for (const key of Object.keys(authors)) {
+    for (const key of Object.keys(persons)) {
         try {
             // convert record to (typed) object
-            Actor.instances[key] = new Actor(authors[key]);
+            Person.instances[key] = new Person(persons[key]);
         } catch (e) {
-            console.log(`${e.constructor.name} while deserializing author ${key}: ${e.message}`);
+            console.log(`${e.constructor.name} while deserializing person ${key}: ${e.message}`);
         }
     }
-    console.log(`${Object.keys(authors).length} author records loaded.`);
+    console.log(`${Object.keys(persons).length} person records loaded.`);
 };
 /**
- *  Save all author objects as records
+ *  Save all person objects as records
  */
-Actor.saveAll = function () {
-    const nmrOfActors = Object.keys(Actor.instances).length;
+Person.saveAll = function () {
+    const nmrOfActors = Object.keys(Person.instances).length;
     try {
-        localStorage["authors"] = JSON.stringify(Actor.instances);
-        console.log(`${nmrOfActors} author records saved.`);
+        localStorage["persons"] = JSON.stringify(Person.instances);
+        console.log(`${nmrOfActors} person records saved.`);
     } catch (e) {
         alert("Error when writing to Local Storage\n" + e);
     }
 };
 
-export default Actor;
+export default Person;

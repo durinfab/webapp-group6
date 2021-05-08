@@ -1,9 +1,9 @@
 /**
  * @fileOverview  Auxiliary data management procedures
- * @author Gerd Wagner
+ * @person Gerd Wagner
  */
-import Actor from "../m/Actor.mjs";
-import Director from "../m/Director.mjs";
+import Person from "../m/Person.mjs";
+// import Director from "../m/Director.mjs";
 import Movie from "../m/Movie.mjs";
 
 /*******************************************
@@ -15,15 +15,15 @@ import Movie from "../m/Movie.mjs";
 function generateTestData() {
     try {
         /*~~~Persons~~~*/
-        Persons.instances["1"] = new Actor({authorId: 1, name: "Stephen Frears"});
-        Persons.instances["2"] = new Actor({authorId: 1, name: "George Lucas"});
-        Persons.instances["3"] = new Actor({authorId: 1, name: "Quentin Tarantino"});
-        //Persons.instances["4"] = new Actor({authorId: 1, name: " "});
-        Persons.instances["5"] = new Actor({authorId: 1, name: "Uma Thurman"});
-        Persons.instances["6"] = new Actor({authorId: 1, name: "John Travolta"});
-        Persons.instances["7"] = new Actor({authorId: 1, name: "Ewan McGregor"});
-        Persons.instances["8"] = new Actor({authorId: 1, name: "Natalie Portman"});
-        Persons.instances["9"] = new Actor({authorId: 1, name: "Keanu Reeves"});
+        Persons.instances["1"] = new Person({personId: 1, name: "Stephen Frears"});
+        Persons.instances["2"] = new Person({personId: 1, name: "George Lucas"});
+        Persons.instances["3"] = new Person({personId: 1, name: "Quentin Tarantino"});
+        //Persons.instances["4"] = new Person({personId: 1, name: " "});
+        Persons.instances["5"] = new Person({personId: 1, name: "Uma Thurman"});
+        Persons.instances["6"] = new Person({personId: 1, name: "John Travolta"});
+        Persons.instances["7"] = new Person({personId: 1, name: "Ewan McGregor"});
+        Persons.instances["8"] = new Person({personId: 1, name: "Natalie Portman"});
+        Persons.instances["9"] = new Person({personId: 1, name: "Keanu Reeves"});
 
         /*~~~Movies~~~*/
         Movie.instances[1] = new Movie({
@@ -61,8 +61,8 @@ function generateTestData() {
 function clearData() {
     if (confirm("Do you really want to delete the entire database?")) {
         try {
-            Actor.instances = {};
-            localStorage["authors"] = "{}";
+            Person.instances = {};
+            localStorage["persons"] = "{}";
             Director.instances = {};
             localStorage["directors"] = "{}";
             Movie.instances = {};

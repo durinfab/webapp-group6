@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="css/normalize.css"/>
     <link rel="stylesheet" href="css/main.css"/>
 
-    <script src="src/v/authors.mjs" type="module"></script>
+    <script src="src/v/persons.mjs" type="module"></script>
 </head>
 <body>
 <header>
@@ -28,7 +28,7 @@
         </div>
         <nav>
             <ul>
-                <li><a href="authors.html">Actors</a></li>
+                <li><a href="persons.html">Actors</a></li>
                 <li><a href="directors.html">Publishers</a></li>
                 <li><a href="movies.html">Movies</a></li>
             </ul>
@@ -40,21 +40,21 @@
         <!-- ======================================================= -->
         <section id="Actor-M" class="UI-Page">
             <!-- ======================================================= -->
-            <h1>Manage author data</h1>
+            <h1>Manage person data</h1>
             <ul class="menu">
                 <li>
                     <button type="button" id="retrieveAndListAll">Retrieve/list all
-                        author records
+                        person records
                     </button>
                 </li>
                 <li>
-                    <button type="button" id="create">Create a new author record</button>
+                    <button type="button" id="create">Create a new person record</button>
                 </li>
                 <li>
-                    <button type="button" id="update">Update an author record</button>
+                    <button type="button" id="update">Update an person record</button>
                 </li>
                 <li>
-                    <button type="button" id="destroy">Delete an author record</button>
+                    <button type="button" id="destroy">Delete an person record</button>
                 </li>
             </ul>
             <div class="button"><a href="index.html">Back to Main menu</a></div>
@@ -62,7 +62,7 @@
         <!-- ======================================================= -->
         <section id="Actor-R" class="UI-Page">
             <!-- ======================================================= -->
-            <h1>Retrieve and list all author records</h1>
+            <h1>Retrieve and list all person records</h1>
             <table>
                 <thead>
                 <tr>
@@ -78,10 +78,10 @@
         <!-- ======================================================= -->
         <section id="Actor-C" class="UI-Page">
             <!-- ======================================================= -->
-            <h1>Create a new author record</h1>
+            <h1>Create a new person record</h1>
             <form>
                 <div class="field">
-                    <label>ID: <input type="text" name="authorId"/></label>
+                    <label>ID: <input type="text" name="personId"/></label>
                 </div>
                 <div class="field">
                     <label>Name: <input type="text" name="name"/></label>
@@ -95,14 +95,14 @@
         <!-- ======================================================= -->
         <section id="Actor-U" class="UI-Page">
             <!-- ======================================================= -->
-            <h1>Update an author record</h1>
+            <h1>Update an person record</h1>
             <form>
                 <div class="select-one">
-                    <label>Select author: <select name="selectActor"></select></label>
+                    <label>Select person: <select name="selectActor"></select></label>
                 </div>
                 <div class="field">
                     <label>ID:
-                        <output name="authorId"></output>
+                        <output name="personId"></output>
                     </label>
                 </div>
                 <div class="field">
@@ -117,10 +117,10 @@
         <!-- ======================================================= -->
         <section id="Actor-D" class="UI-Page">
             <!-- ======================================================= -->
-            <h1>Delete an author record</h1>
+            <h1>Delete an person record</h1>
             <form>
                 <div class="select-one">
-                    <label>Select author: <select name="selectActor"></select></label>
+                    <label>Select person: <select name="selectActor"></select></label>
                 </div>
                 <div class="button-group">
                     <button type="submit" name="commit">Delete</button>
