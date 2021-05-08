@@ -63,7 +63,7 @@ document.getElementById("retrieveAndListAll")
  Use case Create Movie
  **********************************************/
 const createFormEl = document.querySelector("section#Movie-C > form"),
-    selectActorsEl = createFormEl.selectActors,
+    selectPersonsEl = createFormEl.selectPersons,
     selectPublisherEl = createFormEl.selectPublisher;
 document.getElementById("create").addEventListener("click", function () {
     document.getElementById("Movie-M").style.display = "none";
@@ -71,7 +71,7 @@ document.getElementById("create").addEventListener("click", function () {
     // set up a single selection list for selecting a director
     fillSelectWithOptions(selectPublisherEl, Director.instances, "name");
     // set up a multiple selection list for selecting persons
-    fillSelectWithOptions(selectActorsEl, Person.instances,
+    fillSelectWithOptions(selectPersonsEl, Person.instances,
         "personId", {displayProp: "name"});
     createFormEl.reset();
 });
@@ -97,9 +97,9 @@ createFormEl["commit"].addEventListener("click", function () {
         Movie.checkIsbnAsId(slots.isbn).message);
     /* SIMPLIFIED CODE: no before-submit validation of name */
     // get the list of selected persons
-    const selAuthOptions = createFormEl.selectActors.selectedOptions;
+    const selAuthOptions = createFormEl.selectPersons.selectedOptions;
     // check the mandatory value constraint for persons
-    createFormEl.selectActors.setCustomValidity(
+    createFormEl.selectPersons.setCustomValidity(
         selAuthOptions.length > 0 ? "" : "No person selected!"
     );
     // save the input data only if all form fields are valid
@@ -132,7 +132,7 @@ document.getElementById("update").addEventListener("click", function () {
 selectUpdateMovieEl.addEventListener("change", function () {
     const formEl = document.querySelector("section#Movie-U > form"),
         saveButton = formEl.commit,
-        selectActorsWidget = formEl.querySelector(".MultiChoiceWidget"),
+        selectPersonsWidget = formEl.querySelector(".MultiChoiceWidget"),
         selectPublisherEl = formEl.selectPublisher,
         isbn = formEl.selectMovie.value;
     if (isbn) {
@@ -143,7 +143,7 @@ selectUpdateMovieEl.addEventListener("change", function () {
         // set up the associated director selection list
         fillSelectWithOptions(selectPublisherEl, Director.instances, "name");
         // set up the associated persons selection widget
-        createMultipleChoiceWidget(selectActorsWidget, movie.persons,
+        createMultipleChoiceWidget(selectPersonsWidget, movie.persons,
             Person.instances, "personId", "name", 1);  // minCard=1
         // assign associated director as the selected option to select element
         if (movie.director) formEl.selectPublisher.value = movie.director.name;
@@ -151,15 +151,15 @@ selectUpdateMovieEl.addEventListener("change", function () {
     } else {
         formEl.reset();
         formEl.selectPublisher.selectedIndex = 0;
-        selectActorsWidget.innerHTML = "";
+        selectPersonsWidget.innerHTML = "";
         saveButton.disabled = true;
     }
 });
 // handle Save button click events
 updateFormEl["commit"].addEventListener("click", function () {
     const movieIdRef = selectUpdateMovieEl.value,
-        selectActorsWidget = updateFormEl.querySelector(".MultiChoiceWidget"),
-        multiChoiceListEl = selectActorsWidget.firstElementChild;
+        selectPersonsWidget = updateFormEl.querySelector(".MultiChoiceWidget"),
+        multiChoiceListEl = selectPersonsWidget.firstElementChild;
     if (!movieIdRef) return;
     const slots = {
         isbn: updateFormEl.isbn.value,
@@ -192,7 +192,7 @@ updateFormEl["commit"].addEventListener("click", function () {
     Movie.update(slots);
     // update the movie selection list's option element
     selectUpdateMovieEl.options[selectUpdateMovieEl.selectedIndex].text = slots.title;
-    selectActorsWidget.innerHTML = "";
+    selectPersonsWidget.innerHTML = "";
 });
 
 /**********************************************

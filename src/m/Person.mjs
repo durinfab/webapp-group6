@@ -29,7 +29,7 @@ class Person {
         return this._personId;
     }
 
-    static checkActorId(id) {
+    static checkPersonId(id) {
         if (!id) {
             return new NoConstraintViolation();  // may be optional as an IdRef
         } else {
@@ -42,8 +42,8 @@ class Person {
         }
     }
 
-    static checkActorIdAsId(id) {
-        var constraintViolation = Person.checkActorId(id);
+    static checkPersonIdAsId(id) {
+        var constraintViolation = Person.checkPersonId(id);
         if ((constraintViolation instanceof NoConstraintViolation)) {
             // convert to integer
             id = parseInt(id);
@@ -60,8 +60,8 @@ class Person {
         return constraintViolation;
     }
 
-    static checkActorIdAsIdRef(id) {
-        var constraintViolation = Person.checkActorId(id);
+    static checkPersonIdAsIdRef(id) {
+        var constraintViolation = Person.checkPersonId(id);
         if ((constraintViolation instanceof NoConstraintViolation) && id) {
             if (!Person.instances[String(id)]) {
                 constraintViolation = new ReferentialIntegrityConstraintViolation(
@@ -72,7 +72,7 @@ class Person {
     }
 
     set personId(id) {
-        const constraintViolation = Person.checkActorIdAsId(id);
+        const constraintViolation = Person.checkPersonIdAsId(id);
         if (constraintViolation instanceof NoConstraintViolation) {
             this._personId = parseInt(id);
         } else {
@@ -165,7 +165,7 @@ Person.destroy = function (personId) {
     }
     // delete the person object
     delete Person.instances[personId];
-    console.log(`Actor ${person.name} deleted.`);
+    console.log(`Person ${person.name} deleted.`);
 };
 /**
  *  Load all person records and convert them to objects
@@ -193,10 +193,10 @@ Person.retrieveAll = function () {
  *  Save all person objects as records
  */
 Person.saveAll = function () {
-    const nmrOfActors = Object.keys(Person.instances).length;
+    const nmrOfPersons = Object.keys(Person.instances).length;
     try {
         localStorage["persons"] = JSON.stringify(Person.instances);
-        console.log(`${nmrOfActors} person records saved.`);
+        console.log(`${nmrOfPersons} person records saved.`);
     } catch (e) {
         alert("Error when writing to Local Storage\n" + e);
     }

@@ -41,7 +41,7 @@ window.addEventListener("beforeunload", function () {
 });
 
 /**********************************************
- Use case Retrieve and List All Actors
+ Use case Retrieve and List All Persons
  **********************************************/
 document.getElementById("retrieveAndListAll")
     .addEventListener("click", function () {
@@ -70,7 +70,7 @@ document.getElementById("create")
 // set up event handlers for responsive constraint validation
 createFormEl.personId.addEventListener("input", function () {
     createFormEl.personId.setCustomValidity(
-        Person.checkActorIdAsId(createFormEl.personId.value).message);
+        Person.checkPersonIdAsId(createFormEl.personId.value).message);
 });
 /* SIMPLIFIED CODE: no responsive validation of name */
 
@@ -82,7 +82,7 @@ createFormEl["commit"].addEventListener("click", function () {
     };
     // check all input fields and show error messages
     createFormEl.personId.setCustomValidity(
-        Person.checkActorIdAsId(slots.personId).message);
+        Person.checkPersonIdAsId(slots.personId).message);
     /* SIMPLIFIED CODE: no before-submit validation of name */
     // save the input data only if all form fields are valid
     if (createFormEl.checkValidity()) Person.add(slots);
@@ -92,21 +92,21 @@ createFormEl["commit"].addEventListener("click", function () {
  Use case Update Person
  **********************************************/
 const updateFormEl = document.querySelector("section#Person-U > form");
-const selectUpdateActorEl = updateFormEl.selectActor;
+const selectUpdatePersonEl = updateFormEl.selectPerson;
 document.getElementById("update")
     .addEventListener("click", function () {
         document.getElementById("Person-M").style.display = "none";
         document.getElementById("Person-U").style.display = "block";
         // set up the person selection list
-        fillSelectWithOptions(selectUpdateActorEl, Person.instances,
+        fillSelectWithOptions(selectUpdatePersonEl, Person.instances,
             "personId", {displayProp: "name"});
         updateFormEl.reset();
     });
-selectUpdateActorEl.addEventListener("change", handleActorSelectChangeEvent);
+selectUpdatePersonEl.addEventListener("change", handlePersonSelectChangeEvent);
 
 // handle Save button click events
 updateFormEl["commit"].addEventListener("click", function () {
-    const personIdRef = selectUpdateActorEl.value;
+    const personIdRef = selectUpdatePersonEl.value;
     if (!personIdRef) return;
     const slots = {
         personId: updateFormEl.personId.value,
@@ -115,10 +115,10 @@ updateFormEl["commit"].addEventListener("click", function () {
     // check all property constraints
     /* SIMPLIFIED CODE: no before-save validation of name */
     // save the input data only if all of the form fields are valid
-    if (selectUpdateActorEl.checkValidity()) {
+    if (selectUpdatePersonEl.checkValidity()) {
         Person.update(slots);
         // update the person selection list's option element
-        selectUpdateActorEl.options[selectUpdateActorEl.selectedIndex].text = slots.name;
+        selectUpdatePersonEl.options[selectUpdatePersonEl.selectedIndex].text = slots.name;
     }
 });
 
@@ -126,9 +126,9 @@ updateFormEl["commit"].addEventListener("click", function () {
  * handle person selection events
  * when a person is selected, populate the form with the data of the selected person
  */
-function handleActorSelectChangeEvent() {
+function handlePersonSelectChangeEvent() {
     var key = "", auth = null;
-    key = updateFormEl.selectActor.value;
+    key = updateFormEl.selectPerson.value;
     if (key) {
         auth = Person.instances[key];
         updateFormEl.personId.value = auth.personId;
@@ -142,28 +142,28 @@ function handleActorSelectChangeEvent() {
  Use case Delete Person
  **********************************************/
 const deleteFormEl = document.querySelector("section#Person-D > form");
-const selectDeleteActorEl = deleteFormEl.selectActor;
+const selectDeletePersonEl = deleteFormEl.selectPerson;
 document.getElementById("destroy")
     .addEventListener("click", function () {
         document.getElementById("Person-M").style.display = "none";
         document.getElementById("Person-D").style.display = "block";
         // set up the person selection list
-        fillSelectWithOptions(selectDeleteActorEl, Person.instances,
+        fillSelectWithOptions(selectDeletePersonEl, Person.instances,
             "personId", {displayProp: "name"});
         deleteFormEl.reset();
     });
 // handle Delete button click events
 deleteFormEl["commit"].addEventListener("click", function () {
-    const personIdRef = selectDeleteActorEl.value;
+    const personIdRef = selectDeletePersonEl.value;
     if (!personIdRef) return;
     if (confirm("Do you really want to delete this person?")) {
         Person.destroy(personIdRef);
-        selectDeleteActorEl.remove(deleteFormEl.selectActor.selectedIndex);
+        selectDeletePersonEl.remove(deleteFormEl.selectPerson.selectedIndex);
     }
 });
 
 /**********************************************
- * Refresh the Manage Actors Data UI
+ * Refresh the Manage Persons Data UI
  **********************************************/
 function refreshManageDataUI() {
     // show the manage person UI and hide the other UIs
@@ -174,5 +174,5 @@ function refreshManageDataUI() {
     document.getElementById("Person-D").style.display = "none";
 }
 
-// Set up Manage Actors UI
+// Set up Manage Persons UI
 refreshManageDataUI();

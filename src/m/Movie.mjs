@@ -191,22 +191,22 @@ class Movie {
         return this._persons;
     }
 
-    static checkActor(actorId) {
+    static checkPerson(actorId) {
         var validationResult = null;
         if (!actorId) {
             // person(s) are optional
             validationResult = new NoConstraintViolation();
         } else {
             // invoke foreign key constraint check
-            validationResult = Person.checkActorIdAsIdRef(actorId);
+            validationResult = Person.checkPersonIdAsIdRef(actorId);
         }
         return validationResult;
     }
 
-    addActor(a) {
+    addPerson(a) {
         // a can be an ID reference or an object reference
         const actorId = (typeof a !== "object") ? parseInt(a) : a.personId;
-        const validationResult = Movie.checkActor(actorId);
+        const validationResult = Movie.checkPerson(actorId);
         if (actorId && validationResult instanceof NoConstraintViolation) {
             // add the new person reference
             const key = String(actorId);
@@ -216,10 +216,10 @@ class Movie {
         }
     }
 
-    removeActor(a) {
+    removePerson(a) {
         // a can be an ID reference or an object reference
         const actorId = (typeof a !== "object") ? parseInt(a) : a.personId;
-        const validationResult = Movie.checkActor(actorId);
+        const validationResult = Movie.checkPerson(actorId);
         if (validationResult instanceof NoConstraintViolation) {
             // delete the person reference
             delete this._persons[String(actorId)];
@@ -232,11 +232,11 @@ class Movie {
         this._persons = {};
         if (Array.isArray(a)) {  // array of IdRefs
             for (const idRef of a) {
-                this.addActor(idRef);
+                this.addPerson(idRef);
             }
         } else {  // map of IdRefs to object references
             for (const idRef of Object.keys(a)) {
-                this.addActor(a[idRef]);
+                this.addPerson(a[idRef]);
             }
         }
     }
@@ -324,13 +324,13 @@ Movie.update = function ({
         if (personIdRefsToAdd) {
             updatedProperties.push("persons(added)");
             for (let personIdRef of personIdRefsToAdd) {
-                movie.addActor(personIdRef);
+                movie.addPerson(personIdRef);
             }
         }
         if (personIdRefsToRemove) {
             updatedProperties.push("persons(removed)");
             for (let actorId of personIdRefsToRemove) {
-                movie.removeActor(actorId);
+                movie.removePerson(actorId);
             }
         }
         // directorId may be the empty string for unsetting the optional property
