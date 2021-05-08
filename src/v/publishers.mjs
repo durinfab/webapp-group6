@@ -5,15 +5,15 @@
 /***************************************************************
  Import classes, datatypes and utility procedures
  ***************************************************************/
-import Actor from "../m/Actor.mjs";
-import Director from "../m/Director.mjs";
+import Person from "../m/Person.mjs";
+// import Director from "../m/Director.mjs";
 import Movie from "../m/Movie.mjs";
 import {fillSelectWithOptions} from "../../lib/util.mjs";
 
 /***************************************************************
  Load data
  ***************************************************************/
-Actor.retrieveAll();
+Person.retrieveAll();
 Director.retrieveAll();
 Movie.retrieveAll();
 

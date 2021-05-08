@@ -4,8 +4,8 @@
  *                and retrieveAll
  * @author Gerd Wagner
  */
-import Actor from "./Actor.mjs";
-import Director from "./Director.mjs";
+import Person from "./Person.mjs";
+// import Director from "./Director.mjs";
 import {cloneObject, isIntegerOrIntegerString} from "../../lib/util.mjs";
 import {
     NoConstraintViolation, MandatoryValueConstraintViolation,
@@ -198,7 +198,7 @@ class Movie {
             validationResult = new NoConstraintViolation();
         } else {
             // invoke foreign key constraint check
-            validationResult = Actor.checkActorIdAsIdRef(actorId);
+            validationResult = Person.checkActorIdAsIdRef(actorId);
         }
         return validationResult;
     }
@@ -210,7 +210,7 @@ class Movie {
         if (actorId && validationResult instanceof NoConstraintViolation) {
             // add the new author reference
             const key = String(actorId);
-            this._authors[key] = Actor.instances[key];
+            this._authors[key] = Person.instances[key];
         } else {
             throw validationResult;
         }

@@ -5,8 +5,8 @@
 /***************************************************************
  Import classes, datatypes and utility procedures
  ***************************************************************/
-import Actor from "../m/Actor.mjs";
-import Director from "../m/Director.mjs";
+import Person from "../m/Person.mjs";
+// import Director from "../m/Director.mjs";
 import Movie from "../m/Movie.mjs";
 import {fillSelectWithOptions, createListFromMap, createMultipleChoiceWidget}
     from "../../lib/util.mjs";
@@ -14,7 +14,7 @@ import {fillSelectWithOptions, createListFromMap, createMultipleChoiceWidget}
 /***************************************************************
  Load data
  ***************************************************************/
-Actor.retrieveAll();
+Person.retrieveAll();
 Director.retrieveAll();
 Movie.retrieveAll();
 
@@ -71,7 +71,7 @@ document.getElementById("create").addEventListener("click", function () {
     // set up a single selection list for selecting a director
     fillSelectWithOptions(selectPublisherEl, Director.instances, "name");
     // set up a multiple selection list for selecting authors
-    fillSelectWithOptions(selectActorsEl, Actor.instances,
+    fillSelectWithOptions(selectActorsEl, Person.instances,
         "authorId", {displayProp: "name"});
     createFormEl.reset();
 });
@@ -144,7 +144,7 @@ selectUpdateMovieEl.addEventListener("change", function () {
         fillSelectWithOptions(selectPublisherEl, Director.instances, "name");
         // set up the associated authors selection widget
         createMultipleChoiceWidget(selectActorsWidget, movie.authors,
-            Actor.instances, "authorId", "name", 1);  // minCard=1
+            Person.instances, "authorId", "name", 1);  // minCard=1
         // assign associated director as the selected option to select element
         if (movie.director) formEl.selectPublisher.value = movie.director.name;
         saveButton.disabled = false;
