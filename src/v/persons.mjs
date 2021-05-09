@@ -14,7 +14,6 @@ import {fillSelectWithOptions} from "../../lib/util.mjs";
  Load data
  ***************************************************************/
 Person.retrieveAll();
-Person.retrieveAll();
 Movie.retrieveAll();
 
 /***************************************************************
@@ -125,7 +124,7 @@ updateFormEl["commit"].addEventListener("click", function () {
  * when a person is selected, populate the form with the data of the selected person
  */
 function handlePersonSelectChangeEvent() {
-    var key = "", pers = null;
+    let key, pers = null;
     key = updateFormEl.selectPerson.value;
     if (key) {
         pers = Person.instances[key];
