@@ -15,15 +15,15 @@ import Movie from "../m/Movie.mjs";
 function generateTestData() {
     try {
         /*~~~Persons~~~*/
-        Persons.instances["1"] = new Person({personId: 1, name: "Stephen Frears"});
-        Persons.instances["2"] = new Person({personId: 1, name: "George Lucas"});
-        Persons.instances["3"] = new Person({personId: 1, name: "Quentin Tarantino"});
-        //Persons.instances["4"] = new Person({personId: 1, name: " "});
-        Persons.instances["5"] = new Person({personId: 1, name: "Uma Thurman"});
-        Persons.instances["6"] = new Person({personId: 1, name: "John Travolta"});
-        Persons.instances["7"] = new Person({personId: 1, name: "Ewan McGregor"});
-        Persons.instances["8"] = new Person({personId: 1, name: "Natalie Portman"});
-        Persons.instances["9"] = new Person({personId: 1, name: "Keanu Reeves"});
+        Person.instances["1"] = new Person({personId: 1, name: "Stephen Frears"});
+        Person.instances["2"] = new Person({personId: 2, name: "George Lucas"});
+        Person.instances["3"] = new Person({personId: 3, name: "Quentin Tarantino"});
+        //Persons.instances["4"] = new Person({personId: 4, name: " "});
+        Person.instances["5"] = new Person({personId: 5, name: "Uma Thurman"});
+        Person.instances["6"] = new Person({personId: 6, name: "John Travolta"});
+        Person.instances["7"] = new Person({personId: 7, name: "Ewan McGregor"});
+        Person.instances["8"] = new Person({personId: 8, name: "Natalie Portman"});
+        Person.instances["9"] = new Person({personId: 9, name: "Keanu Reeves"});
 
         /*~~~Movies~~~*/
         Movie.instances[1] = new Movie({
