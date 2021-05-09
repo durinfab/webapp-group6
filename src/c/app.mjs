@@ -6,7 +6,8 @@ import Person from "../m/Person.mjs";
 // import Person from "../m/Person.mjs";
 import Movie from "../m/Movie.mjs";
 
-/*******************************************
+/********************
+ * ***********************
  *** Auxiliary methods for testing **********
  ********************************************/
 /**
@@ -29,23 +30,23 @@ function generateTestData() {
         Movie.instances[1] = new Movie({
             movieId: 1,
             title: "Pulp Fiction",
-            releaseDate:"1994-05-12",
-            directorId: 3,
-            actorIdRefs: [3, 5, 6]
+            releaseDate:"12.05.1994",
+            director: 3,
+            actors: [3, 5, 6]
         });
         Movie.instances[2] = new Movie({
             movieId: 2,
             title: "Star Wars",
-            releaseDate:"1977-05-25",
-            directorId: 2,
-            actorIdRefs: [7, 8]
+            releaseDate:"25.05.1977",
+            director: 2,
+            actors: [7, 8]
         });
         Movie.instances[3] = new Movie({
             movieId: 3,
             title: "Dangerous Liaisons",
-            releaseDate:"1988-12-16",
-            directorId: 1,
-            actorIdRefs: [9, 5]
+            releaseDate:"16.12.1988",
+            director: 1,
+            actors: [9, 5]
 
         });
         Movie.saveAll();

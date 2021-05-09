@@ -6,12 +6,20 @@
  */
 import Person from "./Person.mjs";
 // import Person from "./Person.mjs";
-import {cloneObject, isIntegerOrIntegerString} from "../../lib/util.mjs";
+import {cloneObject, isIntegerOrIntegerString, nextYear} from "../../lib/util.mjs";
 import {
     NoConstraintViolation, MandatoryValueConstraintViolation,
     RangeConstraintViolation, PatternConstraintViolation, UniquenessConstraintViolation
 }
     from "../../lib/errorTypes.mjs";
+import {
+    checkTitleLength,
+    isMovieIDEmpty,
+    isMovieIDUsed,
+    isNonEmptyString,
+    isTitleEmpty
+} from './../../lib/checkFunctions.mjs';
+
 
 /**
  * The class Movie
@@ -243,7 +251,7 @@ class Movie {
 
     // Serialize movie object
     toString() {
-        var movieStr = `Movie{ ISBN: ${this.isbn}, title: ${this.title}, year: ${this.year}`;
+        var movieStr = `Movie{ ISBN: ${this.movieid}, title: ${this.title}, year: ${this.year}`;
         if (this.director) movieStr += `, director: ${this.director.name}`;
         return `${movieStr}, persons: ${Object.keys(this.persons).join(",")} }`;
     }
@@ -296,7 +304,7 @@ Movie.add = function (slots) {
         movie = null;
     }
     if (movie) {
-        Movie.instances[movie.isbn] = movie;
+        Movie.instances[movie.movieid] = movie;
         console.log(`${movie.toString()} created!`);
     }
 };
@@ -306,10 +314,10 @@ Movie.add = function (slots) {
  *  that the new values are validated
  */
 Movie.update = function ({
-                             isbn, title, year,
+                             movieid, title, year,
                              personIdRefsToAdd, personIdRefsToRemove, directorId
                          }) {
-    const movie = Movie.instances[isbn],
+    const movie = Movie.instances[movieid],
         objectBeforeUpdate = cloneObject(movie);  // save the current state of movie
     var noConstraintViolated = true, updatedProperties = [];
     try {
@@ -343,7 +351,7 @@ Movie.update = function ({
         console.log(`${e.constructor.name}: ${e.message}`);
         noConstraintViolated = false;
         // restore object to its state before updating
-        Movie.instances[isbn] = objectBeforeUpdate;
+        Movie.instances[movieid] = objectBeforeUpdate;
     }
     if (noConstraintViolated) {
         if (updatedProperties.length > 0) {
@@ -357,12 +365,12 @@ Movie.update = function ({
 /**
  *  Delete an existing Movie record/object
  */
-Movie.destroy = function (isbn) {
-    if (Movie.instances[isbn]) {
-        console.log(`${Movie.instances[isbn].toString()} deleted!`);
-        delete Movie.instances[isbn];
+Movie.destroy = function (movieid) {
+    if (Movie.instances[movieid]) {
+        console.log(`${Movie.instances[movieid].toString()} deleted!`);
+        delete Movie.instances[movieid];
     } else {
-        console.log(`There is no movie with ISBN ${isbn} in the database!`);
+        console.log(`There is no movie with ISBN ${movieid} in the database!`);
     }
 };
 /**
@@ -380,9 +388,9 @@ Movie.retrieveAll = function () {
     } catch (e) {
         alert("Error when reading from Local Storage\n" + e);
     }
-    for (let isbn of Object.keys(movies)) {
+    for (let movieid of Object.keys(movies)) {
         try {
-            Movie.instances[isbn] = new Movie(movies[isbn]);
+            Movie.instances[movieid] = new Movie(movies[movieid]);
         } catch (e) {
             console.log(`${e.constructor.name} while deserializing movie ${isbn}: ${e.message}`);
         }
@@ -400,5 +408,26 @@ Movie.saveAll = function () {
         alert("Error when writing to Local Storage\n" + e);
     }
 };
+
+//gets a string in form "dd.mm.yyyy" and returns a date
+Movie.stringToDate = function (date) {
+    let dateParts = date.split(".");
+    return new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+}
+
+
+Movie.dateToString = function (date) {
+    let d = new Date(date);
+    let month = '' + (d.getMonth() + 1);
+    let day = '' + d.getDate();
+    let year = d.getFullYear();
+
+    if (month.length < 2)
+        month = '0' + month;
+    if (day.length < 2)
+        day = '0' + day;
+
+    return [day, month, year].join('.');
+}
 
 export default Movie;

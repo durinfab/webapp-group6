@@ -15,7 +15,6 @@ import {fillSelectWithOptions, createListFromMap, createMultipleChoiceWidget}
  Load data
  ***************************************************************/
 Person.retrieveAll();
-Person.retrieveAll();
 Movie.retrieveAll();
 
 /***************************************************************

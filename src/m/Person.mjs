@@ -17,6 +17,7 @@ import {
  * @class
  * @param {object} slots - Object creation slots.
  */
+
 class Person {
     // using a single record parameter with ES6 function parameter destructuring
     constructor({personId, name}) {
@@ -69,6 +70,32 @@ class Person {
             }
         }
         return constraintViolation;
+    }
+
+    static checkName( n) {
+        if (!n) {
+            return new NoConstraintViolation();  // not mandatory
+        } else {
+            if (typeof n !== "string" || n.trim() === "") {
+                return new RangeConstraintViolation(
+                    "The name must be a non-empty string!");
+            } else {
+                return new NoConstraintViolation();
+            }
+        }
+    }
+
+    //TODO: n must be converted into string (via person id)
+    static checkNameAsIdRef( n) {
+        console.log(n);
+        var validationResult = Person.checkName( n);
+        if ((validationResult instanceof NoConstraintViolation) && n) {
+            if (!Person.instances[n]) {
+                validationResult = new ReferentialIntegrityConstraintViolation(
+                    "There is no person record with this name!");
+            }
+        }
+        return validationResult;
     }
 
     set personId(id) {
