@@ -48,7 +48,7 @@ document.getElementById("retrieveAndListAll")
             // create list of persons for this movie
             const persListEl = createListFromMap(movie.persons, "name");
             const row = tableBodyEl.insertRow();
-            row.insertCell().textContent = movie.isbn;
+            row.insertCell().textContent = movie.movieId;
             row.insertCell().textContent = movie.title;
             row.insertCell().textContent = movie.year;
             row.insertCell().appendChild(persListEl);
@@ -77,9 +77,9 @@ document.getElementById("create").addEventListener("click", function () {
     createFormEl.reset();
 });
 // set up event handlers for responsive constraint validation
-createFormEl.isbn.addEventListener("input", function () {
-    createFormEl.isbn.setCustomValidity(
-        Movie.checkIsbnAsId(createFormEl.isbn.value).message);
+createFormEl.movieId.addEventListener("input", function () {
+    createFormEl.movieId.setCustomValidity(
+        Movie.checkIsbnAsId(createFormEl.movieId.value).message);
 });
 /* SIMPLIFIED/MISSING CODE: add event listeners for responsive
    validation on user input with Movie.checkTitle and checkYear */
@@ -87,15 +87,15 @@ createFormEl.isbn.addEventListener("input", function () {
 // handle Save button click events
 createFormEl["commit"].addEventListener("click", function () {
     const slots = {
-        isbn: createFormEl.isbn.value,
+        movieId: createFormEl.movieId.value,
         title: createFormEl.title.value,
         year: createFormEl.year.value,
-        personIdRefs: [],
-        // directorId: createFormEl.selectPublisher.value
+        actorIdRefs: [],
+        directorId: createFormEl.selectPublisher.value
     };
     // check all input fields and show error messages
-    createFormEl.isbn.setCustomValidity(
-        Movie.checkIsbnAsId(slots.isbn).message);
+    createFormEl.movieId.setCustomValidity(
+        Movie.checkIsbnAsId(slots.movieId).message);
     /* SIMPLIFIED CODE: no before-submit validation of name */
     // get the list of selected persons
     const selAuthOptions = createFormEl.selectPersons.selectedOptions;
@@ -107,7 +107,7 @@ createFormEl["commit"].addEventListener("click", function () {
     if (createFormEl.checkValidity()) {
         // construct a list of person ID references
         for (const opt of selAuthOptions) {
-            slots.personIdRefs.push(opt.value);
+            slots.actorIdRefs.push(opt.value);
         }
         Movie.add(slots);
     }
@@ -123,7 +123,7 @@ document.getElementById("update").addEventListener("click", function () {
     document.getElementById("Movie-U").style.display = "block";
     // set up the movie selection list
     fillSelectWithOptions(selectUpdateMovieEl, Movie.instances,
-        "isbn", {displayProp: "title"});
+        "movieId", {displayProp: "title"});
     updateFormEl.reset();
 });
 /**
@@ -135,10 +135,10 @@ selectUpdateMovieEl.addEventListener("change", function () {
         saveButton = formEl.commit,
         selectPersonsWidget = formEl.querySelector(".MultiChoiceWidget"),
         // selectPublisherEl = formEl.selectPublisher,
-        isbn = formEl.selectMovie.value;
-    if (isbn) {
-        const movie = Movie.instances[isbn];
-        formEl.isbn.value = movie.isbn;
+        movieId = formEl.selectMovie.value;
+    if (movieId) {
+        const movie = Movie.instances[movieId];
+        formEl.movieId.value = movie.movieId;
         formEl.title.value = movie.title;
         formEl.year.value = movie.year;
 
@@ -167,7 +167,7 @@ updateFormEl["commit"].addEventListener("click", function () {
         multiChoiceListEl = selectPersonsWidget.firstElementChild;
     if (!movieIdRef) return;
     const slots = {
-        isbn: updateFormEl.isbn.value,
+        movieId: updateFormEl.movieId.value,
         title: updateFormEl.title.value,
         year: updateFormEl.year.value,
         // directorId: updateFormEl.selectPublisher.value
@@ -176,22 +176,22 @@ updateFormEl["commit"].addEventListener("click", function () {
     /* MISSING CODE */
     // commit the update only if all form field values are valid
     if (updateFormEl.checkValidity()) {
-        // construct personIdRefs-ToAdd/ToRemove lists from the association list
-        const personIdRefsToAdd = [], personIdRefsToRemove = [];
+        // construct actorIdRefs-ToAdd/ToRemove lists from the association list
+        const actorIdRefsToAdd = [], actorIdRefsToRemove = [];
         for (const mcListItemEl of multiChoiceListEl.children) {
             if (mcListItemEl.classList.contains("removed")) {
-                personIdRefsToRemove.push(mcListItemEl.getAttribute("data-value"));
+                actorIdRefsToRemove.push(mcListItemEl.getAttribute("data-value"));
             }
             if (mcListItemEl.classList.contains("added")) {
-                personIdRefsToAdd.push(mcListItemEl.getAttribute("data-value"));
+                actorIdRefsToAdd.push(mcListItemEl.getAttribute("data-value"));
             }
         }
         // if the add/remove list is non-empty create a corresponding slot
-        if (personIdRefsToRemove.length > 0) {
-            slots.personIdRefsToRemove = personIdRefsToRemove;
+        if (actorIdRefsToRemove.length > 0) {
+            slots.actorIdRefsToRemove = actorIdRefsToRemove;
         }
-        if (personIdRefsToAdd.length > 0) {
-            slots.personIdRefsToAdd = personIdRefsToAdd;
+        if (actorIdRefsToAdd.length > 0) {
+            slots.actorIdRefsToAdd = actorIdRefsToAdd;
         }
     }
     Movie.update(slots);
@@ -211,7 +211,7 @@ document.getElementById("destroy")
         document.getElementById("Movie-D").style.display = "block";
         // set up the person selection list
         fillSelectWithOptions(selectDeleteMovieEl, Movie.instances,
-            "isbn", {displayProp: "title"});
+            "movieId", {displayProp: "title"});
         deleteFormEl.reset();
     });
 // handle Delete button click events

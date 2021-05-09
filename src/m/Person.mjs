@@ -188,8 +188,8 @@ Person.update = function ({personId, name}) {
 Person.destroy = function (personId) {
     const person = Person.instances[personId];
     // delete all dependent movie records
-    for (const isbn of Object.keys(Movie.instances)) {
-        const movie = Movie.instances[isbn];
+    for (const movieId of Object.keys(Movie.instances)) {
+        const movie = Movie.instances[movieId];
         if (movie.persons[personId]) delete movie.persons[personId];
     }
     // delete the person object

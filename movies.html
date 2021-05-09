@@ -84,7 +84,7 @@
             <h1>Create a new movie record</h1>
             <form>
                 <div class="field">
-                    <label>ISBN: <input type="text" name="isbn"/></label>
+                    <label>ISBN: <input type="text" name="movieId"/></label>
                 </div>
                 <div class="field">
                     <label>Title: <input type="text" name="title"/></label>
@@ -92,16 +92,18 @@
                 <div class="field">
                     <label>Year: <input type="text" name="year"/></label>
                 </div>
-                <!--
+
+
                 <div class="select-one">
-                    <label>Person: <select name="selectPublisher"></select></label>
+                    <label>Person: <select name="select Director"></select></label>
                 </div>
-                --!>
+
                 <div class="select-many">
                     <label>Persons:
-                        <select name="selectPersons" multiple="multiple"></select>
+                        <select name="select Actors" multiple="multiple"></select>
                     </label>
                 </div>
+
                 <div class="button-group">
                     <button type="submit" name="commit">Save</button>
                     <button type="button" class="back-to-menu">Back to menu</button>
@@ -118,7 +120,7 @@
                 </div>
                 <div class="field">
                     <label>ISBN:
-                        <output name="isbn"></output>
+                        <output name="movieId"></output>
                     </label>
                 </div>
                 <div class="field">
@@ -127,15 +129,16 @@
                 <div class="field">
                     <label>Year: <input type="text" name="year"/></label>
                 </div>
-                <!--
+
                 <div class="select-one">
-                    <label>Person: <select name="selectPublisher"></select></label>
+                    <label>Person: <select name="select Director"></select></label>
                 </div>
-                --!>
+
                 <div class="widget">
                     <label for="updMovieSelectPersons">Persons:</label>
                     <div id="updMovieSelectPersons" class="MultiChoiceWidget"></div>
                 </div>
+
                 <div class="button-group">
                     <button type="submit" name="commit" disabled="disabled">Save</button>
                     <button type="button" class="back-to-menu">Back to menu</button>
