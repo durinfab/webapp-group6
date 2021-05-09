@@ -62,13 +62,15 @@ document.getElementById("retrieveAndListAll")
  Use case Create Movie
  **********************************************/
 const createFormEl = document.querySelector("section#Movie-C > form"),
-    selectPersonsEl = createFormEl.selectPersons,
-    selectPublisherEl = createFormEl.selectPublisher;
+    selectPersonsEl = createFormEl.selectPersons;
+    // selectPublisherEl = createFormEl.selectPublisher;
 document.getElementById("create").addEventListener("click", function () {
     document.getElementById("Movie-M").style.display = "none";
     document.getElementById("Movie-C").style.display = "block";
+
     // set up a single selection list for selecting a director
-    fillSelectWithOptions(selectPublisherEl, Person.instances, "name");
+    // fillSelectWithOptions(selectPublisherEl, Person.instances, "name");
+
     // set up a multiple selection list for selecting persons
     fillSelectWithOptions(selectPersonsEl, Person.instances,
         "personId", {displayProp: "name"});
@@ -89,7 +91,7 @@ createFormEl["commit"].addEventListener("click", function () {
         title: createFormEl.title.value,
         year: createFormEl.year.value,
         personIdRefs: [],
-        directorId: createFormEl.selectPublisher.value
+        // directorId: createFormEl.selectPublisher.value
     };
     // check all input fields and show error messages
     createFormEl.isbn.setCustomValidity(
@@ -132,24 +134,28 @@ selectUpdateMovieEl.addEventListener("change", function () {
     const formEl = document.querySelector("section#Movie-U > form"),
         saveButton = formEl.commit,
         selectPersonsWidget = formEl.querySelector(".MultiChoiceWidget"),
-        selectPublisherEl = formEl.selectPublisher,
+        // selectPublisherEl = formEl.selectPublisher,
         isbn = formEl.selectMovie.value;
     if (isbn) {
         const movie = Movie.instances[isbn];
         formEl.isbn.value = movie.isbn;
         formEl.title.value = movie.title;
         formEl.year.value = movie.year;
+
         // set up the associated director selection list
-        fillSelectWithOptions(selectPublisherEl, Person.instances, "name");
+        // fillSelectWithOptions(selectPublisherEl, Person.instances, "name");
+
         // set up the associated persons selection widget
         createMultipleChoiceWidget(selectPersonsWidget, movie.persons,
             Person.instances, "personId", "name", 1);  // minCard=1
+
         // assign associated director as the selected option to select element
-        if (movie.director) formEl.selectPublisher.value = movie.director.name;
+        // if (movie.director) formEl.selectPublisher.value = movie.director.name;
+
         saveButton.disabled = false;
     } else {
         formEl.reset();
-        formEl.selectPublisher.selectedIndex = 0;
+        // formEl.selectPublisher.selectedIndex = 0;
         selectPersonsWidget.innerHTML = "";
         saveButton.disabled = true;
     }
@@ -164,7 +170,7 @@ updateFormEl["commit"].addEventListener("click", function () {
         isbn: updateFormEl.isbn.value,
         title: updateFormEl.title.value,
         year: updateFormEl.year.value,
-        directorId: updateFormEl.selectPublisher.value
+        // directorId: updateFormEl.selectPublisher.value
     }
     // add event listeners for responsive validation
     /* MISSING CODE */

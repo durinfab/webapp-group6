@@ -87,8 +87,10 @@ class Person {
 
     //TODO: n must be converted into string (via person id)
     static checkNameAsIdRef( n) {
+
         console.log(n);
-        var validationResult = Person.checkName( n);
+
+        var validationResult = Person.checkName(n);
         if ((validationResult instanceof NoConstraintViolation) && n) {
             if (!Person.instances[n]) {
                 validationResult = new ReferentialIntegrityConstraintViolation(

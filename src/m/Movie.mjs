@@ -168,6 +168,7 @@ class Movie {
         }
     }
 
+    /* everything publisher related is deprecated
     static checkPublisher(directorId) {
         let validationResult;
         if (!directorId) {
@@ -178,14 +179,16 @@ class Movie {
         }
         return validationResult;
     }
+    */
 
+    /* everything director related is deprecated
     set director(p) {
         if (!p) {  // unset director
             delete this._director;
         } else {
             // p can be an ID reference or an object reference
             const directorId = (typeof p !== "object") ? p : p.name;
-            const validationResult = Movie.checkPublisher(directorId);
+            const validationResult = Movie.checkPerson(directorId);
             if (validationResult instanceof NoConstraintViolation) {
                 // create the new director reference
                 this._director = Person.instances[directorId];
@@ -194,6 +197,7 @@ class Movie {
             }
         }
     }
+    */
 
     get persons() {
         return this._persons;
