@@ -3,7 +3,7 @@
  * @person Gerd Wagner
  */
 import Person from "../m/Person.mjs";
-// import Director from "../m/Director.mjs";
+// import Person from "../m/Person.mjs";
 import Movie from "../m/Movie.mjs";
 
 /*******************************************
@@ -63,7 +63,7 @@ function clearData() {
         try {
             Person.instances = {};
             localStorage["persons"] = "{}";
-            Director.instances = {};
+            Person.instances = {};
             localStorage["directors"] = "{}";
             Movie.instances = {};
             localStorage["movies"] = "{}";

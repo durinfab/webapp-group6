@@ -5,7 +5,7 @@
  * @person Gerd Wagner
  */
 import Person from "./Person.mjs";
-// import Director from "./Director.mjs";
+// import Person from "./Person.mjs";
 import {cloneObject, isIntegerOrIntegerString} from "../../lib/util.mjs";
 import {
     NoConstraintViolation, MandatoryValueConstraintViolation,
@@ -166,7 +166,7 @@ class Movie {
             validationResult = new NoConstraintViolation();  // optional
         } else {
             // invoke foreign key constraint check
-            validationResult = Director.checkNameAsIdRef(directorId);
+            validationResult = Person.checkNameAsIdRef(directorId);
         }
         return validationResult;
     }
@@ -180,7 +180,7 @@ class Movie {
             const validationResult = Movie.checkPublisher(directorId);
             if (validationResult instanceof NoConstraintViolation) {
                 // create the new director reference
-                this._director = Director.instances[directorId];
+                this._director = Person.instances[directorId];
             } else {
                 throw validationResult;
             }

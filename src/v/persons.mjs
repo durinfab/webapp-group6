@@ -6,7 +6,7 @@
  Import classes, datatypes and utility procedures
  ***************************************************************/
 import Person from "../m/Person.mjs";
-// import Director from "../m/Director.mjs";
+// import Person from "../m/Person.mjs";
 import Movie from "../m/Movie.mjs";
 import {fillSelectWithOptions} from "../../lib/util.mjs";
 
@@ -14,7 +14,7 @@ import {fillSelectWithOptions} from "../../lib/util.mjs";
  Load data
  ***************************************************************/
 Person.retrieveAll();
-Director.retrieveAll();
+Person.retrieveAll();
 Movie.retrieveAll();
 
 /***************************************************************
@@ -81,8 +81,7 @@ createFormEl["commit"].addEventListener("click", function () {
         name: createFormEl.name.value
     };
     // check all input fields and show error messages
-    createFormEl.personId.setCustomValidity(
-        Person.checkPersonIdAsId(slots.personId).message);
+    createFormEl.personId.setCustomValidity(Person.checkPersonIdAsId(slots.personId).message);
     /* SIMPLIFIED CODE: no before-submit validation of name */
     // save the input data only if all form fields are valid
     if (createFormEl.checkValidity()) Person.add(slots);
@@ -98,8 +97,7 @@ document.getElementById("update")
         document.getElementById("Person-M").style.display = "none";
         document.getElementById("Person-U").style.display = "block";
         // set up the person selection list
-        fillSelectWithOptions(selectUpdatePersonEl, Person.instances,
-            "personId", {displayProp: "name"});
+        fillSelectWithOptions(selectUpdatePersonEl, Person.instances,"personId", {displayProp: "name"});
         updateFormEl.reset();
     });
 selectUpdatePersonEl.addEventListener("change", handlePersonSelectChangeEvent);
@@ -127,12 +125,12 @@ updateFormEl["commit"].addEventListener("click", function () {
  * when a person is selected, populate the form with the data of the selected person
  */
 function handlePersonSelectChangeEvent() {
-    var key = "", auth = null;
+    var key = "", pers = null;
     key = updateFormEl.selectPerson.value;
     if (key) {
-        auth = Person.instances[key];
-        updateFormEl.personId.value = auth.personId;
-        updateFormEl.name.value = auth.name;
+        pers = Person.instances[key];
+        updateFormEl.personId.value = pers.personId;
+        updateFormEl.name.value = pers.name;
     } else {
         updateFormEl.reset();
     }
@@ -158,7 +156,7 @@ deleteFormEl["commit"].addEventListener("click", function () {
     if (!personIdRef) return;
     if (confirm("Do you really want to delete this person?")) {
         Person.destroy(personIdRef);
-        selectDeletePersonEl.remove(deleteFormEl.selectPerson.selectedIndex);
+        selectDeletePersonEl.remove();
     }
 });
 

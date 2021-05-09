@@ -6,7 +6,7 @@
  Import classes, datatypes and utility procedures
  ***************************************************************/
 import Person from "../m/Person.mjs";
-// import Director from "../m/Director.mjs";
+// import Person from "../m/Person.mjs";
 import Movie from "../m/Movie.mjs";
 import {fillSelectWithOptions, createListFromMap, createMultipleChoiceWidget}
     from "../../lib/util.mjs";
@@ -15,7 +15,7 @@ import {fillSelectWithOptions, createListFromMap, createMultipleChoiceWidget}
  Load data
  ***************************************************************/
 Person.retrieveAll();
-Director.retrieveAll();
+Person.retrieveAll();
 Movie.retrieveAll();
 
 /***************************************************************
@@ -47,12 +47,12 @@ document.getElementById("retrieveAndListAll")
         for (const key of Object.keys(Movie.instances)) {
             const movie = Movie.instances[key];
             // create list of persons for this movie
-            const authListEl = createListFromMap(movie.persons, "name");
+            const persListEl = createListFromMap(movie.persons, "name");
             const row = tableBodyEl.insertRow();
             row.insertCell().textContent = movie.isbn;
             row.insertCell().textContent = movie.title;
             row.insertCell().textContent = movie.year;
-            row.insertCell().appendChild(authListEl);
+            row.insertCell().appendChild(persListEl);
             // if the movie has a director, show its name
             row.insertCell().textContent =
                 movie.director ? movie.director.name : "";
@@ -69,7 +69,7 @@ document.getElementById("create").addEventListener("click", function () {
     document.getElementById("Movie-M").style.display = "none";
     document.getElementById("Movie-C").style.display = "block";
     // set up a single selection list for selecting a director
-    fillSelectWithOptions(selectPublisherEl, Director.instances, "name");
+    fillSelectWithOptions(selectPublisherEl, Person.instances, "name");
     // set up a multiple selection list for selecting persons
     fillSelectWithOptions(selectPersonsEl, Person.instances,
         "personId", {displayProp: "name"});
@@ -141,7 +141,7 @@ selectUpdateMovieEl.addEventListener("change", function () {
         formEl.title.value = movie.title;
         formEl.year.value = movie.year;
         // set up the associated director selection list
-        fillSelectWithOptions(selectPublisherEl, Director.instances, "name");
+        fillSelectWithOptions(selectPublisherEl, Person.instances, "name");
         // set up the associated persons selection widget
         createMultipleChoiceWidget(selectPersonsWidget, movie.persons,
             Person.instances, "personId", "name", 1);  // minCard=1
