@@ -186,11 +186,15 @@ Person.destroy = function (personId) {
 
     const person = Person.instances[personId];
 
+    if(!person) {
+        console.log(`There is no person with ID ${personId} in the database!`);
+    }
+
     // delete all dependent movie records
     for (const movieId of Object.keys(Movie.instances)) {
         const movie = Movie.instances[movieId];
 
-        if (movie.director == personId) {
+        if (movie.director === personId) {
             // throw proper exception here?
             console.log(`Person ${person.name} cannot be deleted as it's the director of movie ${movie.title}.`);
             return false;

@@ -6,7 +6,6 @@
  Import classes, datatypes and utility procedures
  ***************************************************************/
 import Person from "../m/Person.mjs";
-// import Person from "../m/Person.mjs";
 import Movie from "../m/Movie.mjs";
 import {fillSelectWithOptions, createListFromMap, createMultipleChoiceWidget}
     from "../../lib/util.mjs";
@@ -41,6 +40,7 @@ document.getElementById("retrieveAndListAll").addEventListener("click", function
 
         document.getElementById("Movie-M").style.display = "none";
         document.getElementById("Movie-R").style.display = "block";
+
         const tableBodyEl = document.querySelector("section#Movie-R>table>tbody");
         tableBodyEl.innerHTML = "";  // drop old content
 
@@ -103,9 +103,12 @@ createFormEl["commit"].addEventListener("click", function () {
     const selAuthOptions = createFormEl.selectPersons.selectedOptions;
 
     // check the mandatory value constraint for persons
+    /*
     createFormEl.selectActors.setCustomValidity(
         selActorOptions.length > 0 ? "" : "No person selected!"
     );
+    */
+
 
     // save the input data only if all form fields are valid
     if (createFormEl.checkValidity()) {
@@ -122,14 +125,16 @@ createFormEl["commit"].addEventListener("click", function () {
  **********************************************/
 const updateFormEl = document.querySelector("section#Movie-U > form"),
     selectUpdateMovieEl = updateFormEl.selectMovie;
+
 document.getElementById("update").addEventListener("click", function () {
     document.getElementById("Movie-M").style.display = "none";
     document.getElementById("Movie-U").style.display = "block";
+
     // set up the movie selection list
-    fillSelectWithOptions(selectUpdateMovieEl, Movie.instances,
-        "movieId", {displayProp: "title"});
+    fillSelectWithOptions(selectUpdateMovieEl, Movie.instances,"movieId", {displayProp: "title"});
     updateFormEl.reset();
 });
+
 /**
  * handle movie selection events: when a movie is selected,
  * populate the form with the data of the selected movie
@@ -140,17 +145,18 @@ selectUpdateMovieEl.addEventListener("change", function () {
         selectPersonsWidget = formEl.querySelector(".MultiChoiceWidget"),
         // selectPublisherEl = formEl.selectPublisher,
         movieId = formEl.selectMovie.value;
+
     if (movieId) {
         const movie = Movie.instances[movieId];
         formEl.movieId.value = movie.movieId;
         formEl.title.value = movie.title;
         formEl.year.value = movie.year;
 
-        // set up the associated director selection list
-        // fillSelectWithOptions(selectPublisherEl, Person.instances, "name");
+        //
+        fillSelectWithOptions(selectPublisherEl, Person.instances, "name");
 
-        // set up the associated persons selection widget
-        createMultipleChoiceWidget(selectPersonsWidget, movie.persons,
+        //
+        createMultipleChoiceWidget(selectPersonsWidget, movie.director,
             Person.instances, "personId", "name", 1);  // minCard=1
 
         // assign associated director as the selected option to select element
