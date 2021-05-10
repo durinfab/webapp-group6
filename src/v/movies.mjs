@@ -46,15 +46,15 @@ document.getElementById("retrieveAndListAll")
         for (const key of Object.keys(Movie.instances)) {
             const movie = Movie.instances[key];
             // create list of persons for this movie
-            const persListEl = createListFromMap(movie.persons, "name");
+            const persListEl = createListFromMap(movie._actors, "name");
             const row = tableBodyEl.insertRow();
             row.insertCell().textContent = movie.movieId;
             row.insertCell().textContent = movie.title;
-            row.insertCell().textContent = movie.year;
+            row.insertCell().textContent = Movie.dateToString(movie.releaseDate);
             row.insertCell().appendChild(persListEl);
             // if the movie has a director, show its name
             row.insertCell().textContent =
-                movie.director ? movie.director.name : "";
+                Person.instances[movie.director] ? Person.instances[movie.director].name : "";
         }
     });
 
@@ -90,12 +90,12 @@ createFormEl["commit"].addEventListener("click", function () {
         movieId: createFormEl.movieId.value,
         title: createFormEl.title.value,
         year: createFormEl.year.value,
-        actorIdRefs: [],
-        directorId: createFormEl.selectPublisher.value
+        actors: [],
+        director: createFormEl.selectPublisher.value
     };
     // check all input fields and show error messages
     createFormEl.movieId.setCustomValidity(
-        Movie.checkIsbnAsId(slots.movieId).message);
+        Movie.checkMovieID(slots.movieId).message);
     /* SIMPLIFIED CODE: no before-submit validation of name */
     // get the list of selected persons
     const selAuthOptions = createFormEl.selectPersons.selectedOptions;
@@ -107,7 +107,7 @@ createFormEl["commit"].addEventListener("click", function () {
     if (createFormEl.checkValidity()) {
         // construct a list of person ID references
         for (const opt of selAuthOptions) {
-            slots.actorIdRefs.push(opt.value);
+            slots.actors.push(opt.value);
         }
         Movie.add(slots);
     }

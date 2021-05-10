@@ -50,7 +50,7 @@ function generateTestData() {
 
         });
         Movie.saveAll();
-
+        Person.saveAll();
     } catch (e) {
         console.log(`${e.constructor.name}: ${e.message}`);
     }

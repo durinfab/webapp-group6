@@ -26,13 +26,13 @@ import {
  */
 class Movie {
     // using a record parameter with ES6 function parameter destructuring
-    constructor({movieId, title, releaseDate, director, directorId, actors, actorIdRefs}) {
+    constructor({movieId, title, releaseDate, director, actors}) {
         this.movieId = movieId;
         this.title = title;
         this.releaseDate = releaseDate;
         // assign object references or ID references (to be converted in setter)
-        this.director = director || directorId;
-        this.actors = actors || actorIdRefs;
+        this.director = director; // || directorId;
+        this.actors = actors; // || actorIdRefs;
     }
 
     get movieId() {
@@ -47,9 +47,9 @@ class Movie {
     get director() {
         return this._director;
     }
-    get persons() {
+    /*get persons() {
          return this._persons;
-    }
+    }*/
 
     static validateDate = function (date) {
         //checks if date is valid. Returns true if the date is valid
@@ -190,7 +190,7 @@ class Movie {
             const validationResult = Movie.checkPerson(directorId);
             if (validationResult instanceof NoConstraintViolation) {
                 // create the new director reference
-                this._director = Person.instances[directorId];
+                this._director = p;
             } else {
                 throw validationResult;
             }
@@ -216,7 +216,7 @@ class Movie {
         if (personId && validationResult instanceof NoConstraintViolation) {
             // add the new person reference
             const key = String(personId);
-            this._persons[key] = Person.instances[key];
+            this._actors[key] = Person.instances[key];
         } else {
             throw validationResult;
         }
@@ -228,14 +228,14 @@ class Movie {
         const validationResult = Movie.checkPerson(personId);
         if (validationResult instanceof NoConstraintViolation) {
             // delete the person reference
-            delete this._persons[String(personId)];
+            delete this._actors[String(personId)];
         } else {
             throw validationResult;
         }
     }
 
     set actors(a) {
-        this._persons = {};
+        this._actors = {};
         if (Array.isArray(a)) {  // array of IdRefs
             for (const idRef of a) {
                 this.addActor(idRef);
@@ -251,7 +251,7 @@ class Movie {
     toString() {
         let movieStr = `Movie{ ISBN: ${this.movieId}, title: ${this.title}, date: ${this.releaseDate}`;
         if (this.director) movieStr += `, director: ${this.director.name}`;
-        return `${movieStr}, persons: ${Object.keys(this.persons).join(",")} }`;
+        return `${movieStr}, actors: ${Object.keys(this.actors).join(",")} }`;
     }
 
     // Convert object to record with ID references
@@ -263,13 +263,13 @@ class Movie {
             switch (p) {
                 case "_director":
                     // convert object reference to ID reference
-                    if (this._director) rec.directorId = this._director.name;
+                    if (this._director) rec.director = this._director;
                     break;
                 case "_actors":
                     // convert the map of object references to a list of ID references
-                    rec.actorIdRefs = [];
-                    for (const personIdStr of Object.keys(this.actors)) {
-                        rec.actorIdRefs.push(parseInt(personIdStr));
+                    rec.actors = [];
+                    for (const personIdStr of Object.keys(this._actors)) {
+                        rec.actors.push(parseInt(personIdStr));
                     }
                     break;
                 default:
@@ -312,8 +312,8 @@ Movie.add = function (slots) {
  *  that the new values are validated
  */
 Movie.update = function ({
-                             movieId, title, year,
-                             actorIdRefsToAdd, actorIdRefsToRemove, directorId
+                             movieId, title, releaseDate,
+                             actorIdRefsToAdd, actorIdRefsToRemove, director
                          }) {
     const movie = Movie.instances[movieId],
         objectBeforeUpdate = cloneObject(movie);  // save the current state of movie
@@ -388,11 +388,32 @@ Movie.retrieveAll = function () {
     }
     for (let movieId of Object.keys(movies)) {
         try {
-            Movie.instances[movieId] = new Movie(movies[movieId]);
+            Movie.instances[movieId] = Movie.convertRec2Obj( movies[movieId]);;
         } catch (e) {
             console.log(`${e.constructor.name} while deserializing movie ${movieId}: ${e.message}`);
         }
     }
+};
+
+// Convert record/row to object
+Movie.convertRec2Obj = function (movieRec) {
+    let movie = {};
+    try {
+        movie = new Movie({
+            movieId: movieRec.movieId,
+            title: movieRec.title,
+            releaseDate: Movie.dateToString(movieRec.releaseDate),
+            director: movieRec.director,
+            actors: movieRec.actors
+        });
+    } catch (e) {
+        try{
+            console.log(e.message);
+        } catch(e) {
+
+        }
+    }
+    return movie;
 };
 /**
  *  Save all movie objects
