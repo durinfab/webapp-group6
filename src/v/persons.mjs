@@ -142,21 +142,35 @@ const deleteFormEl = document.querySelector("section#Person-D > form");
 const selectDeletePersonEl = deleteFormEl.selectPerson;
 document.getElementById("destroy")
     .addEventListener("click", function () {
+
+        console.log("Clicked Button: Delete a person record " + selectDeletePersonEl);
+
         document.getElementById("Person-M").style.display = "none";
         document.getElementById("Person-D").style.display = "block";
         // set up the person selection list
-        fillSelectWithOptions(selectDeletePersonEl, Person.instances,
-            "personId", {displayProp: "name"});
+        fillSelectWithOptions(selectDeletePersonEl, Person.instances,"personId", {displayProp: "name"});
         deleteFormEl.reset();
     });
+
 // handle Delete button click events
 deleteFormEl["commit"].addEventListener("click", function () {
+
+    console.log("Clicked delete button. " + selectDeletePersonEl);
+
     const personIdRef = selectDeletePersonEl.value;
     if (!personIdRef) return;
     if (confirm("Do you really want to delete this person?")) {
-        Person.destroy(personIdRef);
-        selectDeletePersonEl.remove();
+        if(Person.destroy(personIdRef)) { // if person can be deleted
+            selectDeletePersonEl.remove();
+            deleteFormEl.reset();
+
+        } else {
+            confirm("Person cannot be deleted.");
+        }
     }
+
+    console.log("check");
+
 });
 
 /**********************************************

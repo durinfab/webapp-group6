@@ -183,16 +183,33 @@ Person.update = function ({personId, name}) {
  *  movies is required for being able to delete the person from the movies' persons.
  */
 Person.destroy = function (personId) {
+
     const person = Person.instances[personId];
+
     // delete all dependent movie records
     for (const movieId of Object.keys(Movie.instances)) {
         const movie = Movie.instances[movieId];
-        if (movie.persons[personId]) delete movie.persons[personId];
+
+        if (movie.director == personId) {
+            // throw proper exception here?
+            console.log(`Person ${person.name} cannot be deleted as it's the director of movie ${movie.title}.`);
+            return false;
+        }
+
+        if (movie.actors[personId]) {
+            // delete movie.actors[personId];
+            movie.removeActor(personId);
+        }
     }
+
     // delete the person object
     delete Person.instances[personId];
     console.log(`Person ${person.name} deleted.`);
+
+    return true;
 };
+// todo after unsuccessful deletion the delete page bugs out
+
 /**
  *  Load all person records and convert them to objects
  */

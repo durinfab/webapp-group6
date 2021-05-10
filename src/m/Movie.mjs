@@ -47,9 +47,10 @@ class Movie {
     get director() {
         return this._director;
     }
-    /*get persons() {
-         return this._persons;
-    }*/
+    get actors() {
+        return this._actors;
+    }
+
 
     static validateDate = function (date) {
         //checks if date is valid. Returns true if the date is valid
