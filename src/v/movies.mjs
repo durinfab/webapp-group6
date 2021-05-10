@@ -37,21 +37,22 @@ window.addEventListener("beforeunload", Movie.saveAll);
 /**********************************************
  Use case Retrieve/List All Movies
  **********************************************/
-document.getElementById("retrieveAndListAll")
-    .addEventListener("click", function () {
+document.getElementById("retrieveAndListAll").addEventListener("click", function () {
+
         document.getElementById("Movie-M").style.display = "none";
         document.getElementById("Movie-R").style.display = "block";
         const tableBodyEl = document.querySelector("section#Movie-R>table>tbody");
         tableBodyEl.innerHTML = "";  // drop old content
+
         for (const key of Object.keys(Movie.instances)) {
             const movie = Movie.instances[key];
             // create list of persons for this movie
-            const persListEl = createListFromMap(movie._actors, "name");
+            const actorListEl = createListFromMap(movie._actors, "name");
             const row = tableBodyEl.insertRow();
             row.insertCell().textContent = movie.movieId;
             row.insertCell().textContent = movie.title;
             row.insertCell().textContent = Movie.dateToString(movie.releaseDate);
-            row.insertCell().appendChild(persListEl);
+            row.insertCell().appendChild(actorListEl);
             // if the movie has a director, show its name
             row.insertCell().textContent =
                 Person.instances[movie.director] ? Person.instances[movie.director].name : "";
@@ -62,7 +63,7 @@ document.getElementById("retrieveAndListAll")
  Use case Create Movie
  **********************************************/
 const createFormEl = document.querySelector("section#Movie-C > form"),
-    selectPersonsEl = createFormEl.selectPersons;
+    selectPersonsEl = createFormEl.selectActors;
     // selectPublisherEl = createFormEl.selectPublisher;
 document.getElementById("create").addEventListener("click", function () {
     document.getElementById("Movie-M").style.display = "none";
@@ -72,7 +73,7 @@ document.getElementById("create").addEventListener("click", function () {
     // fillSelectWithOptions(selectPublisherEl, Person.instances, "name");
 
     // set up a multiple selection list for selecting persons
-    fillSelectWithOptions(selectPersonsEl, Person.instances,
+    fillSelectWithOptions(selectPersonsEl, Actors.instances,
         "personId", {displayProp: "name"});
     createFormEl.reset();
 });
@@ -91,18 +92,21 @@ createFormEl["commit"].addEventListener("click", function () {
         title: createFormEl.title.value,
         year: createFormEl.year.value,
         actors: [],
-        director: createFormEl.selectPublisher.value
+        director: createFormEl.selectDirector.value
     };
     // check all input fields and show error messages
     createFormEl.movieId.setCustomValidity(
         Movie.checkMovieID(slots.movieId).message);
     /* SIMPLIFIED CODE: no before-submit validation of name */
+
     // get the list of selected persons
     const selAuthOptions = createFormEl.selectPersons.selectedOptions;
+
     // check the mandatory value constraint for persons
-    createFormEl.selectPersons.setCustomValidity(
-        selAuthOptions.length > 0 ? "" : "No person selected!"
+    createFormEl.selectActors.setCustomValidity(
+        selActorOptions.length > 0 ? "" : "No person selected!"
     );
+
     // save the input data only if all form fields are valid
     if (createFormEl.checkValidity()) {
         // construct a list of person ID references

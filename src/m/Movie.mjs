@@ -31,8 +31,8 @@ class Movie {
         this.title = title;
         this.releaseDate = releaseDate;
         // assign object references or ID references (to be converted in setter)
-        this.director = director; // || directorId;
-        this.actors = actors; // || actorIdRefs;
+        this.director = director; // this is a directorIdRef
+        this.actors = actors; // these are actorIdRefs
     }
 
     get movieId() {
@@ -313,44 +313,52 @@ Movie.add = function (slots) {
  */
 Movie.update = function ({
                              movieId, title, releaseDate,
-                             actorIdRefsToAdd, actorIdRefsToRemove, director
+                             actorIdRefsToAdd, actorIdRefsToRemove, directorIdRef
                          }) {
     const movie = Movie.instances[movieId],
         objectBeforeUpdate = cloneObject(movie);  // save the current state of movie
     let noConstraintViolated = true, updatedProperties = [];
     try {
+
         if (title && movie.title !== title) {
             movie.title = title;
             updatedProperties.push("title");
         }
+
+        /*
         if (year && movie.year !== parseInt(year)) {
             movie.year = year;
             updatedProperties.push("year");
         }
+        */
+
         if (actorIdRefsToAdd) {
             updatedProperties.push("actors(added)");
             for (let personIdRef of actorIdRefsToAdd) {
                 movie.addActor(personIdRef);
             }
         }
+
         if (actorIdRefsToRemove) {
             updatedProperties.push("actors(removed)");
             for (let personId of actorIdRefsToRemove) {
                 movie.removeActor(personId);
             }
         }
-        // directorId may be the empty string for unsetting the optional property
-        if (directorId && (!movie.director && directorId ||
-            movie.director && movie.director.name !== directorId)) {
-            movie.director = directorId;
+
+        // update director on change
+        if (directorIdRef !== movie.director) {
+            movie.director = directorIdRef;
             updatedProperties.push("director");
         }
+
     } catch (e) {
         console.log(`${e.constructor.name}: ${e.message}`);
         noConstraintViolated = false;
         // restore object to its state before updating
         Movie.instances[movieId] = objectBeforeUpdate;
     }
+
     if (noConstraintViolated) {
         if (updatedProperties.length > 0) {
             let ending = updatedProperties.length > 1 ? "ies" : "y";
@@ -360,6 +368,7 @@ Movie.update = function ({
         }
     }
 };
+
 /**
  *  Delete an existing Movie record/object
  */
@@ -368,9 +377,10 @@ Movie.destroy = function (movieId) {
         console.log(`${Movie.instances[movieId].toString()} deleted!`);
         delete Movie.instances[movieId];
     } else {
-        console.log(`There is no movie with ISBN ${movieId} in the database!`);
+        console.log(`There is no movie with ID ${movieId} in the database!`);
     }
 };
+
 /**
  *  Load all movie table rows and convert them to objects
  *  Precondition: directors and people must be loaded first
@@ -415,6 +425,7 @@ Movie.convertRec2Obj = function (movieRec) {
     }
     return movie;
 };
+
 /**
  *  Save all movie objects
  */
