@@ -259,7 +259,7 @@ class Movie {
 
     // Serialize movie object
     toString() {
-        let movieStr = `Movie{ ISBN: ${this.movieId}, title: ${this.title}, date: ${this.releaseDate}`;
+        let movieStr = `Movie{ ID: ${this.movieId}, title: ${this.title}, date: ${this.releaseDate}`;
         if (this.director) movieStr += `, director: ${this.director}`;
         return `${movieStr}, actors: ${Object.keys(this.actors).join(",")} }`;
     }
