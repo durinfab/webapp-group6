@@ -104,6 +104,15 @@ class Movie {
     }
 
     //Validate movie id from param and a
+    static validateDirector = function(director) {
+        if (director === "") {
+            return new MandatoryValueConstraintViolation(
+                "ERROR: Setting a director is mandatory!");
+        }
+        return new NoConstraintViolation();
+    }
+
+    //Validate movie id from param and a
     static validateMovieID = function(movieId) {
         if(!isIntegerOrIntegerString(movieId)) {
             return new RangeConstraintViolation(
@@ -251,7 +260,7 @@ class Movie {
     // Serialize movie object
     toString() {
         let movieStr = `Movie{ ISBN: ${this.movieId}, title: ${this.title}, date: ${this.releaseDate}`;
-        if (this.director) movieStr += `, director: ${this.director.name}`;
+        if (this.director) movieStr += `, director: ${this.director}`;
         return `${movieStr}, actors: ${Object.keys(this.actors).join(",")} }`;
     }
 

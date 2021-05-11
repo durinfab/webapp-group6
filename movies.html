@@ -80,7 +80,7 @@
         <section id="Movie-C" class="UI-Page">
             <!-- ======================================================= -->
             <h1>Create a new movie record</h1>
-            <form>
+            <form id="createMovie">
                 <div class="field">
                     <label>ID: <input type="text" name="movieId"/></label>
                 </div>
@@ -93,12 +93,12 @@
 
 
                 <div class="select-one">
-                    <label>Director: <select name="select Director"></select></label>
+                    <label>Director: <select name="selectDirector"></select></label>
                 </div>
 
                 <div class="select-many">
                     <label>Actors:
-                        <select name="select Actors" multiple="multiple"></select>
+                        <select name="selectActors" multiple="multiple"></select>
                     </label>
                 </div>
 
@@ -117,7 +117,7 @@
                     <label>Select movie: <select name="selectMovie"></select></label>
                 </div>
                 <div class="field">
-                    <label>ID:
+                    <label>MovieID:
                         <output name="movieId"></output>
                     </label>
                 </div>
@@ -125,7 +125,7 @@
                     <label>Title: <input type="text" name="title"/></label>
                 </div>
                 <div class="field">
-                    <label>Year: <input type="text" name="year"/></label>
+                    <label>Release Date: <input type="text" name="releaseDate"/></label>
                 </div>
 
                 <div class="select-one">

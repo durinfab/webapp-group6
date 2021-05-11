@@ -62,10 +62,11 @@ document.getElementById("retrieveAndListAll").addEventListener("click", function
 /**********************************************
  Use case Create Movie
  **********************************************/
-const createFormEl = document.querySelector("section#Movie-C > form"),
-    selectPersonsEl = createFormEl.selectActors;
-    // selectPublisherEl = createFormEl.selectPublisher;
-document.getElementById("create").addEventListener("click", function () {
+    const createFormEl = document.querySelector("section#Movie-C > form");
+// const selectPersonsEl = document.querySelector("section#Movie-U > form");
+    const selectActorsEl = document.forms["createMovie"].selectActors;
+    const selectDirectorEL = document.forms["createMovie"].selectDirector;
+    document.getElementById("create").addEventListener("click", function () {
     document.getElementById("Movie-M").style.display = "none";
     document.getElementById("Movie-C").style.display = "block";
 
@@ -73,14 +74,28 @@ document.getElementById("create").addEventListener("click", function () {
     // fillSelectWithOptions(selectPublisherEl, Person.instances, "name");
 
     // set up a multiple selection list for selecting persons
-    fillSelectWithOptions(selectPersonsEl, Actors.instances,
+    fillSelectWithOptions(selectActorsEl, Person.instances,
         "personId", {displayProp: "name"});
+        fillSelectWithOptions(selectDirectorEL, Person.instances,
+            "personId", {displayProp: "name"});
     createFormEl.reset();
 });
 // set up event handlers for responsive constraint validation
 createFormEl.movieId.addEventListener("input", function () {
     createFormEl.movieId.setCustomValidity(
-        Movie.checkIsbnAsId(createFormEl.movieId.value).message);
+        Movie.validateMovieID(createFormEl.movieId.value).message);
+});
+createFormEl.title.addEventListener("input", function () {
+    createFormEl.title.setCustomValidity(
+        Movie.validateTitle(createFormEl.title.value).message);
+});
+createFormEl.releaseDate.addEventListener("input", function () {
+    createFormEl.releaseDate.setCustomValidity(
+        Movie.validateDate(createFormEl.releaseDate.value).message);
+});
+createFormEl.selectDirector.addEventListener("input", function () {
+    createFormEl.selectDirector.setCustomValidity(
+        Movie.validateDirector(createFormEl.selectDirector.value).message);
 });
 /* SIMPLIFIED/MISSING CODE: add event listeners for responsive
    validation on user input with Movie.checkTitle and checkYear */
@@ -90,17 +105,19 @@ createFormEl["commit"].addEventListener("click", function () {
     const slots = {
         movieId: createFormEl.movieId.value,
         title: createFormEl.title.value,
-        year: createFormEl.year.value,
+        releaseDate: createFormEl.releaseDate.value,
         actors: [],
         director: createFormEl.selectDirector.value
     };
     // check all input fields and show error messages
     createFormEl.movieId.setCustomValidity(
-        Movie.checkMovieID(slots.movieId).message);
+        Movie.validateMovieID(slots.movieId).message);
+    createFormEl.selectDirector.setCustomValidity(
+        Movie.validateDirector(slots.director).message);
     /* SIMPLIFIED CODE: no before-submit validation of name */
 
     // get the list of selected persons
-    const selAuthOptions = createFormEl.selectPersons.selectedOptions;
+    const selAuthOptions = selectActorsEl.selectedOptions;
 
     // check the mandatory value constraint for persons
     /*
@@ -150,7 +167,7 @@ selectUpdateMovieEl.addEventListener("change", function () {
         const movie = Movie.instances[movieId];
         formEl.movieId.value = movie.movieId;
         formEl.title.value = movie.title;
-        formEl.year.value = movie.year;
+        formEl.releaseDate.value = movie.releaseDate;
 
         //
         fillSelectWithOptions(selectPublisherEl, Person.instances, "name");
@@ -179,7 +196,7 @@ updateFormEl["commit"].addEventListener("click", function () {
     const slots = {
         movieId: updateFormEl.movieId.value,
         title: updateFormEl.title.value,
-        year: updateFormEl.year.value,
+        releaseDate: updateFormEl.releaseDate.value,
         // directorId: updateFormEl.selectPublisher.value
     }
     // add event listeners for responsive validation
