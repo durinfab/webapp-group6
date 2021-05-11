@@ -9,8 +9,9 @@ import {
     NoConstraintViolation, MandatoryValueConstraintViolation,
     RangeConstraintViolation, UniquenessConstraintViolation,
     ReferentialIntegrityConstraintViolation
-}
-    from "../../lib/errorTypes.mjs";
+} from "../../lib/errorTypes.mjs";
+
+const debug = true;
 
 /**
  * The class Person
@@ -21,16 +22,25 @@ import {
 class Person {
     // using a single record parameter with ES6 function parameter destructuring
     constructor({personId, name}) {
+
+        if (debug) console.log("called constructor with " + personId + " " + name);
+
         // assign properties by invoking implicit setters
         this.personId = personId;  // number (integer)
         this.name = name;  // string
     }
 
     get personId() {
+
+        if (debug) console.log("called get personId");
+
         return this._personId;
     }
 
     static checkPersonId(id) {
+
+        if (debug) console.log("called checkPersonId with " + id);
+
         if (!id) {
             return new NoConstraintViolation();  // may be optional as an IdRef
         } else {
@@ -44,6 +54,9 @@ class Person {
     }
 
     static checkPersonIdAsId(id) {
+
+        if (debug) console.log("called checkPersonIdAsId with " + id);
+
         let constraintViolation = Person.checkPersonId(id);
         if ((constraintViolation instanceof NoConstraintViolation)) {
             // convert to integer
@@ -62,6 +75,9 @@ class Person {
     }
 
     static checkPersonIdAsIdRef(id) {
+
+        if (debug) console.log("called checkPersonIdAsIdRef with " + id);
+
         let constraintViolation = Person.checkPersonId(id);
         if ((constraintViolation instanceof NoConstraintViolation) && id) {
             if (!Person.instances[String(id)]) {
@@ -72,11 +88,14 @@ class Person {
         return constraintViolation;
     }
 
-    static checkName( n) {
-        if (!n) {
+    static checkName(name) {
+
+        if (debug) console.log("called checkName with " + name);
+
+        if (!name) {
             return new NoConstraintViolation();  // not mandatory
         } else {
-            if (typeof n !== "string" || n.trim() === "") {
+            if (typeof name !== "string" || name.trim() === "") {
                 return new RangeConstraintViolation(
                     "The name must be a non-empty string!");
             } else {
@@ -98,6 +117,9 @@ class Person {
     }
 
     set personId(id) {
+
+        if (debug) console.log("called set personId with " + id);
+
         const constraintViolation = Person.checkPersonIdAsId(id);
         if (constraintViolation instanceof NoConstraintViolation) {
             this._personId = parseInt(id);
@@ -107,12 +129,18 @@ class Person {
     }
 
     get name() {
+
+        if (debug) console.log("called get name");
+
         return this._name;
     }
 
-    set name(n) {
+    set name(name) {
+
+        if (debug) console.log("called set name with " + name);
+
         /*SIMPLIFIED CODE: no validation with Person.checkName */
-        this._name = n;
+        this._name = name;
     }
 
     toJSON() {  // is invoked by JSON.stringify
@@ -138,6 +166,9 @@ Person.instances = {};
  *  Create a new person record/object
  */
 Person.add = function (slots) {
+
+    if (debug) console.log("called Person.add with " + slots);
+
     let person;
     try {
         person = new Person(slots);
@@ -150,10 +181,14 @@ Person.add = function (slots) {
         console.log(`Saved: ${person.name}`);
     }
 };
+
 /**
  *  Update an existing person record/object
  */
 Person.update = function ({personId, name}) {
+
+    if (debug) console.log("called person update with " + personId + " " + name);
+
     const person = Person.instances[String(personId)],
         objectBeforeUpdate = cloneObject(person);
     let noConstraintViolated = true, ending = "", updatedProperties = [];
@@ -177,6 +212,7 @@ Person.update = function ({personId, name}) {
         }
     }
 };
+
 /**
  *  Delete an person object/record
  *  Since the movie-person association is unidirectional, a linear search on all
@@ -184,29 +220,44 @@ Person.update = function ({personId, name}) {
  */
 Person.destroy = function (personId) {
 
+    if (debug) console.log("called Person.destroy with " + personId);
+
     const person = Person.instances[personId];
 
     if(!person) {
         console.log(`There is no person with ID ${personId} in the database!`);
+        return false;
+    }
+
+    // make sure person to delete is director of no movie
+    for (const movieId of Object.keys(Movie.instances)) {
+        const movie = Movie.instances[movieId];
+
+        if (movie.director == personId) {
+            console.log(`Person ${person.name} cannot be deleted as it's the director of movie ${movie.title}.`);
+            return false;
+        }
     }
 
     // delete all dependent movie records
     for (const movieId of Object.keys(Movie.instances)) {
         const movie = Movie.instances[movieId];
 
-        if (movie.director === personId) {
-            // throw proper exception here?
-            console.log(`Person ${person.name} cannot be deleted as it's the director of movie ${movie.title}.`);
-            return false;
-        }
+        console.log("removing..............")
 
         if (movie.actors[personId]) {
-            // delete movie.actors[personId];
-            movie.removeActor(personId);
+
+            console.log("calling removeActor")
+
+            delete movie.actors[personId];
+            // movie.removeActor(personId);
         }
     }
 
     // delete the person object
+
+    console.log("delete Person.instances[id]")
+
     delete Person.instances[personId];
     console.log(`Person ${person.name} deleted.`);
 
@@ -218,6 +269,9 @@ Person.destroy = function (personId) {
  *  Load all person records and convert them to objects
  */
 Person.retrieveAll = function () {
+
+    if (debug) console.log("called Person.retrieveall");
+
     let persons;
     if (!localStorage["persons"]) localStorage["persons"] = "{}";
     try {
@@ -236,10 +290,14 @@ Person.retrieveAll = function () {
     }
     console.log(`${Object.keys(persons).length} person records loaded.`);
 };
+
 /**
  *  Save all person objects as records
  */
 Person.saveAll = function () {
+
+    if (debug) console.log("called Person.saveAll");
+
     const nmrOfPersons = Object.keys(Person.instances).length;
     try {
         localStorage["persons"] = JSON.stringify(Person.instances);
