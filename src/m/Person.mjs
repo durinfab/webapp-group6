@@ -44,7 +44,7 @@ class Person {
     }
 
     static checkPersonIdAsId(id) {
-        var constraintViolation = Person.checkPersonId(id);
+        let constraintViolation = Person.checkPersonId(id);
         if ((constraintViolation instanceof NoConstraintViolation)) {
             // convert to integer
             id = parseInt(id);
@@ -62,7 +62,7 @@ class Person {
     }
 
     static checkPersonIdAsIdRef(id) {
-        var constraintViolation = Person.checkPersonId(id);
+        let constraintViolation = Person.checkPersonId(id);
         if ((constraintViolation instanceof NoConstraintViolation) && id) {
             if (!Person.instances[String(id)]) {
                 constraintViolation = new ReferentialIntegrityConstraintViolation(
@@ -87,7 +87,7 @@ class Person {
 
     //TODO: n must be converted into string (via person id)
     static checkNameAsIdRef( n) {
-        var validationResult = Person.checkName(n);
+        let validationResult = Person.checkName(n);
         if ((validationResult instanceof NoConstraintViolation) && n) {
             if (!Person.instances[n]) {
                 validationResult = new ReferentialIntegrityConstraintViolation(
@@ -116,7 +116,7 @@ class Person {
     }
 
     toJSON() {  // is invoked by JSON.stringify
-        var rec = {};
+        let rec = {};
         for (const p of Object.keys(this)) {
             // remove underscore prefix
             if (p.charAt(0) === "_") rec[p.substr(1)] = this[p];
@@ -138,7 +138,7 @@ Person.instances = {};
  *  Create a new person record/object
  */
 Person.add = function (slots) {
-    var person = null;
+    let person;
     try {
         person = new Person(slots);
     } catch (e) {
@@ -156,7 +156,7 @@ Person.add = function (slots) {
 Person.update = function ({personId, name}) {
     const person = Person.instances[String(personId)],
         objectBeforeUpdate = cloneObject(person);
-    var noConstraintViolated = true, ending = "", updatedProperties = [];
+    let noConstraintViolated = true, ending = "", updatedProperties = [];
     try {
         if (name && person.name !== name) {
             person.name = name;
@@ -218,7 +218,7 @@ Person.destroy = function (personId) {
  *  Load all person records and convert them to objects
  */
 Person.retrieveAll = function () {
-    var persons = {};
+    let persons;
     if (!localStorage["persons"]) localStorage["persons"] = "{}";
     try {
         persons = JSON.parse(localStorage["persons"]);
