@@ -159,8 +159,8 @@ document.getElementById("update").addEventListener("click", function () {
 selectUpdateMovieEl.addEventListener("change", function () {
     const formEl = document.querySelector("section#Movie-U > form"),
         saveButton = formEl.commit,
-        selectPersonsWidget = formEl.querySelector(".MultiChoiceWidget"),
-        // selectPublisherEl = formEl.selectPublisher,
+        selectDirectorEl = formEl.selectDirector,
+        selectActorsWidget = formEl.querySelector(".MultiChoiceWidget"),
         movieId = formEl.selectMovie.value;
 
     if (movieId) {
@@ -170,39 +170,38 @@ selectUpdateMovieEl.addEventListener("change", function () {
         formEl.releaseDate.value = movie.releaseDate;
 
         //
-        fillSelectWithOptions(selectPublisherEl, Person.instances, "name");
+        fillSelectWithOptions(selectDirectorEl, Person.instances, "name");
+        selectDirectorEl.value = movie.director;
 
         //
-        createMultipleChoiceWidget(selectPersonsWidget, movie.director,
-            Person.instances, "personId", "name", 1);  // minCard=1
-
-        // assign associated director as the selected option to select element
-        // if (movie.director) formEl.selectPublisher.value = movie.director.name;
+        createMultipleChoiceWidget(selectActorsWidget, movie.actors, Person.instances, "personId", "name", 1);  // minCard=1
 
         saveButton.disabled = false;
     } else {
         formEl.reset();
         // formEl.selectPublisher.selectedIndex = 0;
-        selectPersonsWidget.innerHTML = "";
+        selectActorsWidget.innerHTML = "";
         saveButton.disabled = true;
     }
 });
+
 // handle Save button click events
 updateFormEl["commit"].addEventListener("click", function () {
     const movieIdRef = selectUpdateMovieEl.value,
-        selectPersonsWidget = updateFormEl.querySelector(".MultiChoiceWidget"),
-        multiChoiceListEl = selectPersonsWidget.firstElementChild;
+        selectActorsWidget = updateFormEl.querySelector(".MultiChoiceWidget"),
+        multiChoiceListEl = selectActorsWidget.firstElementChild;
     if (!movieIdRef) return;
     const slots = {
         movieId: updateFormEl.movieId.value,
         title: updateFormEl.title.value,
         releaseDate: updateFormEl.releaseDate.value,
-        // directorId: updateFormEl.selectPublisher.value
+        directorId: updateFormEl.selectDirector.value
     }
     // add event listeners for responsive validation
     /* MISSING CODE */
     // commit the update only if all form field values are valid
     if (updateFormEl.checkValidity()) {
+
         // construct actorIdRefs-ToAdd/ToRemove lists from the association list
         const actorIdRefsToAdd = [], actorIdRefsToRemove = [];
         for (const mcListItemEl of multiChoiceListEl.children) {
@@ -213,6 +212,7 @@ updateFormEl["commit"].addEventListener("click", function () {
                 actorIdRefsToAdd.push(mcListItemEl.getAttribute("data-value"));
             }
         }
+
         // if the add/remove list is non-empty create a corresponding slot
         if (actorIdRefsToRemove.length > 0) {
             slots.actorIdRefsToRemove = actorIdRefsToRemove;
@@ -224,7 +224,7 @@ updateFormEl["commit"].addEventListener("click", function () {
     Movie.update(slots);
     // update the movie selection list's option element
     selectUpdateMovieEl.options[selectUpdateMovieEl.selectedIndex].text = slots.title;
-    selectPersonsWidget.innerHTML = "";
+    selectActorsWidget.innerHTML = "";
 });
 
 /**********************************************
