@@ -167,7 +167,7 @@ selectUpdateMovieEl.addEventListener("change", function () {
         const movie = Movie.instances[movieId];
         formEl.movieId.value = movie.movieId;
         formEl.title.value = movie.title;
-        formEl.releaseDate.value = movie.releaseDate;
+        formEl.releaseDate.value = Movie.dateToString(movie.releaseDate); // movie.releaseDate;
 
         //
         fillSelectWithOptions(selectDirectorEl, Person.instances, "name");
