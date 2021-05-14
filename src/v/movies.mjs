@@ -169,11 +169,13 @@ selectUpdateMovieEl.addEventListener("change", function () {
         formEl.title.value = movie.title;
         formEl.releaseDate.value = Movie.dateToString(movie.releaseDate); // movie.releaseDate;
 
-        //
+        // set up director selection list
         fillSelectWithOptions(selectDirectorEl, Person.instances, "name");
-        selectDirectorEl.value = movie.director;
 
-        //
+        // autoselect current movie director
+        formEl.selectDirector.value = Person.instances[movie.director].name;
+
+        // set up actor selection list
         createMultipleChoiceWidget(selectActorsWidget, movie.actors, Person.instances, "personId", "name", 1);  // minCard=1
 
         saveButton.disabled = false;
