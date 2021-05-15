@@ -26,12 +26,12 @@ import {
  */
 class Movie {
     // using a record parameter with ES6 function parameter destructuring
-    constructor({movieId, title, releaseDate, director, actors}) {
+    constructor({movieId, title, releaseDate, directorId, actors}) {
         this.movieId = movieId;
         this.title = title;
         this.releaseDate = releaseDate;
         // assign object references or ID references (to be converted in setter)
-        this.director = director; // this is a directorIdRef
+        this.directorId = directorId; // this is a directorIdRef
         this.actors = actors; // these are actorIdRefs
     }
 
@@ -44,8 +44,8 @@ class Movie {
     get releaseDate() {
         return this._releaseDate;
     }
-    get director() {
-        return this._director;
+    get directorId() {
+        return this._directorId;
     }
     get actors() {
         return this._actors;
@@ -191,16 +191,16 @@ class Movie {
     */
 
 
-    set director(p) {
+    set directorId(p) {
         if (!p) {  // unset director
-            delete this._director;
+            delete this._directorId;
         } else {
             // p can be an ID reference or an object reference
             const directorId = (typeof p !== "object") ? p : p.name;
             const validationResult = Movie.checkPerson(directorId);
             if (validationResult instanceof NoConstraintViolation) {
                 // create the new director reference
-                this._director = p;
+                this._directorId = p;
             } else {
                 throw validationResult;
             }
@@ -260,7 +260,7 @@ class Movie {
     // Serialize movie object
     toString() {
         let movieStr = `Movie{ ID: ${this.movieId}, title: ${this.title}, date: ${this.releaseDate}`;
-        if (this.director) movieStr += `, director: ${this.director}`;
+        if (this.directorId) movieStr += `, director: ${this.directorId}`;
         return `${movieStr}, actors: ${Object.keys(this.actors).join(",")} }`;
     }
 
@@ -271,9 +271,9 @@ class Movie {
             // copy only property slots with underscore prefix
             if (p.charAt(0) !== "_") continue;
             switch (p) {
-                case "_director":
+                case "_directorId":
                     // convert object reference to ID reference
-                    if (this._director) rec.director = this._director;
+                    if (this._directorId) rec.directorId = this._directorId;
                     break;
                 case "_actors":
                     // convert the map of object references to a list of ID references
@@ -323,24 +323,23 @@ Movie.add = function (slots) {
  */
 Movie.update = function ({
                              movieId, title, releaseDate,
-                             actorIdRefsToAdd, actorIdRefsToRemove, directorIdRef
+                             actorIdRefsToAdd, actorIdRefsToRemove, directorId
                          }) {
     const movie = Movie.instances[movieId],
         objectBeforeUpdate = cloneObject(movie);  // save the current state of movie
     let noConstraintViolated = true, updatedProperties = [];
     try {
 
-        if (title && movie.title !== title) {
+        if (movie.title !== title) {
             movie.title = title;
             updatedProperties.push("title");
         }
 
-        /*
-        if (year && movie.year !== parseInt(year)) {
-            movie.year = year;
-            updatedProperties.push("year");
+
+        if (movie.releaseDate !== releaseDate) {
+            movie.releaseDate = releaseDate;
+            updatedProperties.push("releaseDate");
         }
-        */
 
         if (actorIdRefsToAdd) {
             updatedProperties.push("actors(added)");
@@ -357,9 +356,10 @@ Movie.update = function ({
         }
 
         // update director on change
-        if (directorIdRef !== movie.director) {
-            movie.director = directorIdRef;
-            updatedProperties.push("director");
+        console.log(directorId + " VS " + movie.directorId);
+        if (directorId !== movie.directorId) {
+            movie.directorId = directorId;
+            updatedProperties.push("directorId");
         }
 
     } catch (e) {
@@ -408,7 +408,7 @@ Movie.retrieveAll = function () {
     }
     for (let movieId of Object.keys(movies)) {
         try {
-            Movie.instances[movieId] = Movie.convertRec2Obj( movies[movieId]);;
+            Movie.instances[movieId] = Movie.convertRec2Obj( movies[movieId]);
         } catch (e) {
             console.log(`${e.constructor.name} while deserializing movie ${movieId}: ${e.message}`);
         }
@@ -423,7 +423,7 @@ Movie.convertRec2Obj = function (movieRec) {
             movieId: movieRec.movieId,
             title: movieRec.title,
             releaseDate: Movie.dateToString(movieRec.releaseDate),
-            director: movieRec.director,
+            directorId: movieRec.directorId,
             actors: movieRec.actors
         });
     } catch (e) {

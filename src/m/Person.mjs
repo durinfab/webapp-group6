@@ -11,7 +11,7 @@ import {
     ReferentialIntegrityConstraintViolation
 } from "../../lib/errorTypes.mjs";
 
-const debug = false;
+const debug = true;
 
 /**
  * The class Person
@@ -233,7 +233,7 @@ Person.destroy = function (personId) {
     for (const movieId of Object.keys(Movie.instances)) {
         const movie = Movie.instances[movieId];
 
-        if (movie.director == personId) {
+        if (movie.directorId === personId) {
             console.log(`Person ${person.name} cannot be deleted as it's the director of movie ${movie.title}.`);
             return false;
         }
