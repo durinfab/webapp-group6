@@ -172,7 +172,6 @@ selectUpdateMovieEl.addEventListener("change", function () {
         // set up director selection list
         fillSelectWithOptions(selectDirectorEl, Person.instances, "name");
 
-        console.log("value: " + movie.directorId);
         // autoselect current movie director
         formEl.selectDirector.value = Person.instances[movie.directorId].name;
 

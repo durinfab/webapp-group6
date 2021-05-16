@@ -356,7 +356,6 @@ Movie.update = function ({
         }
 
         // update director on change
-        console.log(directorId + " VS " + movie.directorId);
         if (directorId !== movie.directorId) {
             movie.directorId = directorId;
             updatedProperties.push("directorId");
