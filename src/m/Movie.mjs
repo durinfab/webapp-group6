@@ -335,7 +335,6 @@ Movie.update = function ({
             updatedProperties.push("title");
         }
 
-        console.log(movie.releaseDate + " vs " + releaseDate);
         if (Movie.dateToString(movie.releaseDate) !== releaseDate) {
             movie.releaseDate = releaseDate;
             updatedProperties.push("releaseDate");
