@@ -165,7 +165,6 @@ selectUpdateMovieEl.addEventListener("change", function () {
 
     if (movieId) {
         const movie = Movie.instances[movieId];
-        console.log("mov: " + movie);
         formEl.movieId.value = movie.movieId;
         formEl.title.value = movie.title;
         formEl.releaseDate.value = Movie.dateToString(movie.releaseDate); // movie.releaseDate;
