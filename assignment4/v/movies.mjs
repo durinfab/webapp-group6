@@ -181,7 +181,7 @@ selectUpdateMovieEl.addEventListener("change", function () {
         saveButton.disabled = false;
     } else {
         formEl.reset();
-        // formEl.selectPublisher.selectedIndex = 0;
+        selectActorsWidget.selectedIndex = 0;
         selectActorsWidget.innerHTML = "";
         saveButton.disabled = true;
     }
