@@ -170,7 +170,7 @@ selectUpdateMovieEl.addEventListener("change", function () {
         formEl.releaseDate.value = Movie.dateToString(movie.releaseDate); // movie.releaseDate;
 
         // set up director selection list
-        fillSelectWithOptions(selectDirectorEl, Person.instances, "name");
+        fillSelectWithOptions2(selectDirectorEl, Person.instances, "name");
 
         // autoselect current movie director
         formEl.selectDirector.value = Person.instances[movie.directorId].name;

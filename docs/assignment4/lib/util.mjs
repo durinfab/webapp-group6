@@ -115,6 +115,32 @@ function fillSelectWithOptions(selectEl, selectionRange, keyProp, optPar) {
     }
 }
 
+// basically fillSelectWithOptions but last param isn't optional -> no "no selection yet" entry
+function fillSelectWithOptions2(selectEl, selectionRange, keyProp, optPar) {
+    let optionEl = null, obj = null, displayProp = "";
+    // delete old contents
+    selectEl.innerHTML = "";
+
+    // create "no selection yet" entry
+    // if (!selectEl.multiple) selectEl.add(createOption("", " --- "));
+
+    // create option elements from object property values
+    let options = Object.keys(selectionRange);
+    for (const i of options.keys()) {
+        obj = selectionRange[options[i]];
+        if (optPar && optPar.displayProp) displayProp = optPar.displayProp;
+        else displayProp = keyProp;
+        optionEl = createOption(obj[keyProp], obj[displayProp]);
+        // if invoked with a selection argument, flag the selected options
+        if (selectEl.multiple && optPar && optPar.selection &&
+            optPar.selection[keyProp]) {
+            // flag the option element with this value as selected
+            optionEl.selected = true;
+        }
+        selectEl.add(optionEl);
+    }
+}
+
 // *************** Multiple Choice Widget ****************************************
 /**
  * Create the contents of an Multiple Choice widget, which is a div containing
