@@ -7,7 +7,7 @@
  ***************************************************************/
 import Person from "../m/Person.mjs";
 import Movie from "../m/Movie.mjs";
-import {fillSelectWithOptions, createListFromMap, createMultipleChoiceWidget}
+import {fillSelectWithOptions, fillSelectWithOptions2, createListFromMap, createMultipleChoiceWidget}
     from "../../lib/util.mjs";
 
 /***************************************************************

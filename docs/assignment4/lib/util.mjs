@@ -406,6 +406,6 @@ function createChoiceWidget(containerEl, fld, values,
 }
 
 export {
-    fillSelectWithOptions, createListFromMap, createMultipleChoiceWidget, cloneObject,
+    fillSelectWithOptions, fillSelectWithOptions2, createListFromMap, createMultipleChoiceWidget, cloneObject,
     isIntegerOrIntegerString, createOption, createChoiceWidget
 };
