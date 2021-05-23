@@ -55,7 +55,7 @@ document.getElementById("retrieveAndListAll").addEventListener("click", function
             row.insertCell().appendChild(actorListEl);
             // if the movie has a director, show its name
             row.insertCell().textContent =
-                Person.instances[movie.directorId] ? Person.instances[movie.directorId].name : "";
+                movie.director.name ? movie.director.name : "";
         }
     });
 
@@ -107,13 +107,13 @@ createFormEl["commit"].addEventListener("click", function () {
         title: createFormEl.title.value,
         releaseDate: createFormEl.releaseDate.value,
         actors: [],
-        directorId: createFormEl.selectDirector.value
+        director: createFormEl.selectDirector.value
     };
     // check all input fields and show error messages
     createFormEl.movieId.setCustomValidity(
         Movie.validateMovieID(slots.movieId).message);
     createFormEl.selectDirector.setCustomValidity(
-        Movie.validateDirector(slots.directorId).message);
+        Movie.validateDirector(slots.director).message);
     /* SIMPLIFIED CODE: no before-submit validation of name */
 
     // get the list of selected persons
@@ -173,7 +173,7 @@ selectUpdateMovieEl.addEventListener("change", function () {
         fillSelectWithOptions2(selectDirectorEl, Person.instances, "name");
 
         // autoselect current movie director
-        formEl.selectDirector.value = Person.instances[movie.directorId].name;
+        formEl.selectDirector.value = Person.instances[movie.director].name;
 
         // set up actor selection list
         createMultipleChoiceWidget(selectActorsWidget, movie.actors, Person.instances, "personId", "name", 1);  // minCard=1
@@ -207,7 +207,7 @@ updateFormEl["commit"].addEventListener("click", function () {
         movieId: updateFormEl.movieId.value,
         title: updateFormEl.title.value,
         releaseDate: updateFormEl.releaseDate.value,
-        directorId: personNameToId(updateFormEl.selectDirector.value)
+        director: personNameToId(updateFormEl.selectDirector.value)
     }
     // add event listeners for responsive validation
     /* MISSING CODE */

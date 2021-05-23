@@ -24,6 +24,11 @@ class Person {
         // assign properties by invoking implicit setters
         this.personId = personId;  // number (integer)
         this.name = name;  // string
+        this._directedMovies = {};
+    }
+
+    get directedMovies() {
+        return this._directedMovies;
     }
 
     get personId() {
@@ -77,7 +82,7 @@ class Person {
     }
 
     static checkName(name) {
-
+        console.log(name);
         if (!name) {
             return new NoConstraintViolation();  // not mandatory
         } else {
@@ -105,6 +110,20 @@ class Person {
         return this._name;
     }
 
+    static checkNameAsIdRef( n) {
+        var constraintViolation = new NoConstraintViolation();
+        //if ((constraintViolation instanceof NoConstraintViolation) &&
+            //n !== undefined) {
+
+        if (n !== undefined && !Person.instances[n]) {
+          constraintViolation = new ReferentialIntegrityConstraintViolation(
+            "There is no person record with this name!");
+        }
+        //}
+
+        return constraintViolation;
+    }
+
     set name(name) {
 
         /*SIMPLIFIED CODE: no validation with Person.checkName */
@@ -115,7 +134,9 @@ class Person {
         let rec = {};
         for (const p of Object.keys(this)) {
             // remove underscore prefix
-            if (p.charAt(0) === "_") rec[p.substr(1)] = this[p];
+            if (p.charAt(0) === "_" && p !== "_directedMovies") {
+                rec[p.substr(1)] = this[p];
+            }
         }
         return rec;
     }
@@ -146,6 +167,36 @@ Person.add = function (slots) {
         Person.instances[person.personId] = person;
         console.log(`Saved: ${person.name}`);
     }
+};
+
+Person.addDirectedMovie = function (slots) {
+  var director = null;
+  try {
+    director = new Person( slots);
+  } catch (e) {
+    console.log(`${e.constructor.name}: ${e.message}`);
+    director = null;
+  }
+  if (publisher) {
+    Person.instances[director.name] = director;
+    console.log(`${director.toString()} created!`);
+  }
+};
+
+
+Person.deleteDirectedMovie = function (name) {
+  const director = Person.instances[name];
+  // delete all references to this publisher in book objects
+  for (const key of Object.keys( Movie.instances)) {
+    const movie = Movie.instances[key];
+    if (movie.director === director) {
+      delete movie._director;  // delete the slot
+      console.log(`Book ${movie.movieId} updated.`);
+    }
+  }
+  // delete the publisher record
+  delete Person.instances[name];
+  console.log(`Publisher ${name} deleted.`);
 };
 
 /**
@@ -195,7 +246,7 @@ Person.destroy = function (personId) {
     for (const movieId of Object.keys(Movie.instances)) {
         const movie = Movie.instances[movieId];
 
-        if (movie.directorId == personId) {
+        if (movie.director == personId) {
             console.log(`Person ${person.name} cannot be deleted as it's the director of movie ${movie.title}.`);
             return false;
         }

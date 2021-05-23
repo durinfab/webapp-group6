@@ -14,7 +14,6 @@ function isIntegerOrIntegerString(x) {
         typeof (x) === "string" && x.search(/^-?[0-9]+$/) == 0;
 }
 
-
 // *************** D O M - Related ****************************************
 /**
  * Create a Push Button

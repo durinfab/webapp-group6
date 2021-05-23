@@ -8,7 +8,7 @@
 import Person from "../m/Person.mjs";
 // import Person from "../m/Person.mjs";
 import Movie from "../m/Movie.mjs";
-import {fillSelectWithOptions} from "../../lib/util.mjs";
+import {fillSelectWithOptions, createListFromMap} from "../../lib/util.mjs";
 
 /***************************************************************
  Load data
@@ -48,8 +48,10 @@ document.getElementById("retrieveAndListAll").addEventListener("click", function
         for (let key of Object.keys(Person.instances)) {
             const person = Person.instances[key];
             const row = tableBodyEl.insertRow();
+            const direcMoviesListEl = createListFromMap( person.directedMovies, "title");
             row.insertCell().textContent = person.personId;
             row.insertCell().textContent = person.name;
+            row.insertCell().appendChild( direcMoviesListEl);
         }
         document.getElementById("Person-M").style.display = "none";
         document.getElementById("Person-R").style.display = "block";
