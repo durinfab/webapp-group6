@@ -31,8 +31,11 @@ for (const frm of document.querySelectorAll("section > form")) {
     });
 }
 // save data when leaving the page
-window.addEventListener("beforeunload", Movie.saveAll);
-
+window.addEventListener("beforeunload", function () {
+    Person.saveAll();
+    // also save movies because movies may be deleted when an person is deleted
+    Movie.saveAll();
+});
 /**********************************************
  Use case Retrieve/List All Movies
  **********************************************/
@@ -51,11 +54,11 @@ document.getElementById("retrieveAndListAll").addEventListener("click", function
             const row = tableBodyEl.insertRow();
             row.insertCell().textContent = movie.movieId;
             row.insertCell().textContent = movie.title;
-            row.insertCell().textContent = Movie.dateToString(movie.releaseDate);
+            row.insertCell().textContent = movie.releaseDate;
             row.insertCell().appendChild(actorListEl);
             // if the movie has a director, show its name
             row.insertCell().textContent =
-                Person.instances[movie.director.personId].name ? Person.instances[movie.director.personId].name : "";
+                movie.director ? Person.instances[movie.director.personId].name : "";
         }
     });
 
@@ -167,13 +170,13 @@ selectUpdateMovieEl.addEventListener("change", function () {
         const movie = Movie.instances[movieId];
         formEl.movieId.value = movie.movieId;
         formEl.title.value = movie.title;
-        formEl.releaseDate.value = Movie.dateToString(movie.releaseDate); // movie.releaseDate;
+        formEl.releaseDate.value = movie.releaseDate; // movie.releaseDate;
 
         // set up director selection list
         fillSelectWithOptions2(selectDirectorEl, Person.instances, "name");
 
         // autoselect current movie director
-        formEl.selectDirector.value = Person.instances[movie.director.personId].name;
+        formEl.selectDirector.value = movie.director ? Person.instances[movie.director.personId].name : "";
 
         // set up actor selection list
         createMultipleChoiceWidget(selectActorsWidget, movie.actors, Person.instances, "personId", "name", 1);  // minCard=1

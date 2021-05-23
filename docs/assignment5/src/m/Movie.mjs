@@ -54,7 +54,7 @@ class Movie {
 
     static validateDate = function (date) {
         //checks if date is valid. Returns true if the date is valid
-        let stringDate = Movie.dateToString(date);
+        let stringDate = date;
         if(date === ""){
             return new UniquenessConstraintViolation(
                 "ERROR: Release date is not valid. Use this format: dd.mm.yyyy!");
@@ -165,7 +165,7 @@ class Movie {
     set releaseDate( releaseDate) {
         const validationResult = Movie.validateDate(releaseDate);
         if (validationResult instanceof NoConstraintViolation) {
-            this._releaseDate = Movie.stringToDate(releaseDate);
+            this._releaseDate = releaseDate;
         } else {
             throw validationResult;
         }
@@ -196,19 +196,18 @@ class Movie {
 
     set director(p) {
         if (!p) {  // unset director
-            delete this._director.directedMovies[ this._movieId];
             delete this._director;
         } else {
             // p can be an ID reference or an object reference
-            //const director = (typeof p !== "object") ? p : p.name;
-            const validationResult = Movie.validateDirector(p);
+            const director = (typeof p !== "object") ? p : p.personId;
+            const validationResult = Movie.validateDirector(director);
             if (validationResult instanceof NoConstraintViolation) {
                 if (this._director) {
                   // delete the obsolete inverse reference in Publisher::publishedBooks
                   delete this._director.directedMovies[ this._movieId];
                 }
                 // create the new publisher reference
-                this._director = Person.instances[ p];
+                this._director = Person.instances[ director];
                 // add the new inverse reference to Publisher::publishedBooks
                 this._director.directedMovies[ this._movieId] = this;
             } else {
@@ -345,7 +344,7 @@ Movie.update = function ({
             updatedProperties.push("title");
         }
 
-        if (Movie.dateToString(movie.releaseDate) !== releaseDate) {
+        if (movie.releaseDate !== releaseDate) {
             movie.releaseDate = releaseDate;
             updatedProperties.push("releaseDate");
         }
@@ -421,7 +420,7 @@ Movie.retrieveAll = function () {
     }
     for (let movieId of Object.keys(movies)) {
         try {
-            Movie.instances[movieId] = Movie.convertRec2Obj( movies[movieId]);
+            Movie.instances[movieId] = new Movie ( movies[movieId]);
         } catch (e) {
             console.log(`${e.constructor.name} while deserializing movie ${movieId}: ${e.message}`);
         }
@@ -435,8 +434,8 @@ Movie.convertRec2Obj = function (movieRec) {
         movie = new Movie({
             movieId: movieRec.movieId,
             title: movieRec.title,
-            releaseDate: Movie.dateToString(movieRec.releaseDate),
-            director: movieRec.director.personId,
+            releaseDate: movieRec.releaseDate,
+            director: movieRec.director ? movieRec.director : undefined,
             actors: movieRec.actors
         });
     } catch (e) {

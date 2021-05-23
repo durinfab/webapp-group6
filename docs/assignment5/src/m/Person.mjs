@@ -70,7 +70,6 @@ class Person {
     }
 
     static checkPersonIdAsIdRef(id) {
-
         let constraintViolation = Person.checkPersonId(id);
         if ((constraintViolation instanceof NoConstraintViolation) && id) {
             if (!Person.instances[String(id)]) {
@@ -82,7 +81,6 @@ class Person {
     }
 
     static checkName(name) {
-        console.log(name);
         if (!name) {
             return new NoConstraintViolation();  // not mandatory
         } else {
@@ -114,7 +112,6 @@ class Person {
         var constraintViolation = new NoConstraintViolation();
         //if ((constraintViolation instanceof NoConstraintViolation) &&
             //n !== undefined) {
-
         if (n !== undefined && !Person.instances[n]) {
           constraintViolation = new ReferentialIntegrityConstraintViolation(
             "There is no person record with this name!");
@@ -234,7 +231,6 @@ Person.update = function ({personId, name}) {
  *  movies is required for being able to delete the person from the movies' persons.
  */
 Person.destroy = function (personId) {
-
     const person = Person.instances[personId];
 
     if(!person) {
@@ -245,15 +241,15 @@ Person.destroy = function (personId) {
     // make sure person to delete is director of no movie
     for (const movieId of Object.keys(Movie.instances)) {
         const movie = Movie.instances[movieId];
-
-        if (movie.director == personId) {
-            console.log(`Person ${person.name} cannot be deleted as it's the director of movie ${movie.title}.`);
-            return false;
+        if (Movie.instances[movieId]._director.personId == personId) {
+            delete Movie.instances[movieId]._director;  // delete the slot
+            delete Movie.instances[movieId].director;
+            console.log(`Movie ${movie._movieId} updated.`);
         }
     }
 
     // delete all dependent movie records
-    for (const movieId of Object.keys(Movie.instances)) {
+    /*for (const movieId of Object.keys(Movie.instances)) {
         const movie = Movie.instances[movieId];
 
         if (movie.actors[personId]) {
@@ -261,15 +257,12 @@ Person.destroy = function (personId) {
             delete movie.actors[personId];
             // movie.removeActor(personId);
         }
-    }
+    }*/
 
     // delete the person object
 
-    console.log("delete Person.instances[id]")
-
     delete Person.instances[personId];
     console.log(`Person ${person.name} deleted.`);
-
     return true;
 };
 // todo after unsuccessful deletion the delete page bugs out
