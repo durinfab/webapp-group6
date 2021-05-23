@@ -431,7 +431,6 @@ Movie.retrieveAll = function () {
 // Convert record/row to object
 Movie.convertRec2Obj = function (movieRec) {
     let movie = {};
-    console.log(movieRec.director);
     try {
         movie = new Movie({
             movieId: movieRec.movieId,

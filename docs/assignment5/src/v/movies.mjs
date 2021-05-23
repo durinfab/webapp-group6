@@ -55,7 +55,7 @@ document.getElementById("retrieveAndListAll").addEventListener("click", function
             row.insertCell().appendChild(actorListEl);
             // if the movie has a director, show its name
             row.insertCell().textContent =
-                movie.director.name ? movie.director.name : "";
+                Person.instances[movie.director.personId].name ? Person.instances[movie.director.personId].name : "";
         }
     });
 
@@ -173,7 +173,7 @@ selectUpdateMovieEl.addEventListener("change", function () {
         fillSelectWithOptions2(selectDirectorEl, Person.instances, "name");
 
         // autoselect current movie director
-        formEl.selectDirector.value = Person.instances[movie.director].name;
+        formEl.selectDirector.value = Person.instances[movie.director.personId].name;
 
         // set up actor selection list
         createMultipleChoiceWidget(selectActorsWidget, movie.actors, Person.instances, "personId", "name", 1);  // minCard=1
