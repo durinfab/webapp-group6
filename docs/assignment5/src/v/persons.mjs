@@ -161,7 +161,7 @@ deleteFormEl["commit"].addEventListener("click", function () {
         if(Person.destroy(personIdRef)) { // if person can be deleted
             selectDeletePersonEl.remove();
             // deleteFormEl.reset();
-            //location.reload();
+            location.reload();
 
         } else {
             confirm("Person cannot be deleted.");
