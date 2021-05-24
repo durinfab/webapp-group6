@@ -48,10 +48,13 @@ document.getElementById("retrieveAndListAll").addEventListener("click", function
     for (let key of Object.keys(Person.instances)) {
         const person = Person.instances[key];
         const row = tableBodyEl.insertRow();
-        const direcMoviesListEl = createListFromMap(person.directedMovies, "title");
+        const directedMoviesListEl = createListFromMap(person.directedMovies, "title");
+        const playedMoviesListEl = createListFromMap(person.playedMovies, "title");
+
         row.insertCell().textContent = person.personId;
         row.insertCell().textContent = person.name;
-        row.insertCell().appendChild(direcMoviesListEl);
+        row.insertCell().appendChild(directedMoviesListEl);
+        row.insertCell().appendChild(playedMoviesListEl);
     }
     document.getElementById("Person-M").style.display = "none";
     document.getElementById("Person-R").style.display = "block";

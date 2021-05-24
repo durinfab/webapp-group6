@@ -221,7 +221,7 @@ Person.destroy = function (personId) {
 
     return true;
 };
-// todo after unsuccessful deletion the delete page bugs out
+
 
 /**
  *  Load all person records and convert them to objects

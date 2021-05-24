@@ -25,10 +25,15 @@ class Person {
         this.personId = personId;  // number (integer)
         this.name = name;  // string
         this._directedMovies = {};
+        this._playedMovies = {};
     }
 
     get directedMovies() {
         return this._directedMovies;
+    }
+
+    get playedMovies() {
+        return this._playedMovies;
     }
 
     get personId() {
@@ -137,6 +142,15 @@ class Person {
         }
         return rec;
     }
+
+    get playedMovies() {
+        return this._playedMovies;
+    }
+
+    get directedMovies() {
+        return this._directedMovies;
+    }
+
 }
 
 /****************************************************
@@ -164,38 +178,6 @@ Person.add = function (slots) {
         Person.instances[person.personId] = person;
         console.log(`Saved: ${person.name}`);
     }
-};
-
-Person.addDirectedMovie = function (slots) {
-    let director;
-    try {
-        director = new Person(slots);
-    } catch (e) {
-        console.log(`${e.constructor.name}: ${e.message}`);
-        director = null;
-    }
-
-    if (director) {
-        Person.instances[director.name] = director;
-        console.log(`${director.toString()} created!`);
-    }
-
-};
-
-
-Person.deleteDirectedMovie = function (name) {
-    const director = Person.instances[name];
-    // delete all references to this publisher in book objects
-    for (const key of Object.keys(Movie.instances)) {
-        const movie = Movie.instances[key];
-        if (movie.director === director) {
-            delete movie._director;  // delete the slot
-            console.log(`Book ${movie.movieId} updated.`);
-        }
-    }
-    // delete the publisher record
-    delete Person.instances[name];
-    console.log(`Publisher ${name} deleted.`);
 };
 
 /**
@@ -267,7 +249,7 @@ Person.destroy = function (personId) {
     console.log(`Person ${person.name} deleted.`);
     return true;
 };
-// todo after unsuccessful deletion the delete page bugs out
+
 
 /**
  *  Load all person records and convert them to objects
