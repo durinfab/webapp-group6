@@ -136,7 +136,7 @@ class Person {
         let rec = {};
         for (const p of Object.keys(this)) {
             // remove underscore prefix
-            if (p.charAt(0) === "_" && p !== "_directedMovies") {
+            if (p.charAt(0) === "_" && p !== "_directedMovies" && p !== "_playedMovies") {
                 rec[p.substr(1)] = this[p];
             }
         }

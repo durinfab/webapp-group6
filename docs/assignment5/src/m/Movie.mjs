@@ -241,7 +241,11 @@ class Movie {
         if (personId && validationResult instanceof NoConstraintViolation) {
             // add the new person reference
             const key = String(personId);
+            // movie -> actor ref
             this._actors[key] = Person.instances[key];
+            // actor -> movie ref
+            this._actors[key].playedMovies[this._movieId] = this;
+            // console.log("Movie.addActor: " + key);
         } else {
             throw validationResult;
         }
@@ -399,10 +403,14 @@ Movie.destroy = function (movieId) {
     const movie = Movie.instances[movieId];
     if (movie) {
         console.log(`${Movie.instances[movieId].toString()} deleted!`);
+        // delete director ref
         if (movie.director) {
             // remove inverse reference from book.publisher
             delete movie.director.directedMovies[movieId];
         }
+        // delete actor refs
+        // todo
+
         delete Movie.instances[movieId];
     } else {
         console.log(`There is no movie with ID ${movieId} in the database!`);
