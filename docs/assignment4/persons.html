@@ -8,13 +8,16 @@
         background-repeat: no-repeat;
         background-attachment: fixed;
     }
+
     .center {
-        text-align:center;
+        text-align: center;
         font-weight: bold;
     }
+
     .centerNoTable {
-        text-align:center;
+        text-align: center;
     }
+
     .centertable1 {
         margin-left: auto;
         margin-right: auto;
@@ -43,10 +46,14 @@
             <h1>Manage person data</h1>
             <button type="button" id="retrieveAndListAll">Retrieve/list all
                 person records
-            </button><br>
-            <button type="button" id="create">Create a new person record</button><br>
-            <button type="button" id="update">Update an person record</button><br>
-            <button type="button" id="destroy">Delete an person record</button><br>
+            </button>
+            <br>
+            <button type="button" id="create">Create a new person record</button>
+            <br>
+            <button type="button" id="update">Update an person record</button>
+            <br>
+            <button type="button" id="destroy">Delete an person record</button>
+            <br>
             <div class="button"><a href="index.html">Back to Main menu</a></div>
         </section>
         <!-- ======================================================= -->
@@ -63,71 +70,71 @@
             </div>
         </section>
     </div>
+    <!-- ======================================================= -->
+    <section id="Person-C" class="UI-Page">
         <!-- ======================================================= -->
-        <section id="Person-C" class="UI-Page">
-            <!-- ======================================================= -->
-            <div class="center">
+        <div class="center">
             <h1>Create a new person record</h1>
+        </div>
+        <form>
+            <div class="field">
+                <label>ID: <input type="text" name="personId"/></label>
             </div>
-            <form>
-                <div class="field">
-                    <label>ID: <input type="text" name="personId"/></label>
-                </div>
-                <div class="field">
-                    <label>Name: <input type="text" name="name"/></label>
-                </div>
-                <div class="center">
+            <div class="field">
+                <label>Name: <input type="text" name="name"/></label>
+            </div>
+            <div class="center">
                 <div class="button-group">
                     <button type="submit" name="commit">Save</button>
                     <button type="button" class="back-to-menu">Back to menu</button>
                 </div>
-                </div>
-            </form>
-        </section>
+            </div>
+        </form>
+    </section>
+    <!-- ======================================================= -->
+    <section id="Person-U" class="UI-Page">
         <!-- ======================================================= -->
-        <section id="Person-U" class="UI-Page">
-            <!-- ======================================================= -->
-            <div class="center">
+        <div class="center">
             <h1>Update an person record</h1>
+        </div>
+        <form>
+            <div class="select-one">
+                <label>Select person: <select name="selectPerson"></select></label>
             </div>
-            <form>
-                <div class="select-one">
-                    <label>Select person: <select name="selectPerson"></select></label>
-                </div>
-                <div class="field">
-                    <label>ID:
-                        <output name="personId"></output>
-                    </label>
-                </div>
-                <div class="field">
-                    <label>Name: <input type="text" name="name"/></label>
-                </div>
-                <div class="center">
+            <div class="field">
+                <label>ID:
+                    <output name="personId"></output>
+                </label>
+            </div>
+            <div class="field">
+                <label>Name: <input type="text" name="name"/></label>
+            </div>
+            <div class="center">
                 <div class="button-group">
                     <button type="submit" name="commit">Save</button>
                     <button type="button" class="back-to-menu">Back to menu</button>
                 </div>
-                </div>
-            </form>
-        </section>
-        <!-- ======================================================= -->
-        <section id="Person-D" class="UI-Page">
-            <!-- ======================================================= -->
-            <div class="center">
-            <h1>Delete an person record</h1>
             </div>
-            <form>
-                <div class="select-one">
-                    <label>Select person: <select name="selectPerson"></select></label>
-                </div>
-                <div class="center">
+        </form>
+    </section>
+    <!-- ======================================================= -->
+    <section id="Person-D" class="UI-Page">
+        <!-- ======================================================= -->
+        <div class="center">
+            <h1>Delete an person record</h1>
+        </div>
+        <form>
+            <div class="select-one">
+                <label>Select person: <select name="selectPerson"></select></label>
+            </div>
+            <div class="center">
                 <div class="button-group">
                     <button type="submit" name="commit">Delete</button>
                     <button type="button" class="back-to-menu">Back to menu</button>
                 </div>
-                </div>
-            </form>
-        </section>
+            </div>
+        </form>
+    </section>
 </main>
 </body>
 </html>

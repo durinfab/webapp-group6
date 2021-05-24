@@ -41,35 +41,35 @@ window.addEventListener("beforeunload", function () {
  **********************************************/
 document.getElementById("retrieveAndListAll").addEventListener("click", function () {
 
-        document.getElementById("Movie-M").style.display = "none";
-        document.getElementById("Movie-R").style.display = "block";
+    document.getElementById("Movie-M").style.display = "none";
+    document.getElementById("Movie-R").style.display = "block";
 
-        const tableBodyEl = document.querySelector("section#Movie-R>table>tbody");
-        tableBodyEl.innerHTML = "";  // drop old content
+    const tableBodyEl = document.querySelector("section#Movie-R>table>tbody");
+    tableBodyEl.innerHTML = "";  // drop old content
 
-        for (const key of Object.keys(Movie.instances)) {
-            const movie = Movie.instances[key];
-            // create list of persons for this movie
-            const actorListEl = createListFromMap(movie._actors, "name");
-            const row = tableBodyEl.insertRow();
-            row.insertCell().textContent = movie.movieId;
-            row.insertCell().textContent = movie.title;
-            row.insertCell().textContent = movie.releaseDate;
-            row.insertCell().appendChild(actorListEl);
-            // if the movie has a director, show its name
-            row.insertCell().textContent =
-                movie.director ? Person.instances[movie.director.personId].name : "";
-        }
-    });
+    for (const key of Object.keys(Movie.instances)) {
+        const movie = Movie.instances[key];
+        // create list of persons for this movie
+        const actorListEl = createListFromMap(movie._actors, "name");
+        const row = tableBodyEl.insertRow();
+        row.insertCell().textContent = movie.movieId;
+        row.insertCell().textContent = movie.title;
+        row.insertCell().textContent = movie.releaseDate;
+        row.insertCell().appendChild(actorListEl);
+        // if the movie has a director, show its name
+        row.insertCell().textContent =
+            movie.director ? Person.instances[movie.director.personId].name : "";
+    }
+});
 
 /**********************************************
  Use case Create Movie
  **********************************************/
-    const createFormEl = document.querySelector("section#Movie-C > form");
+const createFormEl = document.querySelector("section#Movie-C > form");
 // const selectPersonsEl = document.querySelector("section#Movie-U > form");
-    const selectActorsEl = document.forms["createMovie"].selectActors;
-    const selectDirectorEL = document.forms["createMovie"].selectDirector;
-    document.getElementById("create").addEventListener("click", function () {
+const selectActorsEl = document.forms["createMovie"].selectActors;
+const selectDirectorEL = document.forms["createMovie"].selectDirector;
+document.getElementById("create").addEventListener("click", function () {
     document.getElementById("Movie-M").style.display = "none";
     document.getElementById("Movie-C").style.display = "block";
 
@@ -79,8 +79,8 @@ document.getElementById("retrieveAndListAll").addEventListener("click", function
     // set up a multiple selection list for selecting persons
     fillSelectWithOptions(selectActorsEl, Person.instances,
         "personId", {displayProp: "name"});
-        fillSelectWithOptions(selectDirectorEL, Person.instances,
-            "personId", {displayProp: "name"});
+    fillSelectWithOptions(selectDirectorEL, Person.instances,
+        "personId", {displayProp: "name"});
     createFormEl.reset();
 });
 // set up event handlers for responsive constraint validation
@@ -151,7 +151,7 @@ document.getElementById("update").addEventListener("click", function () {
     document.getElementById("Movie-U").style.display = "block";
 
     // set up the movie selection list
-    fillSelectWithOptions(selectUpdateMovieEl, Movie.instances,"movieId", {displayProp: "title"});
+    fillSelectWithOptions(selectUpdateMovieEl, Movie.instances, "movieId", {displayProp: "title"});
     updateFormEl.reset();
 });
 
@@ -193,7 +193,7 @@ selectUpdateMovieEl.addEventListener("change", function () {
 function personNameToId(searchedName) {
     for (const key of Object.keys(Person.instances)) {
         const person = Person.instances[key];
-        if(person.name === searchedName) {
+        if (person.name === searchedName) {
             return person.personId;
         }
     }

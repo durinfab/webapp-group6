@@ -30,21 +30,21 @@ function generateTestData() {
         Movie.instances[1] = new Movie({
             movieId: 1,
             title: "Pulp Fiction",
-            releaseDate:"12.05.1994",
+            releaseDate: "12.05.1994",
             directorId: 3,
             actors: [3, 5, 6]
         });
         Movie.instances[2] = new Movie({
             movieId: 2,
             title: "Star Wars",
-            releaseDate:"25.05.1977",
+            releaseDate: "25.05.1977",
             directorId: 2,
             actors: [7, 8]
         });
         Movie.instances[3] = new Movie({
             movieId: 3,
             title: "Dangerous Liaisons",
-            releaseDate:"16.12.1988",
+            releaseDate: "16.12.1988",
             directorId: 1,
             actors: [9, 5]
 

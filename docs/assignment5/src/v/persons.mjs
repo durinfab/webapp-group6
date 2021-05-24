@@ -43,18 +43,18 @@ window.addEventListener("beforeunload", function () {
  Use case Retrieve and List All Persons
  **********************************************/
 document.getElementById("retrieveAndListAll").addEventListener("click", function () {
-        const tableBodyEl = document.querySelector("section#Person-R > table > tbody");
-        tableBodyEl.innerHTML = "";
-        for (let key of Object.keys(Person.instances)) {
-            const person = Person.instances[key];
-            const row = tableBodyEl.insertRow();
-            const direcMoviesListEl = createListFromMap( person.directedMovies, "title");
-            row.insertCell().textContent = person.personId;
-            row.insertCell().textContent = person.name;
-            row.insertCell().appendChild( direcMoviesListEl);
-        }
-        document.getElementById("Person-M").style.display = "none";
-        document.getElementById("Person-R").style.display = "block";
+    const tableBodyEl = document.querySelector("section#Person-R > table > tbody");
+    tableBodyEl.innerHTML = "";
+    for (let key of Object.keys(Person.instances)) {
+        const person = Person.instances[key];
+        const row = tableBodyEl.insertRow();
+        const direcMoviesListEl = createListFromMap(person.directedMovies, "title");
+        row.insertCell().textContent = person.personId;
+        row.insertCell().textContent = person.name;
+        row.insertCell().appendChild(direcMoviesListEl);
+    }
+    document.getElementById("Person-M").style.display = "none";
+    document.getElementById("Person-R").style.display = "block";
 });
 
 /**********************************************
@@ -63,9 +63,9 @@ document.getElementById("retrieveAndListAll").addEventListener("click", function
 const createFormEl = document.querySelector("section#Person-C > form");
 
 document.getElementById("create").addEventListener("click", function () {
-        document.getElementById("Person-M").style.display = "none";
-        document.getElementById("Person-C").style.display = "block";
-        createFormEl.reset();
+    document.getElementById("Person-M").style.display = "none";
+    document.getElementById("Person-C").style.display = "block";
+    createFormEl.reset();
 });
 
 // set up event handlers for responsive constraint validation
@@ -95,11 +95,11 @@ const updateFormEl = document.querySelector("section#Person-U > form");
 const selectUpdatePersonEl = updateFormEl.selectPerson;
 
 document.getElementById("update").addEventListener("click", function () {
-        document.getElementById("Person-M").style.display = "none";
-        document.getElementById("Person-U").style.display = "block";
-        // set up the person selection list
-        fillSelectWithOptions(selectUpdatePersonEl, Person.instances,"personId", {displayProp: "name"});
-        updateFormEl.reset();
+    document.getElementById("Person-M").style.display = "none";
+    document.getElementById("Person-U").style.display = "block";
+    // set up the person selection list
+    fillSelectWithOptions(selectUpdatePersonEl, Person.instances, "personId", {displayProp: "name"});
+    updateFormEl.reset();
 });
 selectUpdatePersonEl.addEventListener("change", handlePersonSelectChangeEvent);
 
@@ -144,11 +144,11 @@ const deleteFormEl = document.querySelector("section#Person-D > form");
 const selectDeletePersonEl = deleteFormEl.selectPerson;
 document.getElementById("destroy").addEventListener("click", function () {
 
-        document.getElementById("Person-M").style.display = "none";
-        document.getElementById("Person-D").style.display = "block";
-        // set up the person selection list
-        fillSelectWithOptions(selectDeletePersonEl, Person.instances,"personId", {displayProp: "name"});
-        deleteFormEl.reset();
+    document.getElementById("Person-M").style.display = "none";
+    document.getElementById("Person-D").style.display = "block";
+    // set up the person selection list
+    fillSelectWithOptions(selectDeletePersonEl, Person.instances, "personId", {displayProp: "name"});
+    deleteFormEl.reset();
 });
 
 
@@ -158,7 +158,7 @@ deleteFormEl["commit"].addEventListener("click", function () {
     const personIdRef = selectDeletePersonEl.value;
     if (!personIdRef) return;
     if (confirm("Do you really want to delete this person?")) {
-        if(Person.destroy(personIdRef)) { // if person can be deleted
+        if (Person.destroy(personIdRef)) { // if person can be deleted
             selectDeletePersonEl.remove();
             // deleteFormEl.reset();
             location.reload();

@@ -8,13 +8,16 @@
         background-repeat: no-repeat;
         background-attachment: fixed;
     }
+
     .center {
-        text-align:center;
+        text-align: center;
         font-weight: bold;
     }
+
     .centerNoTable {
-        text-align:center;
+        text-align: center;
     }
+
     .centertable1 {
         margin-left: auto;
         margin-right: auto;
@@ -39,10 +42,14 @@
         <section id="Movie-M" class="UI-Page">
             <!-- ======================================================= -->
             <h1>Manage movies</h1>
-                    <button type="button" id="retrieveAndListAll">Retrieve/list all movie records</button><br>
-                    <button type="button" id="create">Create a new movie record</button><br>
-                    <button type="button" id="update">Update a movie record</button><br>
-                    <button type="button" id="destroy">Delete a movie record</button><br>
+            <button type="button" id="retrieveAndListAll">Retrieve/list all movie records</button>
+            <br>
+            <button type="button" id="create">Create a new movie record</button>
+            <br>
+            <button type="button" id="update">Update a movie record</button>
+            <br>
+            <button type="button" id="destroy">Delete a movie record</button>
+            <br>
             <div class="button"><a href="index.html">Back to Main menu</a></div>
         </section>
         <!-- ======================================================= -->
@@ -65,95 +72,95 @@
 
         </section>
     </div>
+    <!-- ======================================================= -->
+    <section id="Movie-C" class="UI-Page">
         <!-- ======================================================= -->
-        <section id="Movie-C" class="UI-Page">
-            <!-- ======================================================= -->
-            <div class="center">
+        <div class="center">
             <h1>Create a new movie record</h1>
+        </div>
+        <form id="createMovie">
+            <div class="field">
+                <label>ID: <input type="text" name="movieId"/></label>
             </div>
-            <form id="createMovie">
-                <div class="field">
-                    <label>ID: <input type="text" name="movieId"/></label>
-                </div>
-                <div class="field">
-                    <label>Title: <input type="text" name="title"/></label>
-                </div>
-                <div class="field">
-                    <label>Release Date: <input type="text" name="releaseDate"/></label>
-                </div>
+            <div class="field">
+                <label>Title: <input type="text" name="title"/></label>
+            </div>
+            <div class="field">
+                <label>Release Date: <input type="text" name="releaseDate"/></label>
+            </div>
 
 
-                <div class="select-one">
-                    <label>Director: <select name="selectDirector"></select></label>
-                </div>
+            <div class="select-one">
+                <label>Director: <select name="selectDirector"></select></label>
+            </div>
 
-                <div class="select-many">
-                    <label>Actors:
-                        <select name="selectActors" multiple="multiple"></select>
-                    </label>
-                </div>
-                <div class="center">
+            <div class="select-many">
+                <label>Actors:
+                    <select name="selectActors" multiple="multiple"></select>
+                </label>
+            </div>
+            <div class="center">
                 <div class="button-group">
                     <button type="submit" name="commit">Save</button>
                     <button type="button" class="back-to-menu">Back to menu</button>
                 </div>
-                </div>
-            </form>
-        </section>
+            </div>
+        </form>
+    </section>
+    <!-- ======================================================= -->
+    <section id="Movie-U" class="UI-Page">
         <!-- ======================================================= -->
-        <section id="Movie-U" class="UI-Page">
-            <!-- ======================================================= -->
-            <div class="center">
+        <div class="center">
             <h1>Update a movie record</h1>
+        </div>
+        <form autocomplete="off">
+            <div class="select-one">
+                <label>Select movie: <select name="selectMovie"></select></label>
             </div>
-            <form autocomplete="off">
-                <div class="select-one">
-                    <label>Select movie: <select name="selectMovie"></select></label>
-                </div>
-                <div class="field">
-                    <label>MovieID:
-                        <output name="movieId"></output>
-                    </label>
-                </div>
-                <div class="field">
-                    <label>Title: <input type="text" name="title"/></label>
-                </div>
-                <div class="field">
-                    <label>Release Date: <input type="text" name="releaseDate"/></label>
-                </div>
+            <div class="field">
+                <label>MovieID:
+                    <output name="movieId"></output>
+                </label>
+            </div>
+            <div class="field">
+                <label>Title: <input type="text" name="title"/></label>
+            </div>
+            <div class="field">
+                <label>Release Date: <input type="text" name="releaseDate"/></label>
+            </div>
 
-                <div class="select-one">
-                    <label>Director: <select name="selectDirector"></select></label>
-                </div>
+            <div class="select-one">
+                <label>Director: <select name="selectDirector"></select></label>
+            </div>
 
-                <div class="widget">
-                    <label for="selectActors">Actors</label>
-                    <div id="selectActors" class="MultiChoiceWidget"></div>
-                </div>
-                <div class="center">
-                    <button type="submit" name="commit" disabled="disabled">Save</button>
-                    <button type="button" class="back-to-menu">Back to menu</button>
-                </div>
-            </form>
-        </section>
-        <!-- ======================================================= -->
-        <section id="Movie-D" class="UI-Page">
-            <!-- ======================================================= -->
+            <div class="widget">
+                <label for="selectActors">Actors</label>
+                <div id="selectActors" class="MultiChoiceWidget"></div>
+            </div>
             <div class="center">
-            <h1>Delete a movie record</h1>
+                <button type="submit" name="commit" disabled="disabled">Save</button>
+                <button type="button" class="back-to-menu">Back to menu</button>
             </div>
-            <form>
-                <div class="select-one">
-                    <label>Select movie: <select name="selectMovie"></select></label>
-                </div>
-                <div class="center">
+        </form>
+    </section>
+    <!-- ======================================================= -->
+    <section id="Movie-D" class="UI-Page">
+        <!-- ======================================================= -->
+        <div class="center">
+            <h1>Delete a movie record</h1>
+        </div>
+        <form>
+            <div class="select-one">
+                <label>Select movie: <select name="selectMovie"></select></label>
+            </div>
+            <div class="center">
                 <div class="button-group">
                     <button type="submit" name="commit">Delete</button>
                     <button type="button" class="back-to-menu">Back to menu</button>
                 </div>
-                </div>
-            </form>
-        </section>
+            </div>
+        </form>
+    </section>
 </main>
 </body>
 </html>

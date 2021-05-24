@@ -186,7 +186,7 @@ Person.destroy = function (personId) {
 
     const person = Person.instances[personId];
 
-    if(!person) {
+    if (!person) {
         console.log(`There is no person with ID ${personId} in the database!`);
         return false;
     }

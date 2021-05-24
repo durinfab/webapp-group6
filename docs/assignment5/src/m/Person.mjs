@@ -108,13 +108,13 @@ class Person {
         return this._name;
     }
 
-    static checkNameAsIdRef( n) {
-        var constraintViolation = new NoConstraintViolation();
+    static checkNameAsIdRef(n) {
+        let constraintViolation = new NoConstraintViolation();
         //if ((constraintViolation instanceof NoConstraintViolation) &&
-            //n !== undefined) {
+        //n !== undefined) {
         if (n !== undefined && !Person.instances[n]) {
-          constraintViolation = new ReferentialIntegrityConstraintViolation(
-            "There is no person record with this name!");
+            constraintViolation = new ReferentialIntegrityConstraintViolation(
+                "There is no person record with this name!");
         }
         //}
 
@@ -167,33 +167,35 @@ Person.add = function (slots) {
 };
 
 Person.addDirectedMovie = function (slots) {
-  var director = null;
-  try {
-    director = new Person( slots);
-  } catch (e) {
-    console.log(`${e.constructor.name}: ${e.message}`);
-    director = null;
-  }
-  if (publisher) {
-    Person.instances[director.name] = director;
-    console.log(`${director.toString()} created!`);
-  }
+    let director;
+    try {
+        director = new Person(slots);
+    } catch (e) {
+        console.log(`${e.constructor.name}: ${e.message}`);
+        director = null;
+    }
+
+    if (director) {
+        Person.instances[director.name] = director;
+        console.log(`${director.toString()} created!`);
+    }
+
 };
 
 
 Person.deleteDirectedMovie = function (name) {
-  const director = Person.instances[name];
-  // delete all references to this publisher in book objects
-  for (const key of Object.keys( Movie.instances)) {
-    const movie = Movie.instances[key];
-    if (movie.director === director) {
-      delete movie._director;  // delete the slot
-      console.log(`Book ${movie.movieId} updated.`);
+    const director = Person.instances[name];
+    // delete all references to this publisher in book objects
+    for (const key of Object.keys(Movie.instances)) {
+        const movie = Movie.instances[key];
+        if (movie.director === director) {
+            delete movie._director;  // delete the slot
+            console.log(`Book ${movie.movieId} updated.`);
+        }
     }
-  }
-  // delete the publisher record
-  delete Person.instances[name];
-  console.log(`Publisher ${name} deleted.`);
+    // delete the publisher record
+    delete Person.instances[name];
+    console.log(`Publisher ${name} deleted.`);
 };
 
 /**
@@ -233,7 +235,7 @@ Person.update = function ({personId, name}) {
 Person.destroy = function (personId) {
     const person = Person.instances[personId];
 
-    if(!person) {
+    if (!person) {
         console.log(`There is no person with ID ${personId} in the database!`);
         return false;
     }

@@ -38,15 +38,19 @@ class Movie {
     get movieId() {
         return this._movieId;
     }
+
     get title() {
         return this._title;
     }
+
     get releaseDate() {
         return this._releaseDate;
     }
+
     get directorId() {
         return this._directorId;
     }
+
     get actors() {
         return this._actors;
     }
@@ -55,7 +59,7 @@ class Movie {
     static validateDate = function (date) {
         //checks if date is valid. Returns true if the date is valid
         let stringDate = Movie.dateToString(date);
-        if(date === ""){
+        if (date === "") {
             return new UniquenessConstraintViolation(
                 "ERROR: Release date is not valid. Use this format: dd.mm.yyyy!");
         } else {
@@ -64,7 +68,7 @@ class Movie {
             const array = Array.from(date);
 
             //check for dots in the date string
-            if(count !== 2 || array[2] !== '.' || array[5] !== '.' || date.length !== 10){
+            if (count !== 2 || array[2] !== '.' || array[5] !== '.' || date.length !== 10) {
                 return new PatternConstraintViolation(
                     "ERROR: Release date is not valid. Use this format: dd.mm.yyyy!");
             }
@@ -75,27 +79,27 @@ class Movie {
             let year = array[6] + array[7] + array[8] + array[9];
 
             //check if day is in range
-            if(day > 31 || day < 0 || month > 12 || month < 1){
+            if (day > 31 || day < 0 || month > 12 || month < 1) {
                 return new PatternConstraintViolation(
                     "ERROR: Release date is not valid!");
             }
 
             //check if date is too old
-            if(year < 1895){
+            if (year < 1895) {
                 return new PatternConstraintViolation('ERROR: Release date is too old!');
             }
 
             //check if date is in the future
-            if(year >= nextYear()){
+            if (year >= nextYear()) {
                 return new PatternConstraintViolation('ERROR: Release date is too new!');
             }
 
             //if date is on the edge, check month and day
-            if(parseInt(year) === 1895){
-                if(parseInt(month) < 12){
+            if (parseInt(year) === 1895) {
+                if (parseInt(month) < 12) {
                     return new PatternConstraintViolation('ERROR: Release date is too old!');
                 }
-                if(parseInt(day) < 28){
+                if (parseInt(day) < 28) {
                     return new PatternConstraintViolation('ERROR: Release date is too old!');
                 }
             }
@@ -104,7 +108,7 @@ class Movie {
     }
 
     //Validate movie id from param and a
-    static validateDirector = function(director) {
+    static validateDirector = function (director) {
         if (director === "") {
             return new MandatoryValueConstraintViolation(
                 "ERROR: Setting a director is mandatory!");
@@ -113,16 +117,16 @@ class Movie {
     }
 
     //Validate movie id from param and a
-    static validateMovieID = function(movieId) {
-        if(!isIntegerOrIntegerString(movieId)) {
+    static validateMovieID = function (movieId) {
+        if (!isIntegerOrIntegerString(movieId)) {
             return new RangeConstraintViolation(
                 "ERROR: Movie ID " + movieId + " is not a number!");
         }
-        if(movieId < 0) {
+        if (movieId < 0) {
             return new RangeConstraintViolation(
                 "ERROR: Movie ID is not positive!");
         }
-        if(isMovieIDEmpty(movieId)){
+        if (isMovieIDEmpty(movieId)) {
             return new MandatoryValueConstraintViolation(
                 "ERROR: A value for the MovieID must be provided!");
         }
@@ -134,12 +138,12 @@ class Movie {
     }
 
     //validate Title
-    static validateTitle = function(title) {
-        if(!isNonEmptyString(title)) {
+    static validateTitle = function (title) {
+        if (!isNonEmptyString(title)) {
             return new RangeConstraintViolation(
                 "ERROR: The title must be a non-empty string!");
         }
-        if(isTitleEmpty(title)){
+        if (isTitleEmpty(title)) {
             return new MandatoryValueConstraintViolation(
                 "ERROR: A title must be provided!");
         }
@@ -159,7 +163,7 @@ class Movie {
         }
     }
 
-    set releaseDate( releaseDate) {
+    set releaseDate(releaseDate) {
         const validationResult = Movie.validateDate(releaseDate);
         if (validationResult instanceof NoConstraintViolation) {
             this._releaseDate = Movie.stringToDate(releaseDate);
@@ -168,7 +172,7 @@ class Movie {
         }
     }
 
-    set title( title) {
+    set title(title) {
         const validationResult = Movie.validateTitle(title);
         if (validationResult instanceof NoConstraintViolation) {
             this._title = title;
@@ -406,7 +410,7 @@ Movie.retrieveAll = function () {
     }
     for (let movieId of Object.keys(movies)) {
         try {
-            Movie.instances[movieId] = Movie.convertRec2Obj( movies[movieId]);
+            Movie.instances[movieId] = Movie.convertRec2Obj(movies[movieId]);
         } catch (e) {
             console.log(`${e.constructor.name} while deserializing movie ${movieId}: ${e.message}`);
         }
@@ -425,9 +429,9 @@ Movie.convertRec2Obj = function (movieRec) {
             actors: movieRec.actors
         });
     } catch (e) {
-        try{
+        try {
             console.log(e.message);
-        } catch(e) {
+        } catch (e) {
 
         }
     }

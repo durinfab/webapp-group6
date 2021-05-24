@@ -1,7 +1,7 @@
 import Movie from "../src/m/Movie.mjs";
 
 function isMovieIDEmpty(movieId) {
-    if(movieId === ""){
+    if (movieId === "") {
         document.getElementById('infoLabel').innerHTML = 'ERROR: ID is empty!';
         return true;
     }
@@ -9,7 +9,7 @@ function isMovieIDEmpty(movieId) {
 }
 
 function isMovieIDUsed(movieId) {
-    if(Movie.instances[movieId] === undefined) {
+    if (Movie.instances[movieId] === undefined) {
         return false;
     }
     //document.getElementById('infoLabel').innerHTML = 'ERROR: ID is already in use!';
@@ -17,7 +17,7 @@ function isMovieIDUsed(movieId) {
 }
 
 function isNonEmptyString(x) {
-    return typeof(x) === "string" && x.trim() !== "";
+    return typeof (x) === "string" && x.trim() !== "";
 }
 
 function isTitleEmpty(title) {
@@ -30,4 +30,4 @@ function checkTitleLength(title) {
 
 }
 
-export { isNonEmptyString,  checkTitleLength, isTitleEmpty, isMovieIDUsed, isMovieIDEmpty};
+export {isNonEmptyString, checkTitleLength, isTitleEmpty, isMovieIDUsed, isMovieIDEmpty};
