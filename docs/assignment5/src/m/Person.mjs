@@ -87,7 +87,8 @@ class Person {
 
     static checkName(name) {
         if (!name) {
-            return new NoConstraintViolation();  // not mandatory
+            return new RangeConstraintViolation(
+                    "The name must be a non-empty string!");
         } else {
             if (typeof name !== "string" || name.trim() === "") {
                 return new RangeConstraintViolation(

@@ -114,10 +114,14 @@ updateFormEl["commit"].addEventListener("click", function () {
         personId: updateFormEl.personId.value,
         name: updateFormEl.name.value
     }
+
+    updateFormEl.name.setCustomValidity(
+        Person.checkName(slots.name).message);
+
     // check all property constraints
     /* SIMPLIFIED CODE: no before-save validation of name */
     // save the input data only if all of the form fields are valid
-    if (selectUpdatePersonEl.checkValidity()) {
+    if (updateFormEl.checkValidity()) {
         Person.update(slots);
         // update the person selection list's option element
         selectUpdatePersonEl.options[selectUpdatePersonEl.selectedIndex].text = slots.name;
