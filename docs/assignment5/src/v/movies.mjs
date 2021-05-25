@@ -119,21 +119,18 @@ createFormEl["commit"].addEventListener("click", function () {
         Movie.validateDirector(slots.director).message);
     /* SIMPLIFIED CODE: no before-submit validation of name */
 
-    // get the list of selected persons
-    const selAuthOptions = selectActorsEl.selectedOptions;
-
-    // check the mandatory value constraint for persons
-    /*
-    createFormEl.selectActors.setCustomValidity(
-        selActorOptions.length > 0 ? "" : "No person selected!"
+    // check the mandatory value constraint for director
+    createFormEl.selectDirector.setCustomValidity(
+        createFormEl.selectDirector.value.length > 0 ? "" : "No director selected!"
     );
-    */
 
+    // get the list of selected actors
+    const selActOptions = selectActorsEl.selectedOptions;
 
     // save the input data only if all form fields are valid
     if (createFormEl.checkValidity()) {
         // construct a list of person ID references
-        for (const opt of selAuthOptions) {
+        for (const opt of selActOptions) {
             slots.actors.push(opt.value);
         }
         Movie.add(slots);
