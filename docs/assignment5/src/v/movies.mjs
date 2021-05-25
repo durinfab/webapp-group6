@@ -116,6 +116,9 @@ createFormEl["commit"].addEventListener("click", function () {
     createFormEl.movieId.setCustomValidity(
         Movie.validateMovieID(slots.movieId).message);
 
+    createFormEl.releaseDate.setCustomValidity(
+        Movie.validateDate(slots.releaseDate).message);
+
     createFormEl.selectDirector.setCustomValidity(
         Movie.validateDirector(slots.director).message);
     /* SIMPLIFIED CODE: no before-submit validation of name */
@@ -210,6 +213,14 @@ updateFormEl["commit"].addEventListener("click", function () {
         releaseDate: updateFormEl.releaseDate.value,
         director: personNameToId(updateFormEl.selectDirector.value)
     }
+
+    updateFormEl.title.setCustomValidity(
+        Movie.validateTitle(slots.title).message);
+
+    updateFormEl.releaseDate.setCustomValidity(
+        Movie.validateDate(slots.releaseDate).message);
+
+
     // add event listeners for responsive validation
     /* MISSING CODE */
     // commit the update only if all form field values are valid
@@ -233,11 +244,11 @@ updateFormEl["commit"].addEventListener("click", function () {
         if (actorIdRefsToAdd.length > 0) {
             slots.actorIdRefsToAdd = actorIdRefsToAdd;
         }
+        Movie.update(slots);
+        // update the movie selection list's option element
+        selectUpdateMovieEl.options[selectUpdateMovieEl.selectedIndex].text = slots.title;
+        selectActorsWidget.innerHTML = "";
     }
-    Movie.update(slots);
-    // update the movie selection list's option element
-    selectUpdateMovieEl.options[selectUpdateMovieEl.selectedIndex].text = slots.title;
-    selectActorsWidget.innerHTML = "";
 });
 
 /**********************************************
