@@ -116,6 +116,9 @@ createFormEl["commit"].addEventListener("click", function () {
     createFormEl.movieId.setCustomValidity(
         Movie.validateMovieID(slots.movieId).message);
 
+    createFormEl.title.setCustomValidity(
+        Movie.validateTitle(slots.title).message);
+
     createFormEl.releaseDate.setCustomValidity(
         Movie.validateDate(slots.releaseDate).message);
 
