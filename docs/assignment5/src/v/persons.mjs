@@ -84,6 +84,8 @@ createFormEl["commit"].addEventListener("click", function () {
         personId: createFormEl.personId.value,
         name: createFormEl.name.value
     };
+    createFormEl.name.setCustomValidity(
+        Person.checkName(slots.name).message);
     // check all input fields and show error messages
     createFormEl.personId.setCustomValidity(Person.checkPersonIdAsId(slots.personId).message);
     /* SIMPLIFIED CODE: no before-submit validation of name */
