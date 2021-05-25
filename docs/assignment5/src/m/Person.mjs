@@ -222,30 +222,31 @@ Person.destroy = function (personId) {
         return false;
     }
 
-    // make sure person to delete is director of no movie
     for (const movieId of Object.keys(Movie.instances)) {
         const movie = Movie.instances[movieId];
+
+        /*
+         *  as every movie needs exactly one director:
+         *  deleting director -> deleting movie
+         */
         if (Movie.instances[movieId]._director.personId == personId) {
-            delete Movie.instances[movieId]._director;  // delete the slot
-            delete Movie.instances[movieId].director;
+            // delete Movie.instances[movieId]._director;  // delete the slot
+            // delete Movie.instances[movieId].director;
+            // console.log(`Movie ${movie._movieId} updated.`);
+            Movie.destroy(movieId);
+        }
+
+        // remove actor reference to personId from every movie
+        if (movie.actors[personId]) {
+            //delete movie.actors[personId];
+            movie.removeActor(personId);
             console.log(`Movie ${movie._movieId} updated.`);
         }
     }
 
-    // delete all dependent movie records
-    /*for (const movieId of Object.keys(Movie.instances)) {
-        const movie = Movie.instances[movieId];
-
-        if (movie.actors[personId]) {
-
-            delete movie.actors[personId];
-            // movie.removeActor(personId);
-        }
-    }*/
-
     // delete the person object
-
     delete Person.instances[personId];
+
     console.log(`Person ${person.name} deleted.`);
     return true;
 };

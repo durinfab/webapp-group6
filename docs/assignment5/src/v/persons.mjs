@@ -51,10 +51,6 @@ document.getElementById("retrieveAndListAll").addEventListener("click", function
         const directedMoviesListEl = createListFromMap(person.directedMovies, "title");
         const playedMoviesListEl = createListFromMap(person.playedMovies, "title");
 
-        console.log(directedMoviesListEl);
-        console.log(playedMoviesListEl);
-        console.log("---");
-
         row.insertCell().textContent = person.personId;
         row.insertCell().textContent = person.name;
         row.insertCell().appendChild(directedMoviesListEl);
