@@ -62,8 +62,8 @@ class Movie {
     static validateDate = function (date) {
         //checks if date is valid. Returns true if the date is valid
         if (date === "") {
-            return new UniquenessConstraintViolation(
-                "ERROR: Release date is not valid. Use this format: dd.mm.yyyy!");
+            return new MandatoryValueConstraintViolation(
+                "ERROR: Release date is mandatory!");
         } else {
             //test invalid date layout
             let count = (date.match(/\./g) || []).length;

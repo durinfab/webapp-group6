@@ -115,6 +115,7 @@ createFormEl["commit"].addEventListener("click", function () {
     // check all input fields and show error messages
     createFormEl.movieId.setCustomValidity(
         Movie.validateMovieID(slots.movieId).message);
+
     createFormEl.selectDirector.setCustomValidity(
         Movie.validateDirector(slots.director).message);
     /* SIMPLIFIED CODE: no before-submit validation of name */
