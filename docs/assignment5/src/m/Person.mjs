@@ -143,13 +143,6 @@ class Person {
         return rec;
     }
 
-    get playedMovies() {
-        return this._playedMovies;
-    }
-
-    get directedMovies() {
-        return this._directedMovies;
-    }
 
 }
 
