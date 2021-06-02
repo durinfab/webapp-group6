@@ -5,7 +5,7 @@
  * @person Gerd Wagner
  */
 import Person from "./Person.mjs";
-import {cloneObject, isIntegerOrIntegerString, nextYear} from "../../lib/util.mjs";
+import {cloneObject, isIntegerOrIntegerString} from "../../lib/util.mjs";
 import {
     NoConstraintViolation, MandatoryValueConstraintViolation,
     RangeConstraintViolation, PatternConstraintViolation, UniquenessConstraintViolation, StringLengthConstraintViolation
@@ -201,9 +201,7 @@ class Movie {
             */
 
             return new NoConstraintViolation();
-
         }
-        return new NoConstraintViolation();
     }
     set episodeNo(no) {
         const validationResult = Movie.checkEpisodeNo(no, this.movieGenre);
