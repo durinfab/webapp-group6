@@ -10,6 +10,9 @@ import {
     RangeConstraintViolation, UniquenessConstraintViolation,
     ReferentialIntegrityConstraintViolation
 } from "../../lib/errorTypes.mjs";
+import Enumeration from "../../lib/Enumeration.mjs";
+
+const PersonRoleEL = new Enumeration(["Director","Actor","Actor&Director"]);
 
 /**
  * The class Person
@@ -19,11 +22,12 @@ import {
 
 class Person {
     // using a single record parameter with ES6 function parameter destructuring
-    constructor({personId, name}) {
+    constructor({personId, name, role}) {
 
         // assign properties by invoking implicit setters
         this.personId = personId;  // number (integer)
         this.name = name;  // string
+        if (role) this.role = role;
     }
 
     get personId() {
@@ -111,6 +115,31 @@ class Person {
         this._name = name;
     }
 
+    get role() {return this._role;}
+    
+    static checkRole( r) {
+        if (r === undefined) {
+          return new NoConstraintViolation();  // category is optional
+        } else if (!isIntegerOrIntegerString( r) || parseInt( r) < 1 ||
+            parseInt( r) > PersonRoleEL.MAX) {
+          return new RangeConstraintViolation(
+              `Invalid value for category: ${r}`);
+        } else {
+          return new NoConstraintViolation();
+        }
+    }
+
+    set role( r) {
+        var validationResult = null;
+        validationResult = Book.checkRole( r);
+        if (validationResult instanceof NoConstraintViolation) {
+          this._role = parseInt( r);
+        } else {
+          throw validationResult;
+        }
+    }
+
+
     toJSON() {  // is invoked by JSON.stringify
         let rec = {};
         for (const p of Object.keys(this)) {
@@ -151,7 +180,7 @@ Person.add = function (slots) {
 /**
  *  Update an existing person record/object
  */
-Person.update = function ({personId, name}) {
+Person.update = function ({personId, name, role}) {
 
     const person = Person.instances[String(personId)],
         objectBeforeUpdate = cloneObject(person);
@@ -160,6 +189,10 @@ Person.update = function ({personId, name}) {
         if (name && person.name !== name) {
             person.name = name;
             updatedProperties.push("name");
+        }
+        if (role && role !== person.role) {
+            person.role = role;
+            updatedProperties.push("role");
         }
     } catch (e) {
         console.log(`${e.constructor.name}: ${e.message}`);
