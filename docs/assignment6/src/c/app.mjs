@@ -4,7 +4,7 @@
  */
 import Person from "../m/Person.mjs";
 // import Person from "../m/Person.mjs";
-import Movie from "../m/Movie.mjs";
+import Movie, {MovieGenreEL} from "../m/Movie.mjs";
 
 /********************
  * ***********************
@@ -32,14 +32,21 @@ function generateTestData() {
             title: "Pulp Fiction",
             releaseDate: "12.05.1994",
             directorId: 3,
-            actors: [3, 5, 6]
+            actors: [3, 5, 6],
+
+            movieGenre: MovieGenreEL.TVSERIESEPISODE,
+            tvSeriesName: "Pulp Fiction: Zed's not so dead",
+            episodeNo: 42
         });
         Movie.instances[2] = new Movie({
             movieId: 2,
             title: "Star Wars",
             releaseDate: "25.05.1977",
             directorId: 2,
-            actors: [7, 8]
+            actors: [7, 8],
+
+            movieGenre: MovieGenreEL.BIOGRAPHY,
+            about: 3
         });
         Movie.instances[3] = new Movie({
             movieId: 3,
@@ -47,7 +54,6 @@ function generateTestData() {
             releaseDate: "16.12.1988",
             directorId: 1,
             actors: [9, 5]
-
         });
         Movie.saveAll();
         Person.saveAll();

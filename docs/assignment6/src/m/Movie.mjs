@@ -21,7 +21,7 @@ import {
 import Enumeration from "../../lib/Enumeration.mjs";
 import {ConstraintViolation} from "../../../assignment4/lib/errorTypes.mjs";
 
-const MovieGenreEL = new Enumeration(["Biography", "TvSeriesEpisode"]);
+export const MovieGenreEL = new Enumeration(["Biography", "TvSeriesEpisode"]);
 
 /**
  * The class Movie
@@ -33,6 +33,7 @@ class Movie {
         this.movieId = movieId;
         this.title = title;
         this.releaseDate = releaseDate;
+
         // assign object references or ID references (to be converted in setter)
         this.directorId = directorId; // this is a directorIdRef
         this.actors = actors; // these are actorIdRefs
@@ -134,11 +135,11 @@ class Movie {
     static checkTvSeriesName(name, c) {
         const genre = parseInt(c);
 
-        if (genre === MovieGenreEL.TVSERIESEPISODE && !a) {
+        if (genre === MovieGenreEL.TVSERIESEPISODE && !name) {
             return new MandatoryValueConstraintViolation(
                 "A TvSeriesEpisode movie record must have an 'TvSeriesName' field!");
 
-        } else if (genre !== MovieGenreEL.TVSERIESEPISODE && a) {
+        } else if (genre !== MovieGenreEL.TVSERIESEPISODE && name) {
             return new ConstraintViolation("An 'TvSeriesName' field value must not be provided if the movie is not a TvSeriesEpisode!");
 
         } else {
@@ -157,6 +158,7 @@ class Movie {
 
     set tvSeriesName(name) {
         const validationResult = Movie.checkTvSeriesName(name, this.movieGenre);
+        console.log(this.movieGenre)
         if (validationResult instanceof NoConstraintViolation) {
             this._tvSeriesName = name;
         } else {
