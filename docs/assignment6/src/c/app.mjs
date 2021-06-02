@@ -63,7 +63,7 @@ function generateTestData() {
             actors: [3, 5, 6],
 
             movieGenre: MovieGenreEL.TVSERIESEPISODE,
-            tvSeriesName: "Better Call Saul",
+            episodeTitle: "Better Call Saul",
             episodeNo: 15
         });
 

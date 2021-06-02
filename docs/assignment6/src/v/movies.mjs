@@ -52,8 +52,6 @@ document.getElementById("retrieveAndListAll").addEventListener("click", function
         row.insertCell().textContent = movie.movieId;
         row.insertCell().textContent = movie.title;
 
-        console.log(movie.releaseDate);
-
         row.insertCell().textContent = Movie.dateToString(movie.releaseDate);
         row.insertCell().appendChild(actorListEl);
         // if the movie has a director, show its name
@@ -69,8 +67,10 @@ document.getElementById("retrieveAndListAll").addEventListener("click", function
                     row.insertCell().textContent = "Biography about " + Person.instances[movie.about].name;
                     break;
                 case MovieGenreEL.TVSERIESEPISODE:
-                    row.insertCell().textContent = movie.tvSeriesName + ", Episode " + movie.episodeNo;
+                    row.insertCell().textContent = movie.episodeTitle + ", Episode " + movie.episodeNo;
                     break;
+                default:
+                    console.log("movies.mjs genre " + movie.movieGenre)
             }
         }
 
@@ -83,8 +83,13 @@ document.getElementById("retrieveAndListAll").addEventListener("click", function
  **********************************************/
 const createFormEl = document.querySelector("section#Movie-C > form");
 // const selectPersonsEl = document.querySelector("section#Movie-U > form");
+
 const selectActorsEl = document.forms["createMovie"].selectActors;
 const selectDirectorEL = document.forms["createMovie"].selectDirector;
+
+const selectMovieGenreEL = document.forms["createMovie"].selectMovieGenre;
+const selectAboutEL = document.forms["createMovie"].selectAbout;
+
 document.getElementById("create").addEventListener("click", function () {
     document.getElementById("Movie-M").style.display = "none";
     document.getElementById("Movie-C").style.display = "block";
@@ -97,8 +102,19 @@ document.getElementById("create").addEventListener("click", function () {
         "personId", {displayProp: "name"});
     fillSelectWithOptions(selectDirectorEL, Person.instances,
         "personId", {displayProp: "name"});
+
+    fillSelectWithOptions(selectMovieGenreEL, MovieGenreEL.labels);
+    fillSelectWithOptions(selectAboutEL, Person.instances,
+        "personId", {displayProp: "name"});
+
+    selectAboutEL.disabled = true;
+    createFormEl.episodeTitle.disabled = true;
+    createFormEl.episodeNo.disabled = true;
+
     createFormEl.reset();
 });
+
+
 // set up event handlers for responsive constraint validation
 createFormEl.movieId.addEventListener("input", function () {
     createFormEl.movieId.setCustomValidity(
@@ -116,8 +132,47 @@ createFormEl.selectDirector.addEventListener("input", function () {
     createFormEl.selectDirector.setCustomValidity(
         Movie.validateDirector(createFormEl.selectDirector.value).message);
 });
-/* SIMPLIFIED/MISSING CODE: add event listeners for responsive
-   validation on user input with Movie.checkTitle and checkYear */
+
+createFormEl.selectMovieGenre.addEventListener("change", function () {
+    let value = createFormEl.selectMovieGenre.value ? createFormEl.selectMovieGenre.value : -1;
+    value++;
+    switch(value) {
+        case MovieGenreEL.BIOGRAPHY :
+
+            selectAboutEL.disabled = false;
+            createFormEl.episodeTitle.disabled = true;
+            createFormEl.episodeNo.disabled = true;
+
+            createFormEl.episodeTitle.value = "";
+            createFormEl.episodeNo.value = "";
+            break;
+
+        case MovieGenreEL.TVSERIESEPISODE :
+
+            selectAboutEL.disabled = true;
+            createFormEl.episodeTitle.disabled = false;
+            createFormEl.episodeNo.disabled = false;
+
+            selectAboutEL.value = "";
+            break;
+
+        default:
+
+            selectAboutEL.disabled = true;
+            createFormEl.episodeTitle.disabled = true;
+            createFormEl.episodeNo.disabled = true;
+
+            selectAboutEL.value = "";
+            createFormEl.episodeTitle.value = "";
+            createFormEl.episodeNo.value = "";
+    }
+});
+/*
+createFormEl.episodeNo.addEventListener("input", function () {
+    createFormEl.movieId.setCustomValidity(
+        Movie.checkEpisodeNo(createFormEl.episodeNo.value, createFormEl.selectMovieGenre.value).message);
+});
+*/
 
 // handle Save button click events
 createFormEl["commit"].addEventListener("click", function () {
@@ -126,25 +181,45 @@ createFormEl["commit"].addEventListener("click", function () {
         title: createFormEl.title.value,
         releaseDate: createFormEl.releaseDate.value,
         actors: [],
-        directorId: createFormEl.selectDirector.value
+        directorId: createFormEl.selectDirector.value,
+
     };
+
+    let genre = createFormEl.selectMovieGenre.value;
+
+    if (genre) {
+        slots.movieGenre = parseInt(genre) + 1;
+
+        switch(slots.movieGenre) {
+            case MovieGenreEL.BIOGRAPHY :
+
+                slots.about = createFormEl.selectAbout.value;
+                break;
+
+            case MovieGenreEL.TVSERIESEPISODE :
+
+                slots.episodeTitle = createFormEl.episodeTitle.value;
+                slots.episodeNo = createFormEl.episodeNo.value;
+
+
+                createFormEl.episodeNo.setCustomValidity(
+                    Movie.checkEpisodeNo(slots.episodeNo, slots.movieGenre).message);
+                break;
+
+            default:
+
+        }
+    }
+
     // check all input fields and show error messages
     createFormEl.movieId.setCustomValidity(
         Movie.validateMovieID(slots.movieId).message);
     createFormEl.selectDirector.setCustomValidity(
         Movie.validateDirector(slots.directorId).message);
-    /* SIMPLIFIED CODE: no before-submit validation of name */
+
 
     // get the list of selected persons
     const selAuthOptions = selectActorsEl.selectedOptions;
-
-    // check the mandatory value constraint for persons
-    /*
-    createFormEl.selectActors.setCustomValidity(
-        selActorOptions.length > 0 ? "" : "No person selected!"
-    );
-    */
-
 
     // save the input data only if all form fields are valid
     if (createFormEl.checkValidity()) {

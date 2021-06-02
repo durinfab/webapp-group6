@@ -82,16 +82,18 @@
             <h1>Create a new movie record</h1>
         </div>
         <form id="createMovie">
+
             <div class="field">
                 <label>ID: <input type="text" name="movieId"/></label>
             </div>
+
             <div class="field">
                 <label>Title: <input type="text" name="title"/></label>
             </div>
+
             <div class="field">
                 <label>Release Date: <input type="text" name="releaseDate"/></label>
             </div>
-
 
             <div class="select-one">
                 <label>Director: <select name="selectDirector"></select></label>
@@ -102,6 +104,25 @@
                     <select name="selectActors" multiple="multiple"></select>
                 </label>
             </div>
+
+            <div class="select-one">
+                <label>Genre: <select name="selectMovieGenre"></select></label>
+            </div>
+
+            <!-- BIOGRAPHY -->
+            <div class="select-one">
+                <label>About: <select name="selectAbout"></select></label>
+            </div>
+
+            <!-- SERIES -->
+            <div class="field">
+                <label>Episode Title: <input type="text" name="episodeTitle"/></label>
+            </div>
+            <div class="field">
+                <label>Episode No: <input type="text" name="episodeNo"/></label>
+            </div>
+
+
             <div class="center">
                 <div class="button-group">
                     <button type="submit" name="commit">Save</button>

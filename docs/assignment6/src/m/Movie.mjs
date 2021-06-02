@@ -29,7 +29,7 @@ const MovieGenreEL = new Enumeration(["Biography", "TvSeriesEpisode"]);
  */
 class Movie {
     // using a record parameter with ES6 function parameter destructuring
-    constructor({movieId, title, releaseDate, directorId, actors, movieGenre, about, tvSeriesName, episodeNo}) {
+    constructor({movieId, title, releaseDate, directorId, actors, movieGenre, about, episodeTitle, episodeNo}) {
         this.movieId = movieId;
         this.title = title;
         this.releaseDate = releaseDate; // dd.mm.yyyy
@@ -40,7 +40,7 @@ class Movie {
 
         if (movieGenre) this.movieGenre = movieGenre;  // from MovieGenreEL
         if (about) this.about = about;
-        if (tvSeriesName) this.tvSeriesName = tvSeriesName;
+        if (episodeTitle) this.episodeTitle = episodeTitle;
         if (episodeNo) this.episodeNo = episodeNo;
 
     }
@@ -73,8 +73,8 @@ class Movie {
         return this._about;
     }
 
-    get tvSeriesName() {
-        return this._tvSeriesName;
+    get episodeTitle() {
+        return this._episodeTitle;
     }
 
     get episodeNo() {
@@ -87,7 +87,7 @@ class Movie {
         } else if (!isIntegerOrIntegerString(c) || parseInt(c) < 1 ||
             parseInt(c) > MovieGenreEL.MAX) {
             return new RangeConstraintViolation(
-                `Invalid value for category: ${c}`);
+                `Invalid value for genre: ${c}`);
         } else {
             return new NoConstraintViolation();
         }
@@ -157,10 +157,10 @@ class Movie {
         return new NoConstraintViolation();
     }
 
-    set tvSeriesName(name) {
+    set episodeTitle(name) {
         const validationResult = Movie.checkTvSeriesName(name, this.movieGenre);
         if (validationResult instanceof NoConstraintViolation) {
-            this._tvSeriesName = name;
+            this._episodeTitle = name;
         } else {
             throw validationResult;
         }
@@ -569,11 +569,7 @@ Movie.stringToDate = function (date) {
 
 
 Movie.dateToString = function (date) {
-    console.log(date);
     let d = new Date(date);
-
-
-
     let month = '' + (d.getMonth() + 1);
     let day = '' + d.getDate();
     let year = d.getFullYear();
