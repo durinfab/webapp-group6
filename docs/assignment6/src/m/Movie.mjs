@@ -9,8 +9,7 @@ import {cloneObject, isIntegerOrIntegerString, nextYear} from "../../lib/util.mj
 import {
     NoConstraintViolation, MandatoryValueConstraintViolation,
     RangeConstraintViolation, PatternConstraintViolation, UniquenessConstraintViolation, StringLengthConstraintViolation
-}
-    from "../../lib/errorTypes.mjs";
+} from "../../lib/errorTypes.mjs";
 import {
     checkTitleLength,
     isMovieIDEmpty,
@@ -19,6 +18,10 @@ import {
     isTitleEmpty
 } from './../../lib/checkFunctions.mjs';
 
+import Enumeration from "../../lib/Enumeration.mjs";
+import {ConstraintViolation} from "../../../assignment4/lib/errorTypes.mjs";
+
+const MovieGenreEL = new Enumeration(["Biography", "TvSeriesEpisode"]);
 
 /**
  * The class Movie
@@ -26,13 +29,18 @@ import {
  */
 class Movie {
     // using a record parameter with ES6 function parameter destructuring
-    constructor({movieId, title, releaseDate, directorId, actors}) {
+    constructor({movieId, title, releaseDate, directorId, actors, movieGenre, about, tvSeriesName, episodeNo}) {
         this.movieId = movieId;
         this.title = title;
         this.releaseDate = releaseDate;
         // assign object references or ID references (to be converted in setter)
         this.directorId = directorId; // this is a directorIdRef
         this.actors = actors; // these are actorIdRefs
+
+        if (movieGenre) this.movieGenre = movieGenre;  // from MovieGenreEL
+        if (about) this.about = about;
+        if (tvSeriesName) this.tvSeriesName = tvSeriesName;
+        if (episodeNo) this.episodeNo = episodeNo;
     }
 
     get movieId() {
@@ -55,6 +63,154 @@ class Movie {
         return this._actors;
     }
 
+    get movieGenre() {
+        return this._movieGenre;
+    }
+
+    get about() {
+        return this._about;
+    }
+
+    get tvSeriesName() {
+        return this._tvSeriesName;
+    }
+
+    get episodeNo() {
+        return this._episodeNo;
+    }
+
+    static checkMovieGenre(c) {
+        if (c === undefined) {
+            return new NoConstraintViolation();  // category is optional
+        } else if (!isIntegerOrIntegerString(c) || parseInt(c) < 1 ||
+            parseInt(c) > MovieGenreEL.MAX) {
+            return new RangeConstraintViolation(
+                `Invalid value for category: ${c}`);
+        } else {
+            return new NoConstraintViolation();
+        }
+    }
+
+    set movieGenre(c) {
+        let validationResult = Movie.checkMovieGenre(c);
+        if (validationResult instanceof NoConstraintViolation) {
+            this._movieGenre = parseInt(c);
+        } else {
+            throw validationResult;
+        }
+    }
+
+    /*
+     *  about is a Person, about is optional for Actors
+     *  c is the movieGenre
+     */
+    static checkAbout(a, c) {
+        const genre = parseInt(c);
+
+        if (genre === MovieGenreEL.BIOGRAPHY && !a) {
+            return new MandatoryValueConstraintViolation(
+                "A biography movie record must have an 'about' field!");
+        } else if (genre !== MovieGenreEL.BIOGRAPHY && a) {
+            return new ConstraintViolation("An 'about' field value must not be provided if the book is not a biography!");
+
+        } else {
+            return this.checkPerson(a);
+        }
+    }
+
+    set about(v) {
+        const validationResult = Movie.checkAbout(v, this.movieGenre);
+        if (validationResult instanceof NoConstraintViolation) {
+            this._about = v;
+        } else {
+            throw validationResult;
+        }
+    }
+
+    /*
+     *  name is String, name is mandatory for genre TvSeriesEpisode
+     *  c is the movieGenre
+     */
+    static checkTvSeriesName(name, c) {
+        const genre = parseInt(c);
+
+        if (genre === MovieGenreEL.TVSERIESEPISODE && !a) {
+            return new MandatoryValueConstraintViolation(
+                "A TvSeriesEpisode movie record must have an 'TvSeriesName' field!");
+
+        } else if (genre !== MovieGenreEL.TVSERIESEPISODE && a) {
+            return new ConstraintViolation("An 'TvSeriesName' field value must not be provided if the movie is not a TvSeriesEpisode!");
+
+        } else {
+
+            if (!isNonEmptyString(name)) {
+                return new RangeConstraintViolation(
+                    "ERROR: The TvSeriesName must be a non-empty string!");
+            }
+            if (isTitleEmpty(name)) {
+                return new MandatoryValueConstraintViolation(
+                    "ERROR: A TvSeriesName must be provided!");
+            }
+        }
+        return new NoConstraintViolation();
+    }
+
+    set tvSeriesName(name) {
+        const validationResult = Movie.checkTvSeriesName(name, this.movieGenre);
+        if (validationResult instanceof NoConstraintViolation) {
+            this._tvSeriesName = name;
+        } else {
+            throw validationResult;
+        }
+    }
+
+    /*
+     *  EpisodeNo is Int, EpisodeNo is mandatory for genre TvSeries
+     *  c is the movieGenre
+     */
+    static checkEpisodeNo(no, c) {
+        const genre = parseInt(c);
+
+        if (genre === MovieGenreEL.TVSERIESEPISODE && !no) {
+            return new MandatoryValueConstraintViolation("A TvSeriesEpisode movie record must have an 'EpisodeNo' field!");
+
+        } else if (genre !== MovieGenreEL.TVSERIESEPISODE && no) {
+            return new ConstraintViolation("An 'EpisodeNo' field value must not be provided if the movie is not a TvSeriesEpisode!");
+
+        } else {
+
+            if (!isIntegerOrIntegerString(no)) {
+                return new RangeConstraintViolation(
+                    "ERROR: EpisodeNo " + no + " is not a number!");
+            }
+            if (no < 0) {
+                return new RangeConstraintViolation(
+                    "ERROR: EpisodeNo is not positive!");
+            }
+            if (isMovieIDEmpty(no)) {
+                return new MandatoryValueConstraintViolation(
+                    "ERROR: A value for the EpisodeNo must be provided!");
+            }
+            /*
+            if (isMovieIDUsed(movieId)) {
+                return new UniquenessConstraintViolation(
+                    "ERROR: There is already a Movie record with this Movie ID!");
+            }
+            */
+
+            return new NoConstraintViolation();
+
+        }
+        return new NoConstraintViolation();
+    }
+    set episodeNo(no) {
+        const validationResult = Movie.checkEpisodeNo(no, this.movieGenre);
+        if (validationResult instanceof NoConstraintViolation) {
+            this._episodeNo = no;
+        } else {
+            throw validationResult;
+        }
+    }
 
     static validateDate = function (date) {
         //checks if date is valid. Returns true if the date is valid
@@ -180,20 +336,6 @@ class Movie {
             throw validationResult;
         }
     }
-
-    /* everything publisher related is deprecated
-    static checkPublisher(directorId) {
-        let validationResult;
-        if (!directorId) {
-            validationResult = new NoConstraintViolation();  // optional
-        } else {
-            // invoke foreign key constraint check
-            validationResult = Person.checkNameAsIdRef(directorId);
-        }
-        return validationResult;
-    }
-    */
-
 
     set directorId(p) {
         if (!p) {  // unset director
