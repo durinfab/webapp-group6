@@ -25,36 +25,48 @@ function generateTestData() {
         Person.instances["7"] = new Person({personId: 7, name: "Ewan McGregor"});
         Person.instances["8"] = new Person({personId: 8, name: "Natalie Portman"});
         Person.instances["9"] = new Person({personId: 9, name: "Keanu Reeves"});
+        Person.instances["10"] = new Person({personId: 10, name: "Jabba The Hutt"});
 
         /*~~~Movies~~~*/
         Movie.instances[1] = new Movie({
             movieId: 1,
             title: "Pulp Fiction",
-            releaseDate: "12.05.1994",
+            releaseDate: "1994-05-12", // "12.05.1994",
             directorId: 3,
             actors: [3, 5, 6],
-
-            movieGenre: MovieGenreEL.TVSERIESEPISODE,
-            tvSeriesName: "Pulp Fiction: Zed's not so dead",
-            episodeNo: 42
         });
+
         Movie.instances[2] = new Movie({
             movieId: 2,
             title: "Star Wars",
-            releaseDate: "25.05.1977",
+            releaseDate: "1977-05-25", // "25.05.1977",
             directorId: 2,
             actors: [7, 8],
 
             movieGenre: MovieGenreEL.BIOGRAPHY,
-            about: 3
+            about: 10
         });
+
         Movie.instances[3] = new Movie({
             movieId: 3,
             title: "Dangerous Liaisons",
-            releaseDate: "16.12.1988",
+            releaseDate: "1988-12-16", // "16.12.1988",
             directorId: 1,
             actors: [9, 5]
         });
+
+        Movie.instances[4] = new Movie({
+            movieId: 4,
+            title: "Breaking Bad",
+            releaseDate: "2009-04-26", // "26.04.2009",
+            directorId: 3,
+            actors: [3, 5, 6],
+
+            movieGenre: MovieGenreEL.TVSERIESEPISODE,
+            tvSeriesName: "Better Call Saul",
+            episodeNo: 15
+        });
+
         Movie.saveAll();
         Person.saveAll();
     } catch (e) {

@@ -18,10 +18,10 @@ import {
     isTitleEmpty
 } from './../../lib/checkFunctions.mjs';
 
-import Enumeration from "../../lib/Enumeration.mjs";
-import {ConstraintViolation} from "../../../assignment4/lib/errorTypes.mjs";
+import {Enumeration} from "../../lib/Enumeration.mjs";
+import {ConstraintViolation, IntervalConstraintViolation} from "../../../assignment4/lib/errorTypes.mjs";
 
-export const MovieGenreEL = new Enumeration(["Biography", "TvSeriesEpisode"]);
+const MovieGenreEL = new Enumeration(["Biography", "TvSeriesEpisode"]);
 
 /**
  * The class Movie
@@ -32,7 +32,7 @@ class Movie {
     constructor({movieId, title, releaseDate, directorId, actors, movieGenre, about, tvSeriesName, episodeNo}) {
         this.movieId = movieId;
         this.title = title;
-        this.releaseDate = releaseDate;
+        this.releaseDate = releaseDate; // dd.mm.yyyy
 
         // assign object references or ID references (to be converted in setter)
         this.directorId = directorId; // this is a directorIdRef
@@ -42,6 +42,7 @@ class Movie {
         if (about) this.about = about;
         if (tvSeriesName) this.tvSeriesName = tvSeriesName;
         if (episodeNo) this.episodeNo = episodeNo;
+
     }
 
     get movieId() {
@@ -158,7 +159,6 @@ class Movie {
 
     set tvSeriesName(name) {
         const validationResult = Movie.checkTvSeriesName(name, this.movieGenre);
-        console.log(this.movieGenre)
         if (validationResult instanceof NoConstraintViolation) {
             this._tvSeriesName = name;
         } else {
@@ -214,55 +214,29 @@ class Movie {
         }
     }
 
-    static validateDate = function (date) {
-        //checks if date is valid. Returns true if the date is valid
-        let stringDate = Movie.dateToString(date);
-        if (date === "") {
-            return new UniquenessConstraintViolation(
-                "ERROR: Release date is not valid. Use this format: dd.mm.yyyy!");
+    static validateDate = function (d) {
+        const DATE_FIRST_MOVIE = new Date("1895-12-28");
+        const dateRegex1 = RegExp(
+            /^\d{4}(-)(\d|\d{2})(-)\d|\d{2}$/);
+
+        const dateRegex2 = RegExp(
+            /^\d{4}(-)\d{2}(-)\d{2}(T)\d{2}(:)\d{2}(:)\d{2}(.)\d{3}(Z)$/); // YYYY-MM-DDT00:00:00.000Z
+
+        if (!d) {
+            return new MandatoryValueConstraintViolation("A publication releaseDate must be provided!");
+
+        } else if (typeof (d) !== "string" || d.trim() === "") {
+            return new RangeConstraintViolation("The date must be a non-empty string!");
+
+        } else if (! ( dateRegex1.test(d) || dateRegex2.test(d)) ) {
+            return new PatternConstraintViolation("The date must have format YYYY-MM-DD!");
+
+        } else if (DATE_FIRST_MOVIE > new Date(d)) {
+            return new IntervalConstraintViolation("The date must be later than " + DATE_FIRST_MOVIE + "!");
+
         } else {
-            //test invalid date layout
-            let count = (stringDate.match(/\./g) || []).length;
-            const array = Array.from(date);
-
-            //check for dots in the date string
-            if (count !== 2 || array[2] !== '.' || array[5] !== '.' || date.length !== 10) {
-                return new PatternConstraintViolation(
-                    "ERROR: Release date is not valid. Use this format: dd.mm.yyyy!");
-            }
-
-            //check for valid month and day
-            let day = array[0] + array[1];
-            let month = array[3] + array[4];
-            let year = array[6] + array[7] + array[8] + array[9];
-
-            //check if day is in range
-            if (day > 31 || day < 0 || month > 12 || month < 1) {
-                return new PatternConstraintViolation(
-                    "ERROR: Release date is not valid!");
-            }
-
-            //check if date is too old
-            if (year < 1895) {
-                return new PatternConstraintViolation('ERROR: Release date is too old!');
-            }
-
-            //check if date is in the future
-            if (year >= nextYear()) {
-                return new PatternConstraintViolation('ERROR: Release date is too new!');
-            }
-
-            //if date is on the edge, check month and day
-            if (parseInt(year) === 1895) {
-                if (parseInt(month) < 12) {
-                    return new PatternConstraintViolation('ERROR: Release date is too old!');
-                }
-                if (parseInt(day) < 28) {
-                    return new PatternConstraintViolation('ERROR: Release date is too old!');
-                }
-            }
+            return new NoConstraintViolation();
         }
-        return new NoConstraintViolation();
     }
 
     //Validate movie id from param and a
@@ -324,7 +298,7 @@ class Movie {
     set releaseDate(releaseDate) {
         const validationResult = Movie.validateDate(releaseDate);
         if (validationResult instanceof NoConstraintViolation) {
-            this._releaseDate = Movie.stringToDate(releaseDate);
+            this._releaseDate = releaseDate;
         } else {
             throw validationResult;
         }
@@ -414,25 +388,28 @@ class Movie {
 
     // Convert object to record with ID references
     toJSON() {  // is invoked by JSON.stringify
-        let rec = {};
+        const rec = {};
         for (const p of Object.keys(this)) {
             // copy only property slots with underscore prefix
-            if (p.charAt(0) !== "_") continue;
-            switch (p) {
-                case "_directorId":
-                    // convert object reference to ID reference
-                    if (this._directorId) rec.directorId = this._directorId;
-                    break;
-                case "_actors":
-                    // convert the map of object references to a list of ID references
-                    rec.actors = [];
-                    for (const personIdStr of Object.keys(this._actors)) {
-                        rec.actors.push(parseInt(personIdStr));
-                    }
-                    break;
-                default:
-                    // remove underscore prefix
-                    rec[p.substr(1)] = this[p];
+            if (p.charAt(0) === "_") {
+                switch (p) {
+                    case "_directorId":
+                        // convert object reference to ID reference
+                        if (this._directorId) rec.directorId = this._directorId;
+                        break;
+
+                    case "_actors":
+                        // convert the map of object references to a list of ID references
+                        rec.actors = [];
+                        for (const personIdStr of Object.keys(this._actors)) {
+                            rec.actors.push(parseInt(personIdStr));
+                        }
+                        break;
+
+                    default:
+                        // remove underscore prefix
+                        rec[p.substr(1)] = this[p];
+                }
             }
         }
         return rec;
@@ -552,7 +529,7 @@ Movie.retrieveAll = function () {
     } catch (e) {
         alert("Error when reading from Local Storage\n" + e);
     }
-    for (let movieId of Object.keys(movies)) {
+    for (const movieId of Object.keys(movies)) {
         try {
             Movie.instances[movieId] = Movie.convertRec2Obj(movies[movieId]);
         } catch (e) {
@@ -565,19 +542,10 @@ Movie.retrieveAll = function () {
 Movie.convertRec2Obj = function (movieRec) {
     let movie = {};
     try {
-        movie = new Movie({
-            movieId: movieRec.movieId,
-            title: movieRec.title,
-            releaseDate: Movie.dateToString(movieRec.releaseDate),
-            directorId: movieRec.directorId,
-            actors: movieRec.actors
-        });
+        movie = new Movie(movieRec);
     } catch (e) {
-        try {
-            console.log(e.message);
-        } catch (e) {
+        console.log(`${e.constructor.name} while deserializing a movie record: ${e.message}`);
 
-        }
     }
     return movie;
 };
@@ -603,7 +571,11 @@ Movie.stringToDate = function (date) {
 
 
 Movie.dateToString = function (date) {
+    console.log(date);
     let d = new Date(date);
+
+
+
     let month = '' + (d.getMonth() + 1);
     let day = '' + d.getDate();
     let year = d.getFullYear();
@@ -617,3 +589,4 @@ Movie.dateToString = function (date) {
 }
 
 export default Movie;
+export {MovieGenreEL};

@@ -6,7 +6,7 @@
  Import classes, datatypes and utility procedures
  ***************************************************************/
 import Person from "../m/Person.mjs";
-import Movie from "../m/Movie.mjs";
+import Movie, {MovieGenreEL} from "../m/Movie.mjs";
 import {fillSelectWithOptions, fillSelectWithOptions2, createListFromMap, createMultipleChoiceWidget}
     from "../../lib/util.mjs";
 
@@ -51,11 +51,30 @@ document.getElementById("retrieveAndListAll").addEventListener("click", function
         const row = tableBodyEl.insertRow();
         row.insertCell().textContent = movie.movieId;
         row.insertCell().textContent = movie.title;
+
+        console.log(movie.releaseDate);
+
         row.insertCell().textContent = Movie.dateToString(movie.releaseDate);
         row.insertCell().appendChild(actorListEl);
         // if the movie has a director, show its name
         row.insertCell().textContent =
             Person.instances[movie.directorId] ? Person.instances[movie.directorId].name : "";
+
+
+        // if the movie has a genre, show related information
+        if (movie.movieGenre) {
+
+            switch (movie.movieGenre) {
+                case MovieGenreEL.BIOGRAPHY:
+                    row.insertCell().textContent = "Biography about " + Person.instances[movie.about].name;
+                    break;
+                case MovieGenreEL.TVSERIESEPISODE:
+                    row.insertCell().textContent = movie.tvSeriesName + ", Episode " + movie.episodeNo;
+                    break;
+            }
+        }
+
+
     }
 });
 
@@ -167,6 +186,7 @@ selectUpdateMovieEl.addEventListener("change", function () {
         const movie = Movie.instances[movieId];
         formEl.movieId.value = movie.movieId;
         formEl.title.value = movie.title;
+
         formEl.releaseDate.value = Movie.dateToString(movie.releaseDate); // movie.releaseDate;
 
         // set up director selection list
@@ -260,7 +280,7 @@ deleteFormEl["commit"].addEventListener("click", function () {
     if (confirm("Do you really want to delete this movie?")) {
         Movie.destroy(movieIdRef);
         // remove deleted movie from select options
-        deleteFormEl.selectMovie.remove(deleteFormEl.selectMovie.selectedIndex);
+        deleteFormEl.selectMovie.remove();
     }
 });
 

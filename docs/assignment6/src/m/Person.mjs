@@ -10,7 +10,7 @@ import {
     RangeConstraintViolation, UniquenessConstraintViolation,
     ReferentialIntegrityConstraintViolation
 } from "../../lib/errorTypes.mjs";
-import Enumeration from "../../lib/Enumeration.mjs";
+import {Enumeration} from "../../lib/Enumeration.mjs";
 
 const PersonRoleEL = new Enumeration(["Director","Actor","Actor&Director"]);
 
