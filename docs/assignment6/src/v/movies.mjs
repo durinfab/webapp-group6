@@ -72,6 +72,8 @@ document.getElementById("retrieveAndListAll").addEventListener("click", function
                 default:
                     console.log("movies.mjs genre " + movie.movieGenre)
             }
+        } else {
+            row.insertCell().textContent = "---";
         }
 
 
@@ -141,29 +143,26 @@ createFormEl.selectMovieGenre.addEventListener("change", function () {
 
             selectAboutEL.disabled = false;
             createFormEl.episodeTitle.disabled = true;
-            createFormEl.episodeNo.disabled = true;
-
             createFormEl.episodeTitle.value = "";
+            createFormEl.episodeNo.disabled = true;
             createFormEl.episodeNo.value = "";
             break;
 
         case MovieGenreEL.TVSERIESEPISODE :
 
             selectAboutEL.disabled = true;
+            selectAboutEL.value = "";
             createFormEl.episodeTitle.disabled = false;
             createFormEl.episodeNo.disabled = false;
-
-            selectAboutEL.value = "";
             break;
 
         default:
 
             selectAboutEL.disabled = true;
-            createFormEl.episodeTitle.disabled = true;
-            createFormEl.episodeNo.disabled = true;
-
             selectAboutEL.value = "";
+            createFormEl.episodeTitle.disabled = true;
             createFormEl.episodeTitle.value = "";
+            createFormEl.episodeNo.disabled = true;
             createFormEl.episodeNo.value = "";
     }
 });
@@ -186,28 +185,20 @@ createFormEl["commit"].addEventListener("click", function () {
     };
 
     let genre = createFormEl.selectMovieGenre.value;
-
     if (genre) {
         slots.movieGenre = parseInt(genre) + 1;
-
         switch(slots.movieGenre) {
             case MovieGenreEL.BIOGRAPHY :
-
                 slots.about = createFormEl.selectAbout.value;
                 break;
 
             case MovieGenreEL.TVSERIESEPISODE :
-
                 slots.episodeTitle = createFormEl.episodeTitle.value;
                 slots.episodeNo = createFormEl.episodeNo.value;
-
 
                 createFormEl.episodeNo.setCustomValidity(
                     Movie.checkEpisodeNo(slots.episodeNo, slots.movieGenre).message);
                 break;
-
-            default:
-
         }
     }
 
@@ -255,13 +246,16 @@ selectUpdateMovieEl.addEventListener("change", function () {
         saveButton = formEl.commit,
         selectDirectorEl = formEl.selectDirector,
         selectActorsWidget = formEl.querySelector(".MultiChoiceWidget"),
-        movieId = formEl.selectMovie.value;
+        movieId = formEl.selectMovie.value,
+
+        selectMovieGenreEL = formEl.selectMovieGenre,
+        selectAboutEL = formEl.selectAbout;
 
     if (movieId) {
         const movie = Movie.instances[movieId];
+
         formEl.movieId.value = movie.movieId;
         formEl.title.value = movie.title;
-
         formEl.releaseDate.value = Movie.dateToString(movie.releaseDate); // movie.releaseDate;
 
         // set up director selection list
@@ -273,12 +267,65 @@ selectUpdateMovieEl.addEventListener("change", function () {
         // set up actor selection list
         createMultipleChoiceWidget(selectActorsWidget, movie.actors, Person.instances, "personId", "name", 1);  // minCard=1
 
+        // set up genre selection list and implications
+        fillSelectWithOptions(selectMovieGenreEL, MovieGenreEL.labels);
+        fillSelectWithOptions(selectAboutEL, Person.instances, "personId", {displayProp: "name"});
+        if (movie.movieGenre) {
+
+            switch(movie.movieGenre) {
+
+                case MovieGenreEL.BIOGRAPHY :
+                    formEl.selectMovieGenre.value = MovieGenreEL.BIOGRAPHY - 1;
+                    formEl.selectAbout.value = movie.about;
+                    break;
+
+                case MovieGenreEL.TVSERIESEPISODE :
+                    formEl.selectMovieGenre.value = MovieGenreEL.TVSERIESEPISODE - 1;
+                    formEl.episodeTitle.value = movie.episodeTitle;
+                    formEl.episodeNo.value = movie.episodeNo;
+                    break;
+            }
+        }
+
+        // call onChange of movieGenre field to trigger disabling
+        formEl.selectMovieGenre.dispatchEvent(new Event('change'));
+
         saveButton.disabled = false;
     } else {
         formEl.reset();
         selectActorsWidget.selectedIndex = 0;
         selectActorsWidget.innerHTML = "";
         saveButton.disabled = true;
+    }
+});
+
+// onchange of movieGenre
+updateFormEl.selectMovieGenre.addEventListener("change", function () {
+    let value = updateFormEl.selectMovieGenre.value ? updateFormEl.selectMovieGenre.value : -1;
+    value++;
+    switch(value) {
+        case MovieGenreEL.BIOGRAPHY :
+            updateFormEl.selectAbout.disabled = false;
+            updateFormEl.episodeTitle.disabled = true;
+            updateFormEl.episodeTitle.value = "";
+            updateFormEl.episodeNo.disabled = true;
+            updateFormEl.episodeNo.value = "";
+            break;
+
+        case MovieGenreEL.TVSERIESEPISODE :
+            updateFormEl.selectAbout.disabled = true;
+            updateFormEl.selectAbout.value = "";
+            updateFormEl.episodeTitle.disabled = false;
+            updateFormEl.episodeNo.disabled = false;
+            break;
+
+        default:
+            updateFormEl.selectAbout.disabled = true;
+            updateFormEl.selectAbout.value = "";
+            updateFormEl.episodeTitle.disabled = true;
+            updateFormEl.episodeTitle.value = "";
+            updateFormEl.episodeNo.disabled = true;
+            updateFormEl.episodeNo.value = "";
     }
 });
 
@@ -304,6 +351,7 @@ updateFormEl["commit"].addEventListener("click", function () {
         releaseDate: updateFormEl.releaseDate.value,
         directorId: personNameToId(updateFormEl.selectDirector.value)
     }
+
     // add event listeners for responsive validation
     /* MISSING CODE */
     // commit the update only if all form field values are valid
@@ -328,6 +376,26 @@ updateFormEl["commit"].addEventListener("click", function () {
             slots.actorIdRefsToAdd = actorIdRefsToAdd;
         }
     }
+
+    let genre = updateFormEl.selectMovieGenre.value;
+    if (genre) {
+        slots.movieGenre = parseInt(genre) + 1;
+
+        switch(slots.movieGenre) {
+            case MovieGenreEL.BIOGRAPHY :
+                slots.about = updateFormEl.selectAbout.value;
+                break;
+
+            case MovieGenreEL.TVSERIESEPISODE :
+                slots.episodeTitle = updateFormEl.episodeTitle.value;
+                slots.episodeNo = updateFormEl.episodeNo.value;
+
+                createFormEl.episodeNo.setCustomValidity(
+                    Movie.checkEpisodeNo(slots.episodeNo, slots.movieGenre).message);
+                break;
+        }
+    }
+
     Movie.update(slots);
     // update the movie selection list's option element
     selectUpdateMovieEl.options[selectUpdateMovieEl.selectedIndex].text = slots.title;

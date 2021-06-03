@@ -143,7 +143,7 @@ class Movie {
         } else if (genre !== MovieGenreEL.TVSERIESEPISODE && name) {
             return new ConstraintViolation("An 'TvSeriesName' field value must not be provided if the movie is not a TvSeriesEpisode!");
 
-        } else {
+        } else if (genre === MovieGenreEL.TVSERIESEPISODE) {
 
             if (!isNonEmptyString(name)) {
                 return new RangeConstraintViolation(
@@ -179,7 +179,7 @@ class Movie {
         } else if (genre !== MovieGenreEL.TVSERIESEPISODE && no) {
             return new ConstraintViolation("An 'EpisodeNo' field value must not be provided if the movie is not a TvSeriesEpisode!");
 
-        } else {
+        } else if (genre === MovieGenreEL.TVSERIESEPISODE) {
 
             if (!isIntegerOrIntegerString(no)) {
                 return new RangeConstraintViolation(
@@ -199,9 +199,8 @@ class Movie {
                     "ERROR: There is already a Movie record with this Movie ID!");
             }
             */
-
-            return new NoConstraintViolation();
         }
+        return new NoConstraintViolation();
     }
     set episodeNo(no) {
         const validationResult = Movie.checkEpisodeNo(no, this.movieGenre);
@@ -446,7 +445,8 @@ Movie.add = function (slots) {
  */
 Movie.update = function ({
                              movieId, title, releaseDate,
-                             actorIdRefsToAdd, actorIdRefsToRemove, directorId
+                             actorIdRefsToAdd, actorIdRefsToRemove, directorId,
+                             movieGenre, about, episodeTitle, episodeNo
                          }) {
     const movie = Movie.instances[movieId],
         objectBeforeUpdate = cloneObject(movie);  // save the current state of movie
@@ -481,6 +481,59 @@ Movie.update = function ({
         if (directorId !== movie.directorId) {
             movie.directorId = directorId;
             updatedProperties.push("directorId");
+        }
+
+        if (!movie.movieGenre) {
+            if (movieGenre) {
+                /*
+                 *  undefined -> genre
+                 */
+                movie.movieGenre = movieGenre;
+                updatedProperties.push("movieGenre");
+                switch(movieGenre) {
+                    case MovieGenreEL.BIOGRAPHY :
+                        console.log("bio");
+                        movie.about = about; updatedProperties.push("about");
+                        break;
+                    case MovieGenreEL.TVSERIESEPISODE :
+                        movie.episodeTitle = episodeTitle; updatedProperties.push("episodeTitle");
+                        movie.episodeNo = episodeNo; updatedProperties.push("episodeNo");
+                        break;
+                }
+            }
+
+        } else {
+            if (movieGenre) {
+                /*
+                 *  genre -> genre
+                 */
+                if (movie.movieGenre !== movieGenre) {
+                    movie.movieGenre = movieGenre;
+                    updatedProperties.push("movieGenre");
+                    switch(movieGenre) {
+                        case MovieGenreEL.BIOGRAPHY :
+                            movie.about = about; updatedProperties.push("about");
+
+                            movie.episodeTitle = undefined; updatedProperties.push("episodeTitle");
+                            movie.episodeNo = undefined; updatedProperties.push("episodeNo");
+                            break;
+                        case MovieGenreEL.TVSERIESEPISODE :
+                            movie.about = undefined; updatedProperties.push("about");
+
+                            movie.episodeTitle = episodeTitle; updatedProperties.push("episodeTitle");
+                            movie.episodeNo = episodeNo; updatedProperties.push("episodeNo");
+                            break;
+                    }
+                }
+            } else {
+                /*
+                 *  genre -> undefined
+                 */
+                movie.movieGenre = undefined; updatedProperties.push("movieGenre");
+                movie.about = undefined; updatedProperties.push("about");
+                movie.episodeTitle = undefined; updatedProperties.push("episodeTitle");
+                movie.episodeNo = undefined; updatedProperties.push("episodeNo");
+            }
         }
 
     } catch (e) {

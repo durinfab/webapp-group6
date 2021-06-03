@@ -105,6 +105,7 @@
                 </label>
             </div>
 
+            <!-- GENRE -->
             <div class="select-one">
                 <label>Genre: <select name="selectMovieGenre"></select></label>
             </div>
@@ -142,13 +143,13 @@
                 <label>Select movie: <select name="selectMovie"></select></label>
             </div>
             <div class="field">
-                <label>MovieID:
-                    <output name="movieId"></output>
-                </label>
+                <label>ID: <output name="movieId"></output></label>
             </div>
+
             <div class="field">
                 <label>Title: <input type="text" name="title"/></label>
             </div>
+
             <div class="field">
                 <label>Release Date: <input type="text" name="releaseDate"/></label>
             </div>
@@ -161,6 +162,26 @@
                 <label for="selectActors">Actors</label>
                 <div id="selectActors" class="MultiChoiceWidget"></div>
             </div>
+
+            <!-- GENRE -->
+            <div class="select-one">
+                <label>Genre: <select name="selectMovieGenre"></select></label>
+            </div>
+
+            <!-- BIOGRAPHY -->
+            <div class="select-one">
+                <label>About: <select name="selectAbout"></select></label>
+            </div>
+
+            <!-- SERIES -->
+            <div class="field">
+                <label>Episode Title: <input type="text" name="episodeTitle"/></label>
+            </div>
+            <div class="field">
+                <label>Episode No: <input type="text" name="episodeNo"/></label>
+            </div>
+
+
             <div class="center">
                 <button type="submit" name="commit" disabled="disabled">Save</button>
                 <button type="button" class="back-to-menu">Back to menu</button>
