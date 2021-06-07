@@ -4,7 +4,7 @@
  *                and retrieveAll
  * @person Gerd Wagner
  */
-import Person from "./Person.mjs";
+import Person, {PersonRoleEL}from "./Person.mjs";
 import {cloneObject, isIntegerOrIntegerString} from "../../lib/util.mjs";
 import {
     NoConstraintViolation, MandatoryValueConstraintViolation,
@@ -19,7 +19,7 @@ import {
 } from './../../lib/checkFunctions.mjs';
 
 import {Enumeration} from "../../lib/Enumeration.mjs";
-import {ConstraintViolation, IntervalConstraintViolation} from "../../../assignment4/lib/errorTypes.mjs";
+import {ConstraintViolation, IntervalConstraintViolation} from "../../lib/errorTypes.mjs";
 
 const MovieGenreEL = new Enumeration(["Biography", "TvSeriesEpisode"]);
 
@@ -33,7 +33,6 @@ class Movie {
         this.movieId = movieId;
         this.title = title;
         this.releaseDate = releaseDate; // dd.mm.yyyy
-
         // assign object references or ID references (to be converted in setter)
         this.directorId = directorId; // this is a directorIdRef
         this.actors = actors; // these are actorIdRefs
@@ -312,12 +311,20 @@ class Movie {
 
     set directorId(p) {
         if (!p) {  // unset director
+            Person.instances[p].role = undefined;
             delete this._directorId;
         } else {
             // p can be an ID reference or an object reference
             const directorId = (typeof p !== "object") ? p : p.name;
             const validationResult = Movie.checkPerson(directorId);
             if (validationResult instanceof NoConstraintViolation) {
+                if (Person.instances[directorId].role === undefined) {
+                    Person.instances[directorId].role = PersonRoleEL.DIRECTOR;
+                }
+                if (Person.instances[directorId].role === PersonRoleEL.ACTOR) {
+                    Person.instances[directorId].role = PersonRoleEL.ACTOR_AND_DIRECTOR;
+                }
+
                 // create the new director reference
                 this._directorId = p;
             } else {
@@ -343,6 +350,17 @@ class Movie {
         const personId = (typeof a !== "object") ? parseInt(a) : a.personId;
         const validationResult = Movie.checkPerson(personId);
         if (personId && validationResult instanceof NoConstraintViolation) {
+            const slots = {
+                personId: personId,
+                role: Person.getRoleFromPersonId(personId)
+            };
+            if (Person.instances[personId].role === undefined) {
+                Person.instances[personId].role = PersonRoleEL.ACTOR;
+            }
+            if (Person.instances[personId].role === PersonRoleEL.DIRECTOR) {
+                Person.instances[personId].role = PersonRoleEL.ACTOR_AND_DIRECTOR;
+            }
+
             // add the new person reference
             const key = String(personId);
             this._actors[key] = Person.instances[key];
@@ -356,6 +374,26 @@ class Movie {
         const personId = (typeof a !== "object") ? parseInt(a) : a.personId;
         const validationResult = Movie.checkPerson(personId);
         if (validationResult instanceof NoConstraintViolation) {
+
+            const count = 0;
+            //Does the actor still plays in movies
+            for (const key of Object.keys(Movie.instances)) {
+                const movie = Movie.instances[key];
+                for (const personId1 of movie.actors) {
+                    if (personId1 === personId) {
+                        count = count + 1;
+                    }
+                }
+            }
+
+            if (count === 1 && slots.role === PersonRoleEL.ACTOR) {
+                Person.instances[personId].role = undefined;
+            }
+            if (count === 1 && slots.role === PersonRoleEL.ACTOR_AND_DIRECTOR) {
+                Person.instances[personId].role = PersonRoleEL.DIRECTOR;
+            }
+            Person.update(slots);
+
             // delete the person reference
             delete this._actors[String(personId)];
         } else {

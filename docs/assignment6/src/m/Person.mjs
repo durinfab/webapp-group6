@@ -4,7 +4,7 @@
  * @person Gerd Wagner
  */
 import Movie from "./Movie.mjs";
-import {cloneObject} from "../../lib/util.mjs";
+import {cloneObject, isIntegerOrIntegerString} from "../../lib/util.mjs";
 import {
     NoConstraintViolation, MandatoryValueConstraintViolation,
     RangeConstraintViolation, UniquenessConstraintViolation,
@@ -12,7 +12,7 @@ import {
 } from "../../lib/errorTypes.mjs";
 import {Enumeration} from "../../lib/Enumeration.mjs";
 
-const PersonRoleEL = new Enumeration(["Director","Actor","Actor&Director"]);
+const PersonRoleEL = new Enumeration(["Director","Actor","Actor_and_Director"]);
 
 /**
  * The class Person
@@ -22,12 +22,11 @@ const PersonRoleEL = new Enumeration(["Director","Actor","Actor&Director"]);
 
 class Person {
     // using a single record parameter with ES6 function parameter destructuring
-    constructor({personId, name, role}) {
+    constructor({personId, name}) {
 
         // assign properties by invoking implicit setters
         this.personId = personId;  // number (integer)
         this.name = name;  // string
-        if (role) this.role = role;
     }
 
     get personId() {
@@ -66,6 +65,11 @@ class Person {
             }
         }
         return constraintViolation;
+    }
+
+    static getRoleFromPersonId(id) {
+        const person = Person.instances[id];
+        return person.role;
     }
 
     static checkPersonIdAsIdRef(id) {
@@ -123,7 +127,7 @@ class Person {
         } else if (!isIntegerOrIntegerString( r) || parseInt( r) < 1 ||
             parseInt( r) > PersonRoleEL.MAX) {
           return new RangeConstraintViolation(
-              `Invalid value for category: ${r}`);
+              `Invalid value for role: ${r}`);
         } else {
           return new NoConstraintViolation();
         }
@@ -131,7 +135,7 @@ class Person {
 
     set role( r) {
         var validationResult = null;
-        validationResult = Book.checkRole( r);
+        validationResult = Person.checkRole( r);
         if (validationResult instanceof NoConstraintViolation) {
           this._role = parseInt( r);
         } else {
@@ -295,3 +299,4 @@ Person.saveAll = function () {
 };
 
 export default Person;
+export {PersonRoleEL}

@@ -5,7 +5,7 @@
 /***************************************************************
  Import classes, datatypes and utility procedures
  ***************************************************************/
-import Person from "../m/Person.mjs";
+import Person, {PersonRoleEL} from "../m/Person.mjs";
 // import Person from "../m/Person.mjs";
 import Movie from "../m/Movie.mjs";
 import {fillSelectWithOptions} from "../../lib/util.mjs";
@@ -50,6 +50,21 @@ document.getElementById("retrieveAndListAll").addEventListener("click", function
         const row = tableBodyEl.insertRow();
         row.insertCell().textContent = person.personId;
         row.insertCell().textContent = person.name;
+         if (person.role === undefined) {
+            row.insertCell().textContent = "Nothing";
+        } else {
+            switch (person.role) {
+              case PersonRoleEL.DIRECTOR:
+                row.insertCell().textContent = "Director";
+                break;
+              case PersonRoleEL.ACTOR:
+                row.insertCell().textContent = "Actor";
+                break;
+              case PersonRoleEL.ACTOR_AND_DIRECTOR:
+                row.insertCell().textContent = "Actor and Director";
+                break;
+              }
+        }
     }
     document.getElementById("Person-M").style.display = "none";
     document.getElementById("Person-R").style.display = "block";
