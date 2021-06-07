@@ -228,13 +228,12 @@ Person.destroy = function (personId) {
         return false;
     }
 
-    // make sure person to delete is director of no movie
+    // make sure person to delete is director of no movie anymore -> delete movies
     for (const movieId of Object.keys(Movie.instances)) {
         const movie = Movie.instances[movieId];
 
         if (movie.directorId == personId) {
-            console.log(`Person ${person.name} cannot be deleted as it's the director of movie ${movie.title}.`);
-            return false;
+            Movie.destroy(movieId);      
         }
     }
 
@@ -244,8 +243,8 @@ Person.destroy = function (personId) {
 
         if (movie.actors[personId]) {
 
-            delete movie.actors[personId];
-            // movie.removeActor(personId);
+            //delete movie.actors[personId];
+            movie.removeActor(personId);
         }
     }
 
