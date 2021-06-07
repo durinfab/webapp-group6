@@ -414,7 +414,8 @@ document.getElementById("destroy")
         // set up the person selection list
         fillSelectWithOptions(selectDeleteMovieEl, Movie.instances,
             "movieId", {displayProp: "title"});
-        deleteFormEl.reset();
+        //deleteFormEl.reset();
+        //location.reload();
     });
 // handle Delete button click events
 deleteFormEl["commit"].addEventListener("click", function () {
@@ -423,7 +424,8 @@ deleteFormEl["commit"].addEventListener("click", function () {
     if (confirm("Do you really want to delete this movie?")) {
         Movie.destroy(movieIdRef);
         // remove deleted movie from select options
-        deleteFormEl.selectMovie.remove();
+        deleteFormEl.remove(deleteFormEl.selectedIndex);
+        location.reload();
     }
 });
 
