@@ -232,6 +232,11 @@ Person.destroy = function (personId) {
     for (const movieId of Object.keys(Movie.instances)) {
         const movie = Movie.instances[movieId];
 
+        if (movie.about != undefined) {
+            if(movie.about == personId) {
+                Movie.destroy(movieId);
+            }
+        }
         if (movie.directorId == personId) {
             Movie.destroy(movieId);      
         }
