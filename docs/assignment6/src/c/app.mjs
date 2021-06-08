@@ -19,12 +19,12 @@ function generateTestData() {
         Person.instances["1"] = new Person({personId: 1, name: "Stephen Frears"});
         Person.instances["2"] = new Person({personId: 2, name: "George Lucas"});
         Person.instances["3"] = new Person({personId: 3, name: "Quentin Tarantino"});
-        //Persons.instances["4"] = new Person({personId: 4, name: " "});
+        Person.instances["4"] = new Person({personId: 4, name: "Johnny A. Gent"});
         Person.instances["5"] = new Person({personId: 5, name: "Uma Thurman"});
         Person.instances["6"] = new Person({personId: 6, name: "John Travolta"});
         Person.instances["7"] = new Person({personId: 7, name: "Ewan McGregor"});
         Person.instances["8"] = new Person({personId: 8, name: "Natalie Portman"});
-        Person.instances["9"] = new Person({personId: 9, name: "Keanu Reeves"});
+        Person.instances["9"] = new Person({personId: 9, name: "Keanu Reeves", agent: 4});
         Person.instances["10"] = new Person({personId: 10, name: "Jabba The Hutt"});
 
         /*~~~Movies~~~*/

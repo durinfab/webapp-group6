@@ -272,10 +272,17 @@ Person.destroy = function (personId) {
         }
     }
 
+    // before deleting revoke all relevant agent relations
+    for (const otherPersonId of Object.keys(Person.instances)) {
+        const otherPerson = Person.instances[otherPersonId];
+        if (otherPerson.agent) {
+            if (otherPerson.agent == personId) {
+                otherPerson.agent = "";
+            }
+        }
+    }
+
     // delete the person object
-
-    console.log("delete Person.instances[id]")
-
     delete Person.instances[personId];
     console.log(`Person ${person.name} deleted.`);
 
