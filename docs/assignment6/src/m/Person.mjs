@@ -22,11 +22,26 @@ const PersonRoleEL = new Enumeration(["Director","Actor","Actor_and_Director"]);
 
 class Person {
     // using a single record parameter with ES6 function parameter destructuring
-    constructor({personId, name}) {
+    constructor({personId, name, agent, role}) {
 
         // assign properties by invoking implicit setters
         this.personId = personId;  // number (integer)
         this.name = name;  // string
+        if (agent) this.agent = agent;
+        if (role) this.role = role;
+    }
+
+    set agent(v) {
+        const validationResult = Person.checkPersonId(v);
+        if (validationResult instanceof NoConstraintViolation) {
+            this._agent = v;
+        } else {
+            throw validationResult;
+        }
+    }
+
+    get agent() {
+        return this._agent;
     }
 
     get personId() {
@@ -124,7 +139,7 @@ class Person {
     static checkRole( r) {
         if (r === undefined) {
           return new NoConstraintViolation();  // category is optional
-        } else if (!isIntegerOrIntegerString( r) || parseInt( r) < 1 ||
+        } else if (!isIntegerOrIntegerString( r) || parseInt( r) < 0 ||
             parseInt( r) > PersonRoleEL.MAX) {
           return new RangeConstraintViolation(
               `Invalid value for role: ${r}`);
@@ -184,7 +199,7 @@ Person.add = function (slots) {
 /**
  *  Update an existing person record/object
  */
-Person.update = function ({personId, name, role}) {
+Person.update = function ({personId, name, role, agent}) {
 
     const person = Person.instances[String(personId)],
         objectBeforeUpdate = cloneObject(person);
@@ -197,6 +212,10 @@ Person.update = function ({personId, name, role}) {
         if (role && role !== person.role) {
             person.role = role;
             updatedProperties.push("role");
+        }
+        if (agent && agent !== person.agent) {
+            person.agent = agent;
+            updatedProperties.push("agent");
         }
     } catch (e) {
         console.log(`${e.constructor.name}: ${e.message}`);

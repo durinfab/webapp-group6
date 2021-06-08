@@ -50,7 +50,7 @@ document.getElementById("retrieveAndListAll").addEventListener("click", function
         const row = tableBodyEl.insertRow();
         row.insertCell().textContent = person.personId;
         row.insertCell().textContent = person.name;
-         if (person.role === undefined) {
+        if (person.role === undefined) {
             row.insertCell().textContent = "Nothing";
         } else {
             switch (person.role) {
@@ -65,6 +65,11 @@ document.getElementById("retrieveAndListAll").addEventListener("click", function
                 break;
               }
         }
+        if (person.agent === undefined) {
+            row.insertCell().textContent = "Nothing";
+        } else {
+            row.insertCell().textContent = Person.instances[person.agent].name;
+        }
     }
     document.getElementById("Person-M").style.display = "none";
     document.getElementById("Person-R").style.display = "block";
@@ -78,7 +83,23 @@ const createFormEl = document.querySelector("section#Person-C > form");
 document.getElementById("create").addEventListener("click", function () {
     document.getElementById("Person-M").style.display = "none";
     document.getElementById("Person-C").style.display = "block";
+    fillSelectWithOptions(createFormEl.personRole, PersonRoleEL.labels);
+    fillSelectWithOptions(createFormEl.agent, Person.instances, "personId", {displayProp: "name"});
+    createFormEl.agent.disabled = true;
+
     createFormEl.reset();
+});
+
+createFormEl.personRole.addEventListener("change", function () {
+    let value = createFormEl.personRole.value ? createFormEl.personRole.value : -1;
+    value++;
+    if (value === PersonRoleEL.ACTOR || value === PersonRoleEL.ACTOR_AND_DIRECTOR) {
+        createFormEl.agent.disabled = false;
+        createFormEl.agent.value = "";
+    } else {
+        createFormEl.agent.disabled = true;
+        createFormEl.agent.value = "";
+    }
 });
 
 // set up event handlers for responsive constraint validation
@@ -94,11 +115,33 @@ createFormEl["commit"].addEventListener("click", function () {
         personId: createFormEl.personId.value,
         name: createFormEl.name.value
     };
+
+    let role = createFormEl.personRole.value;
+    if (role) {
+        slots.role = parseInt(role) + 1;
+        switch(slots.role) {
+            case PersonRoleEL.ACTOR :
+                slots.agent = createFormEl.agent.value;
+                break;
+
+            case PersonRoleEL.ACTOR_AND_DIRECTOR :
+                slots.agent = createFormEl.agent.value;
+                break;
+
+            case PersonRoleEL.DIRECTOR :
+                break;
+        }
+    }
+
+
     // check all input fields and show error messages
     createFormEl.personId.setCustomValidity(Person.checkPersonIdAsId(slots.personId).message);
     /* SIMPLIFIED CODE: no before-submit validation of name */
     // save the input data only if all form fields are valid
-    if (createFormEl.checkValidity()) Person.add(slots);
+    if (createFormEl.checkValidity()) {
+        Person.add(slots);
+        location.reload();
+    } 
 });
 
 /**********************************************
@@ -122,8 +165,11 @@ updateFormEl["commit"].addEventListener("click", function () {
     if (!personIdRef) return;
     const slots = {
         personId: updateFormEl.personId.value,
-        name: updateFormEl.name.value
+        name: updateFormEl.name.value,
+        role: updateFormEl.personRole.value,
+        agent: updateFormEl.agent.value
     }
+    slots.role = parseInt(slots.role) + 1;
     // check all property constraints
     /* SIMPLIFIED CODE: no before-save validation of name */
     // save the input data only if all of the form fields are valid
@@ -131,6 +177,31 @@ updateFormEl["commit"].addEventListener("click", function () {
         Person.update(slots);
         // update the person selection list's option element
         selectUpdatePersonEl.options[selectUpdatePersonEl.selectedIndex].text = slots.name;
+    }
+});
+
+updateFormEl.personRole.addEventListener("change", function () {
+    let value = updateFormEl.personRole.value ? updateFormEl.personRole.value : -1;
+    value++;
+    switch(value) {
+        case PersonRoleEL.ACTOR :
+            updateFormEl.agent.disabled = false;
+            updateFormEl.agent.value = "";
+            break;
+
+        case PersonRoleEL.DIRECTOR :
+            updateFormEl.agent.disabled = true;
+            updateFormEl.agent.value = "";
+            break;
+
+        case PersonRoleEL.ACTOR_AND_DIRECTOR :
+            updateFormEl.agent.disabled = false;
+            updateFormEl.agent.value = "";
+            break;
+
+        default:
+            updateFormEl.agent.disabled = true;
+            updateFormEl.agent.value = "";
     }
 });
 
@@ -145,6 +216,13 @@ function handlePersonSelectChangeEvent() {
         pers = Person.instances[key];
         updateFormEl.personId.value = pers.personId;
         updateFormEl.name.value = pers.name;
+        updateFormEl.personRole.value = pers.role;
+        fillSelectWithOptions(updateFormEl.agent, Person.instances, "personId", {displayProp: "name"});
+        fillSelectWithOptions(updateFormEl.personRole, PersonRoleEL.labels);
+        if (pers.role === PersonRoleEL.ACTOR || pers.role === PersonRoleEL.ACTOR_AND_DIRECTOR) {
+            updateFormEl.agent.value = pers.agent;
+        }
+        updateFormEl.personRole.value = pers.role - 1;
     } else {
         updateFormEl.reset();
     }
