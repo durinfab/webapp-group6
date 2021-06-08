@@ -135,6 +135,11 @@ createFormEl.selectDirector.addEventListener("input", function () {
         Movie.validateDirector(createFormEl.selectDirector.value).message);
 });
 
+createFormEl.episodeNo.addEventListener("input", function () {
+    createFormEl.episodeNo.setCustomValidity(
+        Movie.checkEpisodeNo(createFormEl.episodeNo.value, createFormEl.selectMovieGenre.value).message);
+});
+
 createFormEl.selectMovieGenre.addEventListener("change", function () {
     let value = createFormEl.selectMovieGenre.value ? createFormEl.selectMovieGenre.value : -1;
     value++;
@@ -166,12 +171,8 @@ createFormEl.selectMovieGenre.addEventListener("change", function () {
             createFormEl.episodeNo.value = "";
     }
 });
-/*
-createFormEl.episodeNo.addEventListener("input", function () {
-    createFormEl.movieId.setCustomValidity(
-        Movie.checkEpisodeNo(createFormEl.episodeNo.value, createFormEl.selectMovieGenre.value).message);
-});
-*/
+
+
 
 // handle Save button click events
 createFormEl["commit"].addEventListener("click", function () {
@@ -327,6 +328,11 @@ updateFormEl.selectMovieGenre.addEventListener("change", function () {
             updateFormEl.episodeNo.disabled = true;
             updateFormEl.episodeNo.value = "";
     }
+});
+
+updateFormEl.episodeNo.addEventListener("input", function () {
+    updateFormEl.episodeNo.setCustomValidity(
+        Movie.checkEpisodeNo(updateFormEl.episodeNo.value, updateFormEl.selectMovieGenre.value).message);
 });
 
 function personNameToId(searchedName) {
