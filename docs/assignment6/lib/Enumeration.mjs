@@ -13,7 +13,7 @@
 import {ConstraintViolation} from "./errorTypes.mjs";
 
 function Enumeration(enumArg) {
-  var i = 0, lbl = "", LBL = "";
+  let i = 0, lbl = "", LBL = "";
   if (Array.isArray(enumArg)) {
     // a simple enum defined by a list of labels
     if (!enumArg.every(function (n) {

@@ -350,10 +350,13 @@ class Movie {
         const personId = (typeof a !== "object") ? parseInt(a) : a.personId;
         const validationResult = Movie.checkPerson(personId);
         if (personId && validationResult instanceof NoConstraintViolation) {
+            /*
             const slots = {
                 personId: personId,
                 role: Person.getRoleFromPersonId(personId)
             };
+             */
+
             if (Person.instances[personId].role === undefined) {
                 Person.instances[personId].role = PersonRoleEL.ACTOR;
             }
@@ -374,8 +377,8 @@ class Movie {
         const personId = (typeof a !== "object") ? parseInt(a) : a.personId;
         const validationResult = Movie.checkPerson(personId);
         if (validationResult instanceof NoConstraintViolation) {
-
-            const count = 0;
+            /*
+            let count = 0;
             //Does the actor still plays in movies
             for (const key of Object.keys(Movie.instances)) {
                 const movie = Movie.instances[key];
@@ -393,6 +396,7 @@ class Movie {
                 Person.instances[personId].role = PersonRoleEL.DIRECTOR;
             }
             Person.update(slots);
+             */
 
             // delete the person reference
             delete this._actors[String(personId)];

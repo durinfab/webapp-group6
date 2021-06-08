@@ -149,7 +149,7 @@ class Person {
     }
 
     set role( r) {
-        var validationResult = null;
+        let validationResult;
         validationResult = Person.checkRole( r);
         if (validationResult instanceof NoConstraintViolation) {
           this._role = parseInt( r);

@@ -93,13 +93,13 @@ export function nextYear() {
  *                 including optPar.displayProp and optPar.selection
  */
 function fillSelectWithOptions(selectEl, selectionRange, keyProp, optPar) {
-    var optionEl = null, displayProp = "";
+    let optionEl = null, displayProp = "";
     // delete old contents
     selectEl.innerHTML = "";
     // create "no selection yet" entry
     if (!selectEl.multiple) selectEl.add(createOption("", " --- "));
     // create option elements from object property values
-    var options = Array.isArray(selectionRange) ? selectionRange : Object.keys(selectionRange);
+    let options = Array.isArray(selectionRange) ? selectionRange : Object.keys(selectionRange);
     for (let i = 0; i < options.length; i++) {
         if (Array.isArray(selectionRange)) {
             optionEl = createOption(i, options[i]);

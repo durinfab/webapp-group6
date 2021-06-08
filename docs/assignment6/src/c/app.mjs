@@ -2,7 +2,7 @@
  * @fileOverview  Auxiliary data management procedures
  * @person Gerd Wagner
  */
-import Person, {PersonRoleEL} from "../m/Person.mjs";
+import Person from "../m/Person.mjs";
 // import Person from "../m/Person.mjs";
 import Movie, {MovieGenreEL} from "../m/Movie.mjs";
 
